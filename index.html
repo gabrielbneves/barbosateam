@@ -943,6 +943,112 @@
       background: #ffffff;
       touch-action: manipulation;
     }
+
+    /* Steppers e Controles de Ajuste Rápido do Protocolo */
+    .treadmill-stepper {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .treadmill-stepper:focus-within {
+      border-color: #1F4E78;
+      box-shadow: 0 0 0 3px rgba(31, 78, 120, 0.15);
+    }
+    .treadmill-stepper-btn {
+      background: #f8fafc;
+      border: none;
+      color: #1F4E78;
+      font-size: 18px;
+      font-weight: 800;
+      width: 42px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      transition: background 0.15s, color 0.15s;
+    }
+    .treadmill-stepper-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+    .treadmill-stepper-btn:active {
+      background: #cbd5e1;
+    }
+    .treadmill-stepper-input {
+      flex: 1;
+      min-width: 45px;
+      text-align: center !important;
+      border: none !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      color: #0f172a !important;
+      padding: 6px 4px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+      -moz-appearance: textfield;
+    }
+    .treadmill-stepper-input::-webkit-outer-spin-button,
+    .treadmill-stepper-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Guia Visual da Escala de Esforço Percebido (Borg 6 a 20) */
+    .treadmill-borg-guide {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-top: 14px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .treadmill-borg-guide-header {
+      font-size: 11px;
+      font-weight: 800;
+      color: #1F4E78;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .treadmill-borg-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 6px;
+    }
+    .treadmill-borg-zone {
+      border-radius: 6px;
+      padding: 8px 6px;
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 0.15s;
+    }
+    .treadmill-borg-zone-num {
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+    .treadmill-borg-zone-lbl {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
   </style>
 </head>
 <body>
@@ -2042,38 +2148,65 @@
               <div id="treadmill-live-section">
                 <!-- CARD DE CONFIGURAÇÕES DO PROTOCOLO -->
                 <div class="treadmill-config-card">
-                  <div style="font-size: 12px; font-weight: 800; color: #1F4E78; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                  <div style="font-size: 12px; font-weight: 800; color: #1F4E78; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                     <span>Configuração dos Parâmetros do Protocolo</span>
-                    <span style="font-size: 11px; font-weight: 500; color: #64748b;">(Ajuste antes de iniciar ou use o padrão)</span>
+                    <span style="font-size: 11px; font-weight: 500; color: #64748b;">(Ajuste os valores ou use os botões +/- para atualizar em tempo real)</span>
                   </div>
                   <div class="form-grid" style="margin-bottom: 12px;">
                     <div class="form-group">
-                      <label for="ad_proto_warmup_dur">Duração do Aquecimento (min):</label>
-                      <input type="number" id="ad_proto_warmup_dur" value="3" min="1" max="10" step="1" style="font-size: 16px;">
+                      <label for="ad_proto_warmup_dur">Tempo de Aquecimento (min):</label>
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTempoAquecimento(-1)" title="Diminuir 1 minuto de aquecimento">-</button>
+                        <input type="number" id="ad_proto_warmup_dur" class="treadmill-stepper-input" value="3" min="1" max="15" step="1" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTempoAquecimento(1)" title="Aumentar 1 minuto de aquecimento">+</button>
+                      </div>
                     </div>
                     <div class="form-group">
                       <label for="ad_proto_warmup_vel">Velocidade do Aquecimento (km/h):</label>
-                      <input type="number" id="ad_proto_warmup_vel" value="5.0" min="2.0" max="12.0" step="0.1" style="font-size: 16px;">
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeAquecimento(-0.5)" title="Diminuir velocidade de aquecimento em 0.5 km/h">-</button>
+                        <input type="number" id="ad_proto_warmup_vel" class="treadmill-stepper-input" value="5.0" min="2.0" max="15.0" step="0.1" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeAquecimento(0.5)" title="Aumentar velocidade de aquecimento em 0.5 km/h">+</button>
+                      </div>
                     </div>
                     <div class="form-group">
-                      <label for="ad_proto_test_vel_ini">Velocidade Inicial do Teste (km/h):</label>
-                      <input type="number" id="ad_proto_test_vel_ini" value="8.0" min="4.0" max="18.0" step="0.1" style="font-size: 16px;">
+                      <label for="ad_proto_test_vel_ini">Velocidade do 1º Estágio (km/h):</label>
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeInicialTeste(-0.5)" title="Diminuir velocidade do 1º estágio em 0.5 km/h">-</button>
+                        <input type="number" id="ad_proto_test_vel_ini" class="treadmill-stepper-input" value="8.0" min="3.0" max="22.0" step="0.1" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeInicialTeste(0.5)" title="Aumentar velocidade do 1º estágio em 0.5 km/h">+</button>
+                      </div>
                     </div>
                     <div class="form-group">
                       <label for="ad_proto_inc_taxa">Taxa de Incremento (km/h por min):</label>
-                      <input type="number" id="ad_proto_inc_taxa" value="1.0" min="0.5" max="3.0" step="0.5" style="font-size: 16px;">
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTaxaIncremento(-0.5)" title="Diminuir taxa de incremento em 0.5 km/h">-</button>
+                        <input type="number" id="ad_proto_inc_taxa" class="treadmill-stepper-input" value="1.0" min="0.5" max="3.0" step="0.5" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTaxaIncremento(0.5)" title="Aumentar taxa de incremento em 0.5 km/h">+</button>
+                      </div>
                     </div>
                     <div class="form-group">
                       <label for="ad_proto_incline">Inclinação da Esteira (%):</label>
-                      <input type="number" id="ad_proto_incline" value="1.0" min="0.0" max="15.0" step="0.5" style="font-size: 16px;">
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarInclinacao(-0.5)" title="Diminuir inclinação em 0.5%">-</button>
+                        <input type="number" id="ad_proto_incline" class="treadmill-stepper-input" value="1.0" min="0.0" max="15.0" step="0.5" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarInclinacao(0.5)" title="Aumentar inclinação em 0.5%">+</button>
+                      </div>
                     </div>
                   </div>
-                  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-primary" onclick="gerarTabelaProtocoloEsteira()" style="font-size: 12px; padding: 8px 16px;">
-                      Gerar Tabela / Aplicar Parâmetros
+                  <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <span style="font-size: 11px; font-weight: 700; color: #475569;">Presets Rápidos:</span>
+                    <button type="button" class="btn btn-secondary" onclick="aplicarPresetProtocoloEsteira('caminhada')" style="font-size: 11px; padding: 6px 10px;">
+                      Caminhada (2 min @ 3.5 km/h, teste @ 5.0 km/h)
                     </button>
-                    <button type="button" class="btn btn-secondary" onclick="resetarConfigProtocoloEsteira()" style="font-size: 12px; padding: 8px 14px;">
-                      Redefinir Padrões (3 min a 5 km/h, teste a 8 km/h +1 km/h/min)
+                    <button type="button" class="btn btn-secondary" onclick="aplicarPresetProtocoloEsteira('padrao')" style="font-size: 11px; padding: 6px 10px;">
+                      Padrão Adulto (3 min @ 5.0 km/h, teste @ 8.0 km/h)
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="aplicarPresetProtocoloEsteira('avancado')" style="font-size: 11px; padding: 6px 10px;">
+                      Avançado / Atleta (3 min @ 6.0 km/h, teste @ 10.0 km/h)
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="gerarTabelaProtocoloEsteira()" style="font-size: 11px; padding: 6px 14px; margin-left: auto;">
+                      Recarregar Tabela
                     </button>
                   </div>
                 </div>
@@ -2100,6 +2233,12 @@
                     </button>
                     <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="resetarTimerEsteira()">
                       Resetar
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="ajustarTempoAquecimento(1)" title="Adicionar 1 minuto de aquecimento ao teste">
+                      +1 min Aquec.
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="ajustarTempoAquecimento(-1)" title="Reduzir 1 minuto de aquecimento do teste">
+                      -1 min Aquec.
                     </button>
                     <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="adicionarMinutoProtocoloEsteira()">
                       + Minuto Extra
@@ -2129,6 +2268,44 @@
                     </tbody>
                   </table>
                 </div>
+
+                <!-- GUIA VISUAL DA ESCALA DE ESFORÇO PERCEBIDO (BORG 6 A 20) -->
+                <div id="treadmill-borg-guide" class="treadmill-borg-guide">
+                  <div class="treadmill-borg-guide-header">
+                    <span>Escala de Esforço Percebido (Referência Normativa)</span>
+                    <span style="font-size: 10px; font-weight: 500; color: #64748b;">(Associação direta aos níveis do teste)</span>
+                  </div>
+                  <div class="treadmill-borg-strip">
+                    <div class="treadmill-borg-zone" style="background: #ffffff; color: #1e293b; border-color: #cbd5e1;">
+                      <span class="treadmill-borg-zone-num">6 - 8</span>
+                      <span class="treadmill-borg-zone-lbl">Muito Fácil</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #fef9c3; color: #854d0e; border-color: #fef08a;">
+                      <span class="treadmill-borg-zone-num">9 - 10</span>
+                      <span class="treadmill-borg-zone-lbl">Fácil</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #fef08a; color: #713f12; border-color: #facc15;">
+                      <span class="treadmill-borg-zone-num">11 - 12</span>
+                      <span class="treadmill-borg-zone-lbl">Relativamente Fácil</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #fed7aa; color: #9a3412; border-color: #fb923c;">
+                      <span class="treadmill-borg-zone-num">13 - 14</span>
+                      <span class="treadmill-borg-zone-lbl">Ligeiramente Cansativo</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #fdba74; color: #7c2d12; border-color: #f97316;">
+                      <span class="treadmill-borg-zone-num">15 - 16</span>
+                      <span class="treadmill-borg-zone-lbl">Cansativo</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #fca5a5; color: #7f1d1d; border-color: #ef4444;">
+                      <span class="treadmill-borg-zone-num">17 - 18</span>
+                      <span class="treadmill-borg-zone-lbl">Muito Cansativo</span>
+                    </div>
+                    <div class="treadmill-borg-zone" style="background: #b91c1c; color: #ffffff; border-color: #991b1b;">
+                      <span class="treadmill-borg-zone-num">19 - 20</span>
+                      <span class="treadmill-borg-zone-lbl">Exaustivo</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <!-- MODO DE ENTRADA DIRETA / MANUAL RÁPIDA -->
@@ -2150,14 +2327,21 @@
                   <div class="form-group">
                     <label for="ad_esteira_borg">Percepção de Esforço (Escala de Borg 6 a 20):</label>
                     <select id="ad_esteira_borg">
-                      <option value="6">6 - Sem esforço algum</option>
-                      <option value="9">9 - Muito leve</option>
-                      <option value="11">11 - Leve</option>
-                      <option value="13">13 - Um pouco intenso</option>
-                      <option value="15">15 - Intenso (Cansativo)</option>
-                      <option value="17">17 - Muito intenso</option>
-                      <option value="19" selected>19 - Extremamente difícil</option>
-                      <option value="20">20 - Exaustão máxima absoluta</option>
+                      <option value="6">6 - Muito Fácil</option>
+                      <option value="7">7 - Muito Fácil</option>
+                      <option value="8">8 - Muito Fácil</option>
+                      <option value="9">9 - Fácil</option>
+                      <option value="10">10 - Fácil</option>
+                      <option value="11">11 - Relativamente Fácil</option>
+                      <option value="12">12 - Relativamente Fácil</option>
+                      <option value="13">13 - Ligeiramente Cansativo</option>
+                      <option value="14">14 - Ligeiramente Cansativo</option>
+                      <option value="15">15 - Cansativo</option>
+                      <option value="16">16 - Cansativo</option>
+                      <option value="17">17 - Muito Cansativo</option>
+                      <option value="18">18 - Muito Cansativo</option>
+                      <option value="19" selected>19 - Exaustivo</option>
+                      <option value="20">20 - Exaustivo</option>
                     </select>
                   </div>
                 </div>
@@ -5397,16 +5581,20 @@
           tipoEstagio = 'teste';
         }
 
-        const prev = valoresPrevios[m] || { fc: '', borg: (ehAquecimento ? '9' : '15'), status: 'normal' };
+        const prev = valoresPrevios[m] || { fc: '', borg: (ehAquecimento ? '7' : '13'), status: 'normal' };
         html += renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev);
       }
 
       tbody.innerHTML = html;
-      atualizarDestaqueLinhaMinuto(Math.floor((esteiraSegundosTotais > 0 ? esteiraSegundosTotais - 1 : 0) / 60) + (esteiraSegundosTotais > 0 ? 1 : 0));
+      if (esteiraEmExecucao) {
+        atualizarDisplayTimerEsteira();
+      } else {
+        atualizarDestaqueLinhaMinuto(Math.floor((esteiraSegundosTotais > 0 ? esteiraSegundosTotais - 1 : 0) / 60) + (esteiraSegundosTotais > 0 ? 1 : 0));
+      }
     }
 
     function renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev) {
-      const bVal = prev.borg || (tipoEstagio === 'aquecimento' ? '9' : '13');
+      const bVal = prev.borg || (tipoEstagio === 'aquecimento' ? '7' : '13');
       const sVal = prev.status || 'normal';
 
       return `
@@ -5424,21 +5612,21 @@
           </td>
           <td>
             <select id="treadmill_borg_${m}" class="treadmill-select-borg" onchange="sincronizarResultadosEsteiraInterativa()">
-              <option value="6" ${bVal === '6' ? 'selected' : ''}>6 - Sem esforço algum</option>
-              <option value="7" ${bVal === '7' ? 'selected' : ''}>7 - Extremamente leve</option>
-              <option value="8" ${bVal === '8' ? 'selected' : ''}>8 - Muito leve (-)</option>
-              <option value="9" ${bVal === '9' ? 'selected' : ''}>9 - Muito leve</option>
-              <option value="10" ${bVal === '10' ? 'selected' : ''}>10 - Leve (-)</option>
-              <option value="11" ${bVal === '11' ? 'selected' : ''}>11 - Leve</option>
-              <option value="12" ${bVal === '12' ? 'selected' : ''}>12 - Um pouco intenso (-)</option>
-              <option value="13" ${bVal === '13' ? 'selected' : ''}>13 - Um pouco intenso</option>
-              <option value="14" ${bVal === '14' ? 'selected' : ''}>14 - Intenso (-)</option>
-              <option value="15" ${bVal === '15' ? 'selected' : ''}>15 - Intenso (Cansativo)</option>
-              <option value="16" ${bVal === '16' ? 'selected' : ''}>16 - Forte (+)</option>
-              <option value="17" ${bVal === '17' ? 'selected' : ''}>17 - Muito intenso</option>
-              <option value="18" ${bVal === '18' ? 'selected' : ''}>18 - Quase exaustão</option>
-              <option value="19" ${bVal === '19' ? 'selected' : ''}>19 - Extremamente difícil</option>
-              <option value="20" ${bVal === '20' ? 'selected' : ''}>20 - Exaustão máxima absoluta</option>
+              <option value="6" ${bVal === '6' ? 'selected' : ''}>6 - Muito Fácil</option>
+              <option value="7" ${bVal === '7' ? 'selected' : ''}>7 - Muito Fácil</option>
+              <option value="8" ${bVal === '8' ? 'selected' : ''}>8 - Muito Fácil</option>
+              <option value="9" ${bVal === '9' ? 'selected' : ''}>9 - Fácil</option>
+              <option value="10" ${bVal === '10' ? 'selected' : ''}>10 - Fácil</option>
+              <option value="11" ${bVal === '11' ? 'selected' : ''}>11 - Relativamente Fácil</option>
+              <option value="12" ${bVal === '12' ? 'selected' : ''}>12 - Relativamente Fácil</option>
+              <option value="13" ${bVal === '13' ? 'selected' : ''}>13 - Ligeiramente Cansativo</option>
+              <option value="14" ${bVal === '14' ? 'selected' : ''}>14 - Ligeiramente Cansativo</option>
+              <option value="15" ${bVal === '15' ? 'selected' : ''}>15 - Cansativo</option>
+              <option value="16" ${bVal === '16' ? 'selected' : ''}>16 - Cansativo</option>
+              <option value="17" ${bVal === '17' ? 'selected' : ''}>17 - Muito Cansativo</option>
+              <option value="18" ${bVal === '18' ? 'selected' : ''}>18 - Muito Cansativo</option>
+              <option value="19" ${bVal === '19' ? 'selected' : ''}>19 - Exaustivo</option>
+              <option value="20" ${bVal === '20' ? 'selected' : ''}>20 - Exaustivo</option>
             </select>
           </td>
           <td>
@@ -5451,6 +5639,80 @@
           </td>
         </tr>
       `;
+    }
+
+    function ajustarTempoAquecimento(delta) {
+      const inp = document.getElementById('ad_proto_warmup_dur');
+      if (!inp) return;
+      let val = parseInt(inp.value, 10) || 3;
+      val = Math.max(1, Math.min(15, val + delta));
+      inp.value = val;
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function ajustarVelocidadeAquecimento(delta) {
+      const inp = document.getElementById('ad_proto_warmup_vel');
+      if (!inp) return;
+      let val = parseFloat(inp.value) || 5.0;
+      val = Math.max(2.0, Math.min(15.0, Number((val + delta).toFixed(1))));
+      inp.value = val.toFixed(1);
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function ajustarVelocidadeInicialTeste(delta) {
+      const inp = document.getElementById('ad_proto_test_vel_ini');
+      if (!inp) return;
+      let val = parseFloat(inp.value) || 8.0;
+      val = Math.max(3.0, Math.min(22.0, Number((val + delta).toFixed(1))));
+      inp.value = val.toFixed(1);
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function ajustarTaxaIncremento(delta) {
+      const inp = document.getElementById('ad_proto_inc_taxa');
+      if (!inp) return;
+      let val = parseFloat(inp.value) || 1.0;
+      val = Math.max(0.5, Math.min(3.0, Number((val + delta).toFixed(1))));
+      inp.value = val.toFixed(1);
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function ajustarInclinacao(delta) {
+      const inp = document.getElementById('ad_proto_incline');
+      if (!inp) return;
+      let val = parseFloat(inp.value) || 1.0;
+      val = Math.max(0.0, Math.min(15.0, Number((val + delta).toFixed(1))));
+      inp.value = val.toFixed(1);
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function aplicarPresetProtocoloEsteira(tipo) {
+      const inpWd = document.getElementById('ad_proto_warmup_dur');
+      const inpWv = document.getElementById('ad_proto_warmup_vel');
+      const inpTv = document.getElementById('ad_proto_test_vel_ini');
+      const inpIt = document.getElementById('ad_proto_inc_taxa');
+      const inpIn = document.getElementById('ad_proto_incline');
+
+      if (tipo === 'caminhada') {
+        if (inpWd) inpWd.value = 2;
+        if (inpWv) inpWv.value = '3.5';
+        if (inpTv) inpTv.value = '5.0';
+        if (inpIt) inpIt.value = '0.5';
+        if (inpIn) inpIn.value = '1.0';
+      } else if (tipo === 'padrao') {
+        if (inpWd) inpWd.value = 3;
+        if (inpWv) inpWv.value = '5.0';
+        if (inpTv) inpTv.value = '8.0';
+        if (inpIt) inpIt.value = '1.0';
+        if (inpIn) inpIn.value = '1.0';
+      } else if (tipo === 'avancado') {
+        if (inpWd) inpWd.value = 3;
+        if (inpWv) inpWv.value = '6.0';
+        if (inpTv) inpTv.value = '10.0';
+        if (inpIt) inpIt.value = '1.0';
+        if (inpIn) inpIn.value = '1.0';
+      }
+      gerarTabelaProtocoloEsteira();
     }
 
     function adicionarMinutoProtocoloEsteira() {
