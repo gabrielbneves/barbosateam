@@ -741,6 +741,207 @@
       .chart-canvas-box {
         height: 200px !important;
       }
+      .treadmill-control-card, .treadmill-mode-toggle, .treadmill-timer-card {
+        display: none !important;
+      }
+    }
+
+    /* ==========================================
+       ESTILOS DO MÓDULO INTERATIVO DE ESTEIRA (MINUTO A MINUTO)
+       ========================================== */
+    .treadmill-mode-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .treadmill-mode-btn {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      color: #475569;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .treadmill-mode-btn.active {
+      background: #1F4E78;
+      color: #ffffff;
+      border-color: #1F4E78;
+      box-shadow: 0 2px 6px rgba(31, 78, 120, 0.2);
+    }
+    .treadmill-config-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .treadmill-timer-card {
+      background: linear-gradient(135deg, #143552 0%, #1F4E78 100%);
+      color: #ffffff;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 4px 12px rgba(20, 53, 82, 0.15);
+    }
+    .treadmill-timer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .treadmill-timer-display {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+      color: #ffffff;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    .treadmill-stage-pill {
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.18);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 6px 14px;
+      border-radius: 20px;
+      color: #f8fafc;
+    }
+    .treadmill-timer-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .treadmill-btn {
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      touch-action: manipulation;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .treadmill-btn-start {
+      background: #059669;
+      color: #ffffff;
+    }
+    .treadmill-btn-start:hover {
+      background: #047857;
+    }
+    .treadmill-btn-pause {
+      background: #d97706;
+      color: #ffffff;
+    }
+    .treadmill-btn-pause:hover {
+      background: #b45309;
+    }
+    .treadmill-btn-reset {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .treadmill-btn-reset:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    .treadmill-btn-finish {
+      background: #dc2626;
+      color: #ffffff;
+      font-weight: 800;
+      margin-left: auto;
+    }
+    .treadmill-btn-finish:hover {
+      background: #b91c1c;
+    }
+    .treadmill-table-wrapper {
+      overflow-x: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #ffffff;
+      margin-bottom: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .treadmill-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 680px;
+    }
+    .treadmill-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      padding: 10px 8px;
+      text-align: center;
+      border-bottom: 2px solid #cbd5e1;
+      border-right: 1px solid #e2e8f0;
+    }
+    .treadmill-table td {
+      padding: 8px 6px;
+      text-align: center;
+      border-bottom: 1px solid #f1f5f9;
+      border-right: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+    .treadmill-table tr:hover {
+      background: #f8fafc;
+    }
+    .treadmill-row-active {
+      background: #e0f2fe !important;
+      outline: 2px solid #0284c7;
+      font-weight: 700;
+    }
+    .treadmill-input-fc {
+      width: 80px;
+      padding: 6px;
+      font-size: 16px;
+      text-align: center;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      font-weight: 700;
+      color: #0f172a;
+      touch-action: manipulation;
+    }
+    .treadmill-input-fc:focus {
+      border-color: #1F4E78;
+      background: #ffffff;
+      outline: none;
+    }
+    .treadmill-select-borg {
+      padding: 6px;
+      font-size: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      color: #0f172a;
+      background: #ffffff;
+      touch-action: manipulation;
+      max-width: 170px;
+    }
+    .treadmill-select-status {
+      padding: 6px;
+      font-size: 16px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      color: #0f172a;
+      background: #ffffff;
+      touch-action: manipulation;
     }
   </style>
 </head>
@@ -1823,36 +2024,142 @@
 
             <!-- CONTAINER EXPANSÍVEL DO TESTE DE ESTEIRA -->
             <div id="ad-container-esteira" style="display: none; margin-top: 15px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-              <div class="test-instructions" style="border-left-color: #1F4E78; background: #f0f5fa;">
-                <strong>Protocolo Aplicado:</strong> Esteira sem inclinação (0% fixa). O teste inicia em velocidade de aquecimento (ex: 6 ou 7 km/h) e aumenta <strong>1,0 km/h a cada 1 minuto exato</strong>. O teste é interrompido no momento da exaustão voluntária máxima.
+              <div class="test-instructions" style="border-left-color: #1F4E78; background: #f0f5fa; margin-bottom: 14px;">
+                <strong>Protocolo de Esforço Progressivo Máximo:</strong> Conduza o teste com cronômetro em tempo real registrando a frequência cardíaca (FC) e a percepção de esforço (Borg) a cada minuto, ou alterne para entrada direta caso o teste já tenha sido realizado.
               </div>
 
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="ad_esteira_vel_completa">Velocidade do Último Estágio COMPLETO (km/h) *</label>
-                  <input type="number" step="0.5" id="ad_esteira_vel_completa" min="4" max="25" placeholder="Ex: 12.0" oninput="calcularEsteiraAdulto()">
+              <!-- SELETOR DE MODO DO TESTE -->
+              <div class="treadmill-mode-toggle no-print">
+                <button type="button" id="btn-mode-treadmill-live" class="treadmill-mode-btn active" onclick="alternarModoEsteira('live')">
+                  Protocolo Interativo (Minuto a Minuto)
+                </button>
+                <button type="button" id="btn-mode-treadmill-direct" class="treadmill-mode-btn" onclick="alternarModoEsteira('direct')">
+                  Entrada Direta / Manual Rápida
+                </button>
+              </div>
+
+              <!-- MODO INTERATIVO MINUTO A MINUTO -->
+              <div id="treadmill-live-section">
+                <!-- CARD DE CONFIGURAÇÕES DO PROTOCOLO -->
+                <div class="treadmill-config-card">
+                  <div style="font-size: 12px; font-weight: 800; color: #1F4E78; text-transform: uppercase; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Configuração dos Parâmetros do Protocolo</span>
+                    <span style="font-size: 11px; font-weight: 500; color: #64748b;">(Ajuste antes de iniciar ou use o padrão)</span>
+                  </div>
+                  <div class="form-grid" style="margin-bottom: 12px;">
+                    <div class="form-group">
+                      <label for="ad_proto_warmup_dur">Duração do Aquecimento (min):</label>
+                      <input type="number" id="ad_proto_warmup_dur" value="3" min="1" max="10" step="1" style="font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                      <label for="ad_proto_warmup_vel">Velocidade do Aquecimento (km/h):</label>
+                      <input type="number" id="ad_proto_warmup_vel" value="5.0" min="2.0" max="12.0" step="0.1" style="font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                      <label for="ad_proto_test_vel_ini">Velocidade Inicial do Teste (km/h):</label>
+                      <input type="number" id="ad_proto_test_vel_ini" value="8.0" min="4.0" max="18.0" step="0.1" style="font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                      <label for="ad_proto_inc_taxa">Taxa de Incremento (km/h por min):</label>
+                      <input type="number" id="ad_proto_inc_taxa" value="1.0" min="0.5" max="3.0" step="0.5" style="font-size: 16px;">
+                    </div>
+                    <div class="form-group">
+                      <label for="ad_proto_incline">Inclinação da Esteira (%):</label>
+                      <input type="number" id="ad_proto_incline" value="1.0" min="0.0" max="15.0" step="0.5" style="font-size: 16px;">
+                    </div>
+                  </div>
+                  <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary" onclick="gerarTabelaProtocoloEsteira()" style="font-size: 12px; padding: 8px 16px;">
+                      Gerar Tabela / Aplicar Parâmetros
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetarConfigProtocoloEsteira()" style="font-size: 12px; padding: 8px 14px;">
+                      Redefinir Padrões (3 min a 5 km/h, teste a 8 km/h +1 km/h/min)
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="ad_esteira_segundos">Segundos cumpridos no estágio incompleto (0 a 59s) *</label>
-                  <input type="number" id="ad_esteira_segundos" min="0" max="59" placeholder="Ex: 30" oninput="calcularEsteiraAdulto()">
-                  <span style="font-size: 10px; color: #64748b;">(Ex: Se parou após 30 segundos no estágio seguinte, digite 30)</span>
+
+                <!-- PAINEL DO CRONÔMETRO EM TEMPO REAL -->
+                <div class="treadmill-timer-card">
+                  <div class="treadmill-timer-header">
+                    <div>
+                      <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; opacity: 0.85;">Cronômetro de Condução do Teste</span>
+                      <div id="treadmill-timer-display" class="treadmill-timer-display">00:00</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <span style="font-size: 11px; opacity: 0.85; display: block; margin-bottom: 4px;">Fase / Estágio Atual:</span>
+                      <div id="treadmill-current-stage" class="treadmill-stage-pill">Pronto para iniciar</div>
+                    </div>
+                  </div>
+
+                  <div class="treadmill-timer-controls">
+                    <button type="button" id="treadmill-btn-start" class="treadmill-btn treadmill-btn-start" onclick="iniciarTimerEsteira()">
+                      Iniciar Cronômetro
+                    </button>
+                    <button type="button" id="treadmill-btn-pause" class="treadmill-btn treadmill-btn-pause" onclick="pausarTimerEsteira()" style="display: none;">
+                      Pausar
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="resetarTimerEsteira()">
+                      Resetar
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="adicionarMinutoProtocoloEsteira()">
+                      + Minuto Extra
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-finish" onclick="encerrarTesteEsteira()">
+                      Encerrar Teste &amp; Calcular
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="ad_esteira_fc_pico">FC Pico / Máxima Atingida (bpm) *</label>
-                  <input type="number" id="ad_esteira_fc_pico" min="80" max="230" placeholder="Ex: 185" oninput="calcularEsteiraAdulto()">
+
+                <!-- TABELA MINUTO A MINUTO DINÂMICA -->
+                <div class="treadmill-table-wrapper">
+                  <table class="treadmill-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 70px;">Minuto</th>
+                        <th style="width: 140px;">Estágio / Fase</th>
+                        <th style="width: 100px;">Velocidade</th>
+                        <th style="width: 80px;">Inclinação</th>
+                        <th style="width: 110px;">FC (BPM)</th>
+                        <th>Percepção de Esforço (Borg 6-20)</th>
+                        <th style="width: 130px;">Status / Evento</th>
+                      </tr>
+                    </thead>
+                    <tbody id="treadmill-protocolo-corpo">
+                      <!-- Linhas geradas dinamicamente via JS -->
+                    </tbody>
+                  </table>
                 </div>
-                <div class="form-group">
-                  <label for="ad_esteira_borg">Percepção de Esforço (Escala de Borg 6 a 20):</label>
-                  <select id="ad_esteira_borg">
-                    <option value="6">6 - Sem esforço algum</option>
-                    <option value="9">9 - Muito leve</option>
-                    <option value="11">11 - Leve</option>
-                    <option value="13">13 - Um pouco intenso</option>
-                    <option value="15">15 - Intenso (Cansativo)</option>
-                    <option value="17">17 - Muito intenso</option>
-                    <option value="19" selected>19 - Extremamente difícil</option>
-                    <option value="20">20 - Exaustão máxima absoluta</option>
-                  </select>
+              </div>
+
+              <!-- MODO DE ENTRADA DIRETA / MANUAL RÁPIDA -->
+              <div id="treadmill-direct-section" style="display: none;">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="ad_esteira_vel_completa">Velocidade do Último Estágio COMPLETO (km/h) *</label>
+                    <input type="number" step="0.1" id="ad_esteira_vel_completa" min="4" max="25" placeholder="Ex: 12.0" oninput="calcularEsteiraAdulto()">
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_esteira_segundos">Segundos cumpridos no estágio incompleto (0 a 59s) *</label>
+                    <input type="number" id="ad_esteira_segundos" min="0" max="59" placeholder="Ex: 30" oninput="calcularEsteiraAdulto()">
+                    <span style="font-size: 10px; color: #64748b;">(Ex: Se parou após 30 segundos no estágio seguinte, digite 30)</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_esteira_fc_pico">FC Pico / Máxima Atingida (bpm) *</label>
+                    <input type="number" id="ad_esteira_fc_pico" min="80" max="230" placeholder="Ex: 185" oninput="calcularEsteiraAdulto()">
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_esteira_borg">Percepção de Esforço (Escala de Borg 6 a 20):</label>
+                    <select id="ad_esteira_borg">
+                      <option value="6">6 - Sem esforço algum</option>
+                      <option value="9">9 - Muito leve</option>
+                      <option value="11">11 - Leve</option>
+                      <option value="13">13 - Um pouco intenso</option>
+                      <option value="15">15 - Intenso (Cansativo)</option>
+                      <option value="17">17 - Muito intenso</option>
+                      <option value="19" selected>19 - Extremamente difícil</option>
+                      <option value="20">20 - Exaustão máxima absoluta</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -2917,6 +3224,7 @@
             altura: 178,
             cintura: 88.0,
             quadril: 101.0,
+            rcq: 0.87,
             metodoGordura: 'dobras',
             dobras: { peitoral: 18, abdomen: 26, coxa: 22 },
             percentualGordura: 20.8,
@@ -2951,6 +3259,7 @@
             altura: 178,
             cintura: 82.0,
             quadril: 99.0,
+            rcq: 0.83,
             metodoGordura: 'dobras',
             dobras: { peitoral: 13, abdomen: 18, coxa: 17 },
             percentualGordura: 15.6,
@@ -3466,6 +3775,7 @@
       if (document.getElementById('ad_esteira_segundos')) document.getElementById('ad_esteira_segundos').value = '';
       if (document.getElementById('ad_esteira_fc_pico')) document.getElementById('ad_esteira_fc_pico').value = '';
       if (document.getElementById('ad_parecer')) document.getElementById('ad_parecer').value = '';
+      resetarTimerEsteira();
 
       const badge = document.getElementById('paciente-status-badge');
       if (badge) {
@@ -5002,13 +5312,419 @@
       return { carga, reps, rm1, relativo: rel };
     }
 
+    // ==========================================
+    // MÓDULO INTERATIVO: TESTE DE ESFORÇO EM ESTEIRA (MINUTO A MINUTO)
+    // ==========================================
+    var esteiraTimerInterval = null;
+    var esteiraSegundosTotais = 0;
+    var esteiraEmExecucao = false;
+
+    function alternarModoEsteira(modo) {
+      const btnLive = document.getElementById('btn-mode-treadmill-live');
+      const btnDirect = document.getElementById('btn-mode-treadmill-direct');
+      const secLive = document.getElementById('treadmill-live-section');
+      const secDirect = document.getElementById('treadmill-direct-section');
+
+      if (modo === 'live') {
+        if (btnLive) btnLive.classList.add('active');
+        if (btnDirect) btnDirect.classList.remove('active');
+        if (secLive) secLive.style.display = 'block';
+        if (secDirect) secDirect.style.display = 'none';
+        const tbody = document.getElementById('treadmill-protocolo-corpo');
+        if (tbody && (!tbody.hasChildNodes() || tbody.children.length === 0)) {
+          gerarTabelaProtocoloEsteira();
+        }
+      } else {
+        if (btnDirect) btnDirect.classList.add('active');
+        if (btnLive) btnLive.classList.remove('active');
+        if (secDirect) secDirect.style.display = 'block';
+        if (secLive) secLive.style.display = 'none';
+      }
+    }
+
     function alternarTesteEsteiraAdulto() {
       const chk = document.getElementById('ad_check_esteira').checked;
       const cont = document.getElementById('ad-container-esteira');
       cont.style.display = chk ? 'block' : 'none';
       if (chk) {
+        const tbody = document.getElementById('treadmill-protocolo-corpo');
+        if (tbody && (!tbody.hasChildNodes() || tbody.children.length === 0)) {
+          gerarTabelaProtocoloEsteira();
+        }
         calcularEsteiraAdulto();
       }
+    }
+
+    function gerarTabelaProtocoloEsteira() {
+      const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
+      const warmupVel = parseFloat(document.getElementById('ad_proto_warmup_vel')?.value) || 5.0;
+      const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
+      const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
+      const incline = parseFloat(document.getElementById('ad_proto_incline')?.value) || 1.0;
+
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return;
+
+      const valoresPrevios = {};
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const m = tr.getAttribute('data-minuto');
+        if (m) {
+          valoresPrevios[m] = {
+            fc: tr.querySelector('.treadmill-input-fc')?.value || '',
+            borg: tr.querySelector('.treadmill-select-borg')?.value || '',
+            status: tr.querySelector('.treadmill-select-status')?.value || 'normal'
+          };
+        }
+      });
+
+      const totalMinutos = warmupDur + 12;
+      let html = '';
+
+      for (let m = 1; m <= totalMinutos; m++) {
+        const ehAquecimento = m <= warmupDur;
+        let faseNome = '';
+        let vel = 0;
+        let tipoEstagio = '';
+
+        if (ehAquecimento) {
+          faseNome = `Aquecimento - Min ${m}`;
+          vel = warmupVel;
+          tipoEstagio = 'aquecimento';
+        } else {
+          const estagioNum = m - warmupDur;
+          faseNome = `Teste - Estágio ${estagioNum}`;
+          vel = testVelIni + ((estagioNum - 1) * incTaxa);
+          tipoEstagio = 'teste';
+        }
+
+        const prev = valoresPrevios[m] || { fc: '', borg: (ehAquecimento ? '9' : '15'), status: 'normal' };
+        html += renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev);
+      }
+
+      tbody.innerHTML = html;
+      atualizarDestaqueLinhaMinuto(Math.floor((esteiraSegundosTotais > 0 ? esteiraSegundosTotais - 1 : 0) / 60) + (esteiraSegundosTotais > 0 ? 1 : 0));
+    }
+
+    function renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev) {
+      const bVal = prev.borg || (tipoEstagio === 'aquecimento' ? '9' : '13');
+      const sVal = prev.status || 'normal';
+
+      return `
+        <tr id="treadmill-row-${m}" data-minuto="${m}" data-fase="${faseNome}" data-tipo="${tipoEstagio}" data-vel="${vel.toFixed(1)}" data-incline="${incline.toFixed(1)}">
+          <td style="text-align: center; font-weight: 700; color: #1F4E78;">${m} min</td>
+          <td>
+            <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: ${tipoEstagio === 'aquecimento' ? '#fef3c7; color: #92400e;' : '#e0f2fe; color: #0369a1;'}">
+              ${faseNome}
+            </span>
+          </td>
+          <td style="font-weight: 700;">${vel.toFixed(1)} km/h</td>
+          <td>${incline.toFixed(1)}%</td>
+          <td>
+            <input type="number" id="treadmill_fc_${m}" class="treadmill-input-fc" min="40" max="230" placeholder="--" value="${prev.fc || ''}" oninput="sincronizarResultadosEsteiraInterativa()">
+          </td>
+          <td>
+            <select id="treadmill_borg_${m}" class="treadmill-select-borg" onchange="sincronizarResultadosEsteiraInterativa()">
+              <option value="6" ${bVal === '6' ? 'selected' : ''}>6 - Sem esforço algum</option>
+              <option value="7" ${bVal === '7' ? 'selected' : ''}>7 - Extremamente leve</option>
+              <option value="8" ${bVal === '8' ? 'selected' : ''}>8 - Muito leve (-)</option>
+              <option value="9" ${bVal === '9' ? 'selected' : ''}>9 - Muito leve</option>
+              <option value="10" ${bVal === '10' ? 'selected' : ''}>10 - Leve (-)</option>
+              <option value="11" ${bVal === '11' ? 'selected' : ''}>11 - Leve</option>
+              <option value="12" ${bVal === '12' ? 'selected' : ''}>12 - Um pouco intenso (-)</option>
+              <option value="13" ${bVal === '13' ? 'selected' : ''}>13 - Um pouco intenso</option>
+              <option value="14" ${bVal === '14' ? 'selected' : ''}>14 - Intenso (-)</option>
+              <option value="15" ${bVal === '15' ? 'selected' : ''}>15 - Intenso (Cansativo)</option>
+              <option value="16" ${bVal === '16' ? 'selected' : ''}>16 - Forte (+)</option>
+              <option value="17" ${bVal === '17' ? 'selected' : ''}>17 - Muito intenso</option>
+              <option value="18" ${bVal === '18' ? 'selected' : ''}>18 - Quase exaustão</option>
+              <option value="19" ${bVal === '19' ? 'selected' : ''}>19 - Extremamente difícil</option>
+              <option value="20" ${bVal === '20' ? 'selected' : ''}>20 - Exaustão máxima absoluta</option>
+            </select>
+          </td>
+          <td>
+            <select id="treadmill_status_${m}" class="treadmill-select-status" onchange="sincronizarResultadosEsteiraInterativa()">
+              <option value="normal" ${sVal === 'normal' ? 'selected' : ''}>Normal</option>
+              <option value="pico" ${sVal === 'pico' ? 'selected' : ''}>Pico de Esforço</option>
+              <option value="recuperacao" ${sVal === 'recuperacao' ? 'selected' : ''}>Recuperação</option>
+              <option value="interrompido" ${sVal === 'interrompido' ? 'selected' : ''}>Interrompido</option>
+            </select>
+          </td>
+        </tr>
+      `;
+    }
+
+    function adicionarMinutoProtocoloEsteira() {
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return;
+
+      const linhas = tbody.querySelectorAll('tr');
+      const ultimoMinuto = linhas.length > 0 ? parseInt(linhas[linhas.length - 1].getAttribute('data-minuto'), 10) || 0 : 0;
+      const novoMinuto = ultimoMinuto + 1;
+
+      const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
+      const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
+      const incline = parseFloat(document.getElementById('ad_proto_incline')?.value) || 1.0;
+
+      let faseNome = '';
+      let vel = 0;
+      let tipoEstagio = '';
+
+      if (linhas.length > 0) {
+        const ultimaVel = parseFloat(linhas[linhas.length - 1].getAttribute('data-vel')) || 8.0;
+        if (novoMinuto <= warmupDur) {
+          faseNome = `Aquecimento - Min ${novoMinuto}`;
+          vel = ultimaVel;
+          tipoEstagio = 'aquecimento';
+        } else {
+          const estagioNum = novoMinuto - warmupDur;
+          faseNome = `Teste - Estágio ${estagioNum}`;
+          vel = ultimaVel + incTaxa;
+          tipoEstagio = 'teste';
+        }
+      } else {
+        faseNome = `Teste - Estágio 1`;
+        vel = 8.0;
+        tipoEstagio = 'teste';
+      }
+
+      const prev = { fc: '', borg: '17', status: 'normal' };
+      tbody.insertAdjacentHTML('beforeend', renderizarLinhaProtocoloHtml(novoMinuto, faseNome, tipoEstagio, vel, incline, prev));
+    }
+
+    function resetarConfigProtocoloEsteira() {
+      const inpWd = document.getElementById('ad_proto_warmup_dur');
+      const inpWv = document.getElementById('ad_proto_warmup_vel');
+      const inpTv = document.getElementById('ad_proto_test_vel_ini');
+      const inpIt = document.getElementById('ad_proto_inc_taxa');
+      const inpIn = document.getElementById('ad_proto_incline');
+
+      if (inpWd) inpWd.value = 3;
+      if (inpWv) inpWv.value = '5.0';
+      if (inpTv) inpTv.value = '8.0';
+      if (inpIt) inpIt.value = '1.0';
+      if (inpIn) inpIn.value = '1.0';
+
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function iniciarTimerEsteira() {
+      if (esteiraEmExecucao) return;
+
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody || !tbody.hasChildNodes() || tbody.children.length === 0) {
+        gerarTabelaProtocoloEsteira();
+      }
+
+      esteiraEmExecucao = true;
+      const btnStart = document.getElementById('treadmill-btn-start');
+      const btnPause = document.getElementById('treadmill-btn-pause');
+      if (btnStart) btnStart.style.display = 'none';
+      if (btnPause) btnPause.style.display = 'inline-block';
+
+      if (esteiraTimerInterval) clearInterval(esteiraTimerInterval);
+
+      esteiraTimerInterval = setInterval(() => {
+        esteiraSegundosTotais++;
+        atualizarDisplayTimerEsteira();
+
+        if (esteiraSegundosTotais > 0 && esteiraSegundosTotais % 60 === 0) {
+          tocarAlertaViradaMinuto();
+        }
+      }, 1000);
+
+      atualizarDisplayTimerEsteira();
+    }
+
+    function pausarTimerEsteira() {
+      if (esteiraTimerInterval) {
+        clearInterval(esteiraTimerInterval);
+        esteiraTimerInterval = null;
+      }
+      esteiraEmExecucao = false;
+      const btnStart = document.getElementById('treadmill-btn-start');
+      const btnPause = document.getElementById('treadmill-btn-pause');
+      if (btnStart) {
+        btnStart.textContent = 'Continuar Cronômetro';
+        btnStart.style.display = 'inline-block';
+      }
+      if (btnPause) btnPause.style.display = 'none';
+    }
+
+    function resetarTimerEsteira() {
+      pausarTimerEsteira();
+      esteiraSegundosTotais = 0;
+      const btnStart = document.getElementById('treadmill-btn-start');
+      if (btnStart) {
+        btnStart.textContent = 'Iniciar Cronômetro';
+        btnStart.style.display = 'inline-block';
+      }
+      const display = document.getElementById('treadmill-timer-display');
+      if (display) display.textContent = '00:00';
+      const stagePill = document.getElementById('treadmill-current-stage');
+      if (stagePill) stagePill.textContent = 'Pronto para iniciar';
+      atualizarDestaqueLinhaMinuto(0);
+    }
+
+    function atualizarDisplayTimerEsteira() {
+      const mm = String(Math.floor(esteiraSegundosTotais / 60)).padStart(2, '0');
+      const ss = String(esteiraSegundosTotais % 60).padStart(2, '0');
+      const display = document.getElementById('treadmill-timer-display');
+      if (display) display.textContent = `${mm}:${ss}`;
+
+      const minutoAtivo = esteiraSegundosTotais > 0 ? Math.floor((esteiraSegundosTotais - 1) / 60) + 1 : 0;
+      atualizarDestaqueLinhaMinuto(minutoAtivo);
+    }
+
+    function atualizarDestaqueLinhaMinuto(minutoAtivo) {
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return;
+
+      tbody.querySelectorAll('tr').forEach(tr => tr.classList.remove('treadmill-row-active'));
+
+      const stagePill = document.getElementById('treadmill-current-stage');
+
+      if (minutoAtivo > 0) {
+        let activeRow = document.getElementById(`treadmill-row-${minutoAtivo}`);
+        if (!activeRow) {
+          adicionarMinutoProtocoloEsteira();
+          activeRow = document.getElementById(`treadmill-row-${minutoAtivo}`);
+        }
+
+        if (activeRow) {
+          activeRow.classList.add('treadmill-row-active');
+          const fase = activeRow.getAttribute('data-fase') || `Minuto ${minutoAtivo}`;
+          const vel = activeRow.getAttribute('data-vel') || '';
+          if (stagePill) stagePill.textContent = `${fase} (${vel} km/h)`;
+        }
+      } else if (stagePill && !esteiraEmExecucao) {
+        stagePill.textContent = 'Pronto para iniciar';
+      }
+    }
+
+    function tocarAlertaViradaMinuto() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.3);
+      } catch (e) {
+        // Fallback silencioso
+      }
+    }
+
+    function sincronizarResultadosEsteiraInterativa() {
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return;
+
+      let maxFc = 0;
+      let ultimoBorg = 19;
+
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const fcVal = parseInt(tr.querySelector('.treadmill-input-fc')?.value, 10);
+        if (!isNaN(fcVal) && fcVal > maxFc) {
+          maxFc = fcVal;
+        }
+        const bVal = parseInt(tr.querySelector('.treadmill-select-borg')?.value, 10);
+        if (!isNaN(bVal) && (fcVal > 0 || tr.classList.contains('treadmill-row-active'))) {
+          ultimoBorg = bVal;
+        }
+      });
+
+      if (maxFc > 0) {
+        const fcInput = document.getElementById('ad_esteira_fc_pico');
+        if (fcInput) fcInput.value = maxFc;
+      }
+
+      const borgInput = document.getElementById('ad_esteira_borg');
+      if (borgInput) borgInput.value = ultimoBorg;
+
+      const velComp = parseFloat(document.getElementById('ad_esteira_vel_completa')?.value) || 0;
+      if (velComp > 0) {
+        calcularEsteiraAdulto();
+      }
+    }
+
+    function encerrarTesteEsteira() {
+      pausarTimerEsteira();
+
+      const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
+      const warmupVel = parseFloat(document.getElementById('ad_proto_warmup_vel')?.value) || 5.0;
+      const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
+      const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
+
+      const warmupSegundos = warmupDur * 60;
+      let velCompleta = 0;
+      let segundosIncompletos = 0;
+
+      if (esteiraSegundosTotais <= warmupSegundos) {
+        velCompleta = warmupVel;
+        segundosIncompletos = Math.max(0, esteiraSegundosTotais % 60);
+      } else {
+        const segsTeste = esteiraSegundosTotais - warmupSegundos;
+        const estagiosCompletos = Math.floor(segsTeste / 60);
+        segundosIncompletos = segsTeste % 60;
+
+        if (estagiosCompletos >= 1) {
+          velCompleta = testVelIni + ((estagiosCompletos - 1) * incTaxa);
+        } else {
+          velCompleta = testVelIni;
+        }
+      }
+
+      let maxFc = 0;
+      let ultimoBorg = 19;
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (tbody) {
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const fc = parseInt(tr.querySelector('.treadmill-input-fc')?.value, 10);
+          if (!isNaN(fc) && fc > maxFc) maxFc = fc;
+          const bg = parseInt(tr.querySelector('.treadmill-select-borg')?.value, 10);
+          if (!isNaN(bg) && (fc > 0 || tr.classList.contains('treadmill-row-active'))) ultimoBorg = bg;
+        });
+      }
+
+      const inpVelComp = document.getElementById('ad_esteira_vel_completa');
+      const inpSegs = document.getElementById('ad_esteira_segundos');
+      const inpFcPico = document.getElementById('ad_esteira_fc_pico');
+      const inpBorg = document.getElementById('ad_esteira_borg');
+
+      if (inpVelComp) inpVelComp.value = velCompleta.toFixed(1);
+      if (inpSegs) inpSegs.value = segundosIncompletos;
+      if (inpFcPico && maxFc > 0) inpFcPico.value = maxFc;
+      if (inpBorg) inpBorg.value = ultimoBorg;
+
+      calcularEsteiraAdulto();
+
+      const stagePill = document.getElementById('treadmill-current-stage');
+      if (stagePill) stagePill.textContent = 'Teste Concluído';
+    }
+
+    function obterDadosProtocoloEsteira() {
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return [];
+      const linhas = [];
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const m = parseInt(tr.getAttribute('data-minuto'), 10) || 0;
+        const fase = tr.getAttribute('data-fase') || '';
+        const vel = parseFloat(tr.getAttribute('data-vel')) || 0;
+        const inc = parseFloat(tr.getAttribute('data-incline')) || 0;
+        const fc = tr.querySelector('.treadmill-input-fc')?.value || '';
+        const borg = tr.querySelector('.treadmill-select-borg')?.value || '';
+        const status = tr.querySelector('.treadmill-select-status')?.value || 'normal';
+        if (fc || status !== 'normal' || m <= (Math.floor(esteiraSegundosTotais / 60) + 1)) {
+          linhas.push({ minuto: m, fase, velocidade: vel, inclinacao: inc, fc, borg, status });
+        }
+      });
+      return linhas;
     }
 
     function calcularEsteiraAdulto() {
@@ -5025,8 +5741,8 @@
       const resFcBadge = document.getElementById('ad_res_fc_criterio_badge');
 
       if (velComp > 0) {
-        const velPico = velComp + (Math.min(59, segs) / 60);
-        resVel.textContent = `${velPico.toFixed(1)} km/h`;
+        const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(2));
+        resVel.textContent = `${velPico.toFixed(2)} km/h`;
 
         // Fórmula ACSM corrida esteira sem inclinação (0%): VO2 = (3.333 * Vpico) + 3.5
         const vo2 = (3.333 * velPico) + 3.5;
@@ -5110,7 +5826,7 @@
         const segs = parseInt(document.getElementById('ad_esteira_segundos').value) || 0;
         const fcPico = parseInt(document.getElementById('ad_esteira_fc_pico').value) || 0;
         const borg = parseInt(document.getElementById('ad_esteira_borg').value) || 19;
-        const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(1));
+        const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(2));
         const vo2 = Number(((3.333 * velPico) + 3.5).toFixed(1));
 
         esteiraDados = {
@@ -5120,7 +5836,8 @@
           esteiraVelPico: velPico,
           esteiraVo2: vo2,
           esteiraFcPico: fcPico,
-          esteiraBorg: borg
+          esteiraBorg: borg,
+          esteiraProtocoloLinhas: obterDadosProtocoloEsteira()
         };
       }
 
@@ -6236,11 +6953,12 @@
         elMagra.style.color = '#059669';
         subMagra.textContent = 'Massa Muscular Ativa';
 
-        elRcq.textContent = `${cT.rcq || '--'}`;
+        const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
+        elRcq.textContent = rcqT != null ? rcqT.toFixed(2) : '--';
         const limiteRcq = (sexo === 'M' ? 0.90 : 0.80);
-        const ehRcqBom = cT.rcq && cT.rcq <= limiteRcq;
+        const ehRcqBom = rcqT != null && rcqT <= limiteRcq;
         elRcq.style.color = ehRcqBom ? '#059669' : '#dc2626';
-        subRcq.textContent = cT.rcq ? (ehRcqBom ? 'Baixo Risco Metabólico' : 'Risco Aumentado') : 'Risco Cintura-Quadril';
+        subRcq.textContent = rcqT != null ? (ehRcqBom ? 'Baixo Risco Metabólico' : 'Risco Aumentado') : 'Risco Cintura-Quadril';
 
         if (tT.flexoesReps !== undefined && tT.flexoesReps !== null) {
           if (cardFlex) cardFlex.style.display = 'block';
@@ -6264,7 +6982,7 @@
           cardEst.style.display = 'block';
           elEst.textContent = `${tT.esteiraVo2 || '--'} ml/kg/min`;
           elEst.style.color = '#059669';
-          subEst.textContent = `Vpico: ${tT.esteiraVelPico || '--'} km/h (${tT.esteiraFcPico || '--'} bpm)`;
+          subEst.textContent = `Vpico: ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h (${tT.esteiraFcPico || '--'} bpm)`;
         } else {
           cardEst.style.display = 'none';
         }
@@ -6302,11 +7020,13 @@
       }
 
       // Delta RCQ
-      if (cB.rcq !== undefined && cT.rcq !== undefined) {
-        const dR = Number((cT.rcq - cB.rcq).toFixed(2));
-        elRcq.textContent = `${dR > 0 ? `+${dR}` : dR}`;
+      const rcqB = (cB.rcq != null) ? Number(cB.rcq) : (cB.cintura && cB.quadril ? Number((cB.cintura / cB.quadril).toFixed(2)) : null);
+      const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
+      if (rcqB != null && rcqT != null) {
+        const dR = Number((rcqT - rcqB).toFixed(2));
+        elRcq.textContent = `${dR > 0 ? `+${dR.toFixed(2)}` : dR.toFixed(2)}`;
         elRcq.style.color = dR <= 0 ? '#059669' : '#dc2626';
-        subRcq.textContent = `De ${cB.rcq} para ${cT.rcq}`;
+        subRcq.textContent = `De ${rcqB.toFixed(2)} para ${rcqT.toFixed(2)}`;
       } else {
         elRcq.textContent = '--';
       }
@@ -6350,10 +7070,10 @@
           const dVo2 = Number((tT.esteiraVo2 - tB.esteiraVo2).toFixed(1));
           elEst.textContent = `${dVo2 > 0 ? `+${dVo2}` : dVo2} ml/kg/min`;
           elEst.style.color = dVo2 >= 0 ? '#059669' : '#dc2626';
-          subEst.textContent = `Vpico: de ${tB.esteiraVelPico || '--'} para ${tT.esteiraVelPico} km/h`;
+          subEst.textContent = `Vpico: de ${tB.esteiraVelPico ? Number(tB.esteiraVelPico).toFixed(2) : '--'} para ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h`;
         } else if (tT.esteiraVo2) {
           elEst.textContent = `${tT.esteiraVo2} ml/kg/min`;
-          subEst.textContent = `Vpico: ${tT.esteiraVelPico} km/h (Novo teste)`;
+          subEst.textContent = `Vpico: ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h (Novo teste)`;
         } else {
           cardEst.style.display = 'none';
         }
@@ -7037,7 +7757,7 @@
           categoria: 'Composição Corporal & Antropometria',
           unidade: '',
           extrair: ev => {
-            if (ev.composicao?.rcq != null) return parseFloat(ev.composicao.rcq);
+            if (ev.composicao?.rcq != null) return parseFloat(Number(ev.composicao.rcq).toFixed(2));
             if (ev.composicao?.cintura && ev.composicao?.quadril) {
               return parseFloat((ev.composicao.cintura / ev.composicao.quadril).toFixed(2));
             }
@@ -7086,7 +7806,7 @@
           categoria: 'Desempenho Funcional & Força',
           unidade: 'km/h',
           opcional: true,
-          extrair: ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVelPico != null) ? parseFloat(ev.testes.esteiraVelPico) : null,
+          extrair: ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVelPico != null) ? parseFloat(Number(ev.testes.esteiraVelPico).toFixed(2)) : null,
           classificar: () => 'Velocidade de pico atingida'
         });
         metricas.push({
@@ -7217,7 +7937,9 @@
                   const val = context.parsed.y;
                   if (val === null || val === undefined) return '';
                   const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
-                  return prefix + val + (unidade ? ' ' + unidade : '');
+                  const ehDuasCasas = nomeMetrica && (nomeMetrica.includes('RCQ') || nomeMetrica.includes('Vpico') || nomeMetrica.includes('Velocidade de Pico'));
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  return prefix + valFmt + (unidade ? ' ' + unidade : '');
                 }
               }
             }
@@ -7240,7 +7962,9 @@
                 font: { size: 10 },
                 color: '#64748b',
                 callback: function(val) {
-                  return val + (unidade ? ' ' + unidade : '');
+                  const ehDuasCasas = nomeMetrica && (nomeMetrica.includes('RCQ') || nomeMetrica.includes('Vpico') || nomeMetrica.includes('Velocidade de Pico'));
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  return valFmt + (unidade ? ' ' + unidade : '');
                 }
               }
             }
@@ -7274,7 +7998,8 @@
         const vUlt = valoresValidos[valoresValidos.length - 1];
         const diff = vUlt - vPrim;
         const sinal = diff > 0 ? '+' : '';
-        const diffFormatada = Number.isInteger(diff) ? diff : diff.toFixed(1);
+        const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
+        const diffFormatada = ehDuasCasas ? diff.toFixed(2) : (Number.isInteger(diff) ? diff : diff.toFixed(1));
         if (deltaEl) {
           deltaEl.textContent = 'Δ ' + sinal + diffFormatada + (metrica.unidade ? ' ' + metrica.unidade : '');
           deltaEl.style.display = 'inline-block';
@@ -7383,7 +8108,9 @@
                   const val = context.parsed.y;
                   if (val === null || val === undefined) return '';
                   const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
-                  return prefix + val + (metrica.unidade ? ' ' + metrica.unidade : '');
+                  const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  return prefix + valFmt + (metrica.unidade ? ' ' + metrica.unidade : '');
                 }
               }
             }
@@ -7406,7 +8133,9 @@
                 font: { size: 11 },
                 color: '#64748b',
                 callback: function(val) {
-                  return val + (metrica.unidade ? ' ' + metrica.unidade : '');
+                  const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  return valFmt + (metrica.unidade ? ' ' + metrica.unidade : '');
                 }
               }
             }
@@ -7534,12 +8263,13 @@
           const valoresValidos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
 
           let deltaBadge = '';
+          const ehDuasCasas = m && (m.id === 'ad_rcq' || m.id === 'ad_esteira_vpico' || m.nome.includes('RCQ') || m.nome.includes('Vpico') || m.nome.includes('Velocidade de Pico'));
           if (evalsSlice.length > 1 && valoresValidos.length > 1) {
             const vPrim = valoresValidos[0];
             const vUlt = valoresValidos[valoresValidos.length - 1];
             const diff = vUlt - vPrim;
             const sinal = diff > 0 ? '+' : '';
-            const diffFormatada = Number.isInteger(diff) ? diff : diff.toFixed(1);
+            const diffFormatada = ehDuasCasas ? diff.toFixed(2) : (Number.isInteger(diff) ? diff : diff.toFixed(1));
             deltaBadge = 'Δ ' + sinal + diffFormatada + (m.unidade ? ' ' + m.unidade : '');
           } else {
             deltaBadge = 'Medição Inicial';
@@ -7547,6 +8277,7 @@
 
           const ultimoEv = evalsSlice[evalsSlice.length - 1];
           const vUltimo = m.extrair(ultimoEv);
+          const vUltimoFmt = (vUltimo != null) ? (ehDuasCasas ? Number(vUltimo).toFixed(2) : vUltimo) : null;
           const statusTexto = m.classificar(vUltimo, ultimoEv);
 
           html += `
@@ -7555,7 +8286,7 @@
                 <div>
                   <span class="chart-mixed-title">${m.nome}</span>
                   <span style="font-size: 11px; color: #64748b; margin-left: 6px; font-weight: 500;">
-                    (Último: <strong style="color: #1F4E78;">${vUltimo != null ? vUltimo + (m.unidade ? ' ' + m.unidade : '') : '--'}</strong>)
+                    (Último: <strong style="color: #1F4E78;">${vUltimoFmt != null ? vUltimoFmt + (m.unidade ? ' ' + m.unidade : '') : '--'}</strong>)
                   </span>
                 </div>
                 <div class="chart-mixed-meta">
@@ -7853,6 +8584,8 @@
       const cT = target.composicao || {};
       const tB = base.testes || {};
       const tT = target.testes || {};
+      const rcqB = (cB.rcq != null) ? Number(cB.rcq) : (cB.cintura && cB.quadril ? Number((cB.cintura / cB.quadril).toFixed(2)) : null);
+      const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
 
       const itens = [
         {
@@ -7899,10 +8632,10 @@
         },
         {
           param: 'Relação Cintura-Quadril (RCQ)',
-          vBase: cB.rcq ? `${cB.rcq}` : '--',
-          vTarget: cT.rcq ? `${cT.rcq}` : '--',
-          delta: (ehReavaliacao && cB.rcq && cT.rcq) ? `${(cT.rcq - cB.rcq > 0 ? '+' : '')}${(cT.rcq - cB.rcq).toFixed(2)}` : '--',
-          status: cT.rcq <= (sexo === 'M' ? 0.90 : 0.80) ? 'Baixo Risco Cardiovascular' : 'Risco Moderado/Alto'
+          vBase: (rcqB != null) ? `${rcqB.toFixed(2)}` : '--',
+          vTarget: (rcqT != null) ? `${rcqT.toFixed(2)}` : '--',
+          delta: (ehReavaliacao && rcqB != null && rcqT != null) ? `${(rcqT - rcqB > 0 ? '+' : '')}${(rcqT - rcqB).toFixed(2)}` : '--',
+          status: (rcqT != null && rcqT <= (sexo === 'M' ? 0.90 : 0.80)) ? 'Baixo Risco Cardiovascular' : (rcqT != null ? 'Risco Moderado/Alto' : '--')
         },
         {
           param: '% de Gordura Corporal (%G)',
@@ -8026,9 +8759,9 @@
       if ((tT && tT.fezEsteira) || (tB && tB.fezEsteira)) {
         itens.push({
           param: 'Esteira: Velocidade de Pico (Vpico)',
-          vBase: (tB && tB.fezEsteira) ? `${tB.esteiraVelPico} km/h` : '--',
-          vTarget: (tT && tT.fezEsteira) ? `${tT.esteiraVelPico} km/h` : '--',
-          delta: (ehReavaliacao && tB.esteiraVelPico && tT.esteiraVelPico) ? `${(tT.esteiraVelPico - tB.esteiraVelPico > 0 ? '+' : '')}${(tT.esteiraVelPico - tB.esteiraVelPico).toFixed(1)} km/h` : '--',
+          vBase: (tB && tB.fezEsteira) ? `${Number(tB.esteiraVelPico).toFixed(2)} km/h` : '--',
+          vTarget: (tT && tT.fezEsteira) ? `${Number(tT.esteiraVelPico).toFixed(2)} km/h` : '--',
+          delta: (ehReavaliacao && tB.esteiraVelPico && tT.esteiraVelPico) ? `${(tT.esteiraVelPico - tB.esteiraVelPico > 0 ? '+' : '')}${(tT.esteiraVelPico - tB.esteiraVelPico).toFixed(2)} km/h` : '--',
           status: 'Velocidade máxima na esteira plana'
         });
 
@@ -8322,6 +9055,7 @@
         document.getElementById('ad_esteira_segundos').value = '';
         document.getElementById('ad_esteira_fc_pico').value = '';
         document.getElementById('ad_parecer').value = '';
+        resetarTimerEsteira();
 
         atualizarCamposSexoAdulto();
         calcularComposicaoAdulto();
