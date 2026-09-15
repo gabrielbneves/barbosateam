@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
   <title>Barbosa Team - Sistema Integrado de Avaliação Física</title>
+  <script src="chart.min.js"></script>
+  <script>
+    if (typeof Chart === 'undefined') {
+      document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>');
+    }
+  </script>
   <style>
     /* Estilos Gerais Limpos e Diretos - Barbosa Team */
     * {
@@ -636,12 +642,12 @@
     }
 
     /* ==========================================
-       ESTILOS DOS GRÁFICOS COMPARATIVOS VISUAIS
+       ESTILOS DOS GRÁFICOS COMPARATIVOS MISTOS (CHART.JS)
        ========================================== */
     .comparative-charts-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       margin-bottom: 25px;
     }
     .chart-section-title {
@@ -652,47 +658,63 @@
       letter-spacing: 0.5px;
       padding-bottom: 6px;
       border-bottom: 2px solid #e2e8f0;
-      margin-top: 12px;
-      margin-bottom: 8px;
-    }
-    .chart-item-card {
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 12px 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-      transition: all 0.2s;
-    }
-    .chart-item-card:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 3px 8px rgba(31, 78, 120, 0.08);
-    }
-    .chart-item-header {
+      margin-top: 14px;
+      margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+    }
+    .charts-grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 650px) {
+      .charts-grid-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .chart-mixed-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(31, 78, 120, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
+    .chart-mixed-card:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 12px rgba(31, 78, 120, 0.10);
+    }
+    .chart-mixed-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
       flex-wrap: wrap;
       gap: 6px;
     }
-    .chart-item-name {
+    .chart-mixed-title {
+      font-size: 13px;
       font-weight: 700;
       color: #0f172a;
-      font-size: 13px;
     }
-    .chart-item-meta {
+    .chart-mixed-meta {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
     .chart-delta-badge {
       font-size: 11px;
       font-weight: 700;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 4px;
       background: #f1f5f9;
-      color: #334155;
-      border: 1px solid #e2e8f0;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
     }
     .chart-status-badge {
       font-size: 11px;
@@ -703,84 +725,21 @@
       color: #1F4E78;
       border: 1px solid #c8dced;
     }
-    .chart-bars-container {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .chart-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-    }
-    .chart-bar-label {
-      width: 130px;
-      min-width: 130px;
-      text-align: right;
-      font-weight: 600;
-      color: #64748b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .chart-bar-label.active {
-      color: #1F4E78;
-      font-weight: 700;
-    }
-    .chart-bar-track {
-      flex: 1;
-      background: #f1f5f9;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      height: 22px;
+    .chart-canvas-box {
       position: relative;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-    }
-    .chart-bar-fill {
-      height: 100%;
-      border-radius: 5px;
-      transition: width 0.5s ease-out;
-    }
-    .chart-bar-fill.base {
-      background: #94a3b8;
-    }
-    .chart-bar-fill.target {
-      background: linear-gradient(90deg, #143552 0%, #1F4E78 100%);
-    }
-    .chart-bar-val {
-      position: absolute;
-      right: 8px;
-      font-size: 11px;
-      font-weight: 700;
-      color: #0f172a;
-      z-index: 2;
-      text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
-    }
-    @media (max-width: 600px) {
-      .chart-bar-label {
-        width: 90px;
-        min-width: 90px;
-        font-size: 11px;
-      }
+      height: 220px;
+      width: 100%;
     }
     @media print {
-      .chart-item-card {
+      .chart-mixed-card {
         break-inside: avoid;
+        page-break-inside: avoid;
         box-shadow: none !important;
         border: 1px solid #cbd5e1 !important;
+        margin-bottom: 12px;
       }
-      .chart-bar-fill.target {
-        background: #1F4E78 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-      .chart-bar-fill.base {
-        background: #94a3b8 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
+      .chart-canvas-box {
+        height: 200px !important;
       }
     }
   </style>
@@ -5803,6 +5762,7 @@
         }
         const containerGraf = document.getElementById('container-graficos-comparativos');
         if (containerGraf) {
+          destruirGraficosComparativos();
           containerGraf.innerHTML = `
             <div style="text-align: center; padding: 30px; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-weight: 500;">
               Nenhum aluno ou avaliação disponível para comparação. Selecione ou cadastre um aluno nos passos anteriores.
@@ -5930,6 +5890,9 @@
         renderizarDeltasAdulto(avBase, avTarget, ehReavaliacao, aluno.sexo);
         renderizarLinhasTabelaAdulto(avBase, avTarget, ehReavaliacao, aluno.sexo, aluno.idade);
       }
+
+      // Renderiza os gráficos comparativos mistos dinâmicos (até 5 avaliações)
+      renderizarGraficosComparativosMistos(aluno, avBase, avTarget, ehReavaliacao);
 
       const parecerEl = document.getElementById('laudo-parecer');
       if (parecerEl) {
@@ -6633,8 +6596,40 @@
     }
 
     // ==========================================
-    // RENDERIZAÇÃO DOS GRÁFICOS COMPARATIVOS
+    // RENDERIZAÇÃO DOS GRÁFICOS COMPARATIVOS MISTOS (CHART.JS)
     // ==========================================
+    var chartInstancesComparativos = [];
+    var chartDestaqueInstance = null;
+    var metricaDestaqueAtualId = null;
+    var metricasAtuaisComparativo = [];
+    var labelsAtuaisComparativo = [];
+    var evalsAtuaisComparativo = [];
+
+    function destruirGraficosComparativos() {
+      if (Array.isArray(chartInstancesComparativos)) {
+        chartInstancesComparativos.forEach(inst => {
+          try {
+            if (inst && typeof inst.destroy === 'function') {
+              inst.destroy();
+            }
+          } catch (e) {
+            console.warn('Erro ao destruir instancia do Chart:', e);
+          }
+        });
+      }
+      chartInstancesComparativos = [];
+      chartDestaqueInstance = null;
+    }
+
+    function formatarDataDDMM(dataStr) {
+      if (!dataStr) return '--';
+      const partes = String(dataStr).split('-');
+      if (partes.length === 3) {
+        return `${partes[2]}/${partes[1]}`;
+      }
+      return dataStr;
+    }
+
     function extrairNumero(str) {
       if (str === undefined || str === null || str === '--') return null;
       if (String(str).includes('/')) {
@@ -6648,20 +6643,795 @@
       return isNaN(num) ? null : Math.abs(num);
     }
 
-    function renderizarGraficosComparativos(itens, ehReavaliacao, avBase, avTarget) {
-      const container = document.getElementById('container-graficos-comparativos');
-      if (!container) return;
+    function obterAvaliacoesComparativas(aluno, avTarget) {
+      if (!aluno || !aluno.avaliacoes || aluno.avaliacoes.length === 0) return [];
+      const todas = aluno.avaliacoes;
+      if (todas.length <= 5) {
+        return todas;
+      }
+      if (avTarget && avTarget.id) {
+        const idxTarget = todas.findIndex(a => a.id === avTarget.id);
+        if (idxTarget >= 0) {
+          const inicio = Math.max(0, idxTarget - 4);
+          return todas.slice(inicio, idxTarget + 1);
+        }
+      }
+      return todas.slice(-5);
+    }
 
-      const itensVisiveis = itens.filter(item => {
-        if (!item.opcional) return true;
-        if (ehReavaliacao) {
-          return !(item.vTarget === '--' && item.vBase === '--');
-        } else {
-          return item.vTarget !== '--';
+    function obterDefinicoesMetricas(aluno, evalsSlice) {
+      const ehIdoso = (aluno.idade >= 60 || dadosAluno.grupoEtario === 'idoso');
+      const ehAdolescente = (aluno.idade < 18 || dadosAluno.grupoEtario === 'adolescente');
+      const sexo = aluno.sexo || 'M';
+      const idade = aluno.idade || 30;
+
+      const metricas = [];
+
+      if (ehAdolescente) {
+        // Crescimento & Composição Corporal
+        metricas.push({
+          id: 'ped_altura',
+          nome: 'Estatura / Altura',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.altura != null ? parseFloat(ev.composicao.altura) : null,
+          classificar: () => 'Estatura aferida'
+        });
+        metricas.push({
+          id: 'ped_peso',
+          nome: 'Massa Corporal (Peso)',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null,
+          classificar: () => 'Massa corporal'
+        });
+        metricas.push({
+          id: 'ped_imc',
+          nome: 'Índice de Massa Corporal (IMC)',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'kg/m²',
+          extrair: ev => {
+            if (ev.composicao?.imc != null) return parseFloat(ev.composicao.imc);
+            if (ev.composicao?.peso && ev.composicao?.altura) {
+              return parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1));
+            }
+            return null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            return val < 18.5 ? 'Baixo Peso' : (val < 25.0 ? 'Eutrofia (Padrão OMS)' : 'Sobrepeso / Atenção');
+          }
+        });
+        metricas.push({
+          id: 'ped_gordura',
+          nome: '% de Gordura Corporal (%G)',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: '%',
+          extrair: ev => ev.composicao?.percentualGordura != null ? parseFloat(ev.composicao.percentualGordura) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val <= (sexo === 'M' ? 20.0 : 25.0) ? 'Faixa Saudável (Slaughter)' : 'Acima da Média';
+          }
+        });
+        metricas.push({
+          id: 'ped_massa_magra',
+          nome: 'Massa Magra Livre de Gordura',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.massaMagra != null ? parseFloat(ev.composicao.massaMagra) : null,
+          classificar: () => 'Tecido magro'
+        });
+        metricas.push({
+          id: 'ped_envergadura',
+          nome: 'Envergadura',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.envergadura != null ? parseFloat(ev.composicao.envergadura) : null,
+          classificar: () => 'Envergadura motora'
+        });
+        metricas.push({
+          id: 'ped_cintura',
+          nome: 'Circunferência da Cintura',
+          categoria: 'Crescimento & Composição Corporal',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.cintura != null ? parseFloat(ev.composicao.cintura) : null,
+          classificar: () => 'Perimetria de tronco'
+        });
+
+        // Desempenho Motor (PROESP-BR)
+        metricas.push({
+          id: 'ped_flex',
+          nome: 'Flexibilidade (Banco de Wells)',
+          categoria: 'Desempenho Motor (PROESP-BR)',
+          unidade: 'cm',
+          extrair: ev => ev.testes?.flexCm != null ? parseFloat(ev.testes.flexCm) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= (sexo === 'M' ? 24.0 : 26.0) ? 'Zona Saudável Superior' : 'Adequado';
+          }
+        });
+        metricas.push({
+          id: 'ped_salto',
+          nome: 'Salto Horizontal (Potência MMII)',
+          categoria: 'Desempenho Motor (PROESP-BR)',
+          unidade: 'cm',
+          extrair: ev => ev.testes?.saltoCm != null ? parseFloat(ev.testes.saltoCm) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= (sexo === 'M' ? 160.0 : 140.0) ? 'Bom / Zona Saudável' : 'Abaixo da Média';
+          }
+        });
+        metricas.push({
+          id: 'ped_abd',
+          nome: 'Resistência Abdominal (1 min)',
+          categoria: 'Desempenho Motor (PROESP-BR)',
+          unidade: 'reps',
+          extrair: ev => ev.testes?.abdReps != null ? parseInt(ev.testes.abdReps, 10) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= 30 ? 'Zona Saudável Excelente' : 'Zona Adequada';
+          }
+        });
+        metricas.push({
+          id: 'ped_agilidade',
+          nome: 'Agilidade (Quadrado 4x4m)',
+          categoria: 'Desempenho Motor (PROESP-BR)',
+          unidade: 's',
+          extrair: ev => ev.testes?.agilidadeTempo != null ? parseFloat(ev.testes.agilidadeTempo) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val <= 5.8 ? 'Alta Agilidade' : 'Agilidade Padrão';
+          }
+        });
+        metricas.push({
+          id: 'ped_aerobio',
+          nome: 'Corrida / Caminhada 6 Minutos',
+          categoria: 'Desempenho Motor (PROESP-BR)',
+          unidade: 'm',
+          opcional: true,
+          extrair: ev => (ev.testes?.fezAerobio && ev.testes?.aerobioMetros != null) ? parseFloat(ev.testes.aerobioMetros) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= 1100 ? 'Zona Saudável (ZSA)' : 'Zona de Alerta';
+          }
+        });
+
+        // Sinais Vitais
+        metricas.push({
+          id: 'ped_pas',
+          nome: 'PA Sistólica (Repouso)',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null,
+          classificar: val => val <= 120 ? 'Normotenso' : 'Atenção PA'
+        });
+        metricas.push({
+          id: 'ped_pad',
+          nome: 'PA Diastólica (Repouso)',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null,
+          classificar: val => val <= 80 ? 'Normotenso' : 'Atenção PA'
+        });
+        metricas.push({
+          id: 'ped_fc',
+          nome: 'Frequência Cardíaca de Repouso',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'bpm',
+          extrair: ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null,
+          classificar: val => val <= 85 ? 'Eucardia Normal' : 'Basal Elevada'
+        });
+
+      } else if (ehIdoso) {
+        // Sinais Vitais & Cardiovasculares
+        metricas.push({
+          id: 'ido_pas',
+          nome: 'Pressão Arterial Sistólica',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null,
+          classificar: val => val <= 120 ? 'Pressão Ótima' : (val <= 129 ? 'Pressão Normal' : (val <= 139 ? 'Pré-Hipertensão' : 'Alerta Hipertensão'))
+        });
+        metricas.push({
+          id: 'ido_pad',
+          nome: 'Pressão Arterial Diastólica',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null,
+          classificar: val => val <= 80 ? 'Pressão Ótima' : (val <= 84 ? 'Pressão Normal' : (val <= 89 ? 'Pré-Hipertensão' : 'Alerta Hipertensão'))
+        });
+        metricas.push({
+          id: 'ido_fc',
+          nome: 'Frequência Cardíaca de Repouso',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'bpm',
+          extrair: ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null,
+          classificar: val => (val >= 60 && val <= 85) ? 'Eucardia Normal' : (val < 60 ? 'Bradicardia' : 'Elevada')
+        });
+        metricas.push({
+          id: 'ido_cardio',
+          nome: 'Capacidade Aeróbia (VO2 George)',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'ml/kg/min',
+          opcional: true,
+          extrair: ev => (ev.testes?.fezCardio && ev.testes?.cardioVo2 != null) ? parseFloat(ev.testes.cardioVo2) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= 25.0 ? 'Boa Aptidão Funcional' : 'Abaixo da Média';
+          }
+        });
+
+        // Composição & Massa Muscular
+        metricas.push({
+          id: 'ido_panturrilha',
+          nome: 'Circunferência da Panturrilha',
+          categoria: 'Composição & Massa Muscular',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.panturrilha != null ? parseFloat(ev.composicao.panturrilha) : null,
+          classificar: val => val >= 31.0 ? 'Massa Muscular Preservada' : 'Alerta Sarcopenia'
+        });
+        metricas.push({
+          id: 'ido_peso',
+          nome: 'Massa Corporal (Peso)',
+          categoria: 'Composição & Massa Muscular',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null,
+          classificar: () => 'Peso total monitorado'
+        });
+        metricas.push({
+          id: 'ido_imc',
+          nome: 'Índice de Massa Corporal (IMC)',
+          categoria: 'Composição & Massa Muscular',
+          unidade: 'kg/m²',
+          extrair: ev => {
+            if (ev.composicao?.imc != null) return parseFloat(ev.composicao.imc);
+            if (ev.composicao?.peso && ev.composicao?.altura) {
+              return parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1));
+            }
+            return null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            return (val >= 22.0 && val <= 27.0) ? 'Faixa Protetora Geriátrica' : (val < 22.0 ? 'Baixo Peso' : 'Sobrepeso');
+          }
+        });
+        metricas.push({
+          id: 'ido_cintura',
+          nome: 'Circunferência da Cintura',
+          categoria: 'Composição & Massa Muscular',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.cintura != null ? parseFloat(ev.composicao.cintura) : null,
+          classificar: val => val <= (sexo === 'M' ? 94 : 80) ? 'Risco Normal' : 'Risco Aumentado'
+        });
+
+        // Força Funcional, Mobilidade & Equilíbrio
+        metricas.push({
+          id: 'ido_fpm',
+          nome: 'Força de Preensão Manual (FPM)',
+          categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+          unidade: 'kgf',
+          extrair: ev => {
+            if (ev.testes?.fpmMelhor != null) return parseFloat(ev.testes.fpmMelhor);
+            if (ev.testes?.fpmDireita != null) return parseFloat(ev.testes.fpmDireita);
+            return null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            const corte = sexo === 'M' ? 27.0 : 16.0;
+            return val >= corte ? 'Força Preservada (EWGSOP2)' : 'Alerta Dinapenia';
+          }
+        });
+        metricas.push({
+          id: 'ido_ftsst',
+          nome: 'Força de MMII (FTSST 5x Sentar)',
+          categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+          unidade: 's',
+          extrair: ev => (ev.testes?.ftsstTempo != null && !isNaN(parseFloat(ev.testes.ftsstTempo))) ? parseFloat(ev.testes.ftsstTempo) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val <= 11.1 ? 'Excelente Força' : (val <= 13.6 ? 'Boa Força' : (val < 15.0 ? 'Regular' : 'Risco de Queda (Buatois)'));
+          }
+        });
+        metricas.push({
+          id: 'ido_tug',
+          nome: 'Risco de Queda (TUG)',
+          categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+          unidade: 's',
+          extrair: ev => (ev.testes?.tugTempo != null && !isNaN(parseFloat(ev.testes.tugTempo))) ? parseFloat(ev.testes.tugTempo) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val < 10.0 ? 'Livremente Independente' : (val < 20.0 ? 'Mobilidade Independente' : 'Risco Moderado/Alto');
+          }
+        });
+        metricas.push({
+          id: 'ido_equilibrio',
+          nome: 'Equilíbrio Unipodal (Melhor)',
+          categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+          unidade: 's',
+          extrair: ev => {
+            const d = parseFloat(ev.testes?.eqDireita) || 0;
+            const e = parseFloat(ev.testes?.eqEsquerda) || 0;
+            const m = Math.max(d, e);
+            return m > 0 ? m : null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= 10.0 ? 'Equilíbrio Preservado' : 'Instabilidade Postural';
+          }
+        });
+
+      } else {
+        // Adulto
+        // Composição Corporal & Antropometria
+        metricas.push({
+          id: 'ad_peso',
+          nome: 'Massa Corporal (Peso)',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null,
+          classificar: () => 'Peso total aferido'
+        });
+        metricas.push({
+          id: 'ad_gordura',
+          nome: '% de Gordura Corporal (%G)',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: '%',
+          extrair: ev => ev.composicao?.percentualGordura != null ? parseFloat(ev.composicao.percentualGordura) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média';
+          }
+        });
+        metricas.push({
+          id: 'ad_massa_magra',
+          nome: 'Massa Magra Livre de Gordura',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.massaMagra != null ? parseFloat(ev.composicao.massaMagra) : null,
+          classificar: () => 'Massa muscular e óssea'
+        });
+        metricas.push({
+          id: 'ad_massa_gorda',
+          nome: 'Massa Gorda Total',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'kg',
+          extrair: ev => ev.composicao?.massaGorda != null ? parseFloat(ev.composicao.massaGorda) : null,
+          classificar: () => 'Tecido adiposo'
+        });
+        metricas.push({
+          id: 'ad_imc',
+          nome: 'Índice de Massa Corporal (IMC)',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'kg/m²',
+          extrair: ev => {
+            if (ev.composicao?.imc != null) return parseFloat(ev.composicao.imc);
+            if (ev.composicao?.peso && ev.composicao?.altura) {
+              return parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1));
+            }
+            return null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            return val < 25.0 ? 'Eutrofia (Normal)' : (val < 30.0 ? 'Sobrepeso' : 'Obesidade');
+          }
+        });
+        metricas.push({
+          id: 'ad_cintura',
+          nome: 'Circunferência da Cintura',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.cintura != null ? parseFloat(ev.composicao.cintura) : null,
+          classificar: val => val <= (sexo === 'M' ? 94 : 80) ? 'Risco Cardiovascular Normal' : 'Risco Aumentado'
+        });
+        metricas.push({
+          id: 'ad_quadril',
+          nome: 'Circunferência do Quadril',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: 'cm',
+          extrair: ev => ev.composicao?.quadril != null ? parseFloat(ev.composicao.quadril) : null,
+          classificar: () => 'Perimetria de quadril'
+        });
+        metricas.push({
+          id: 'ad_rcq',
+          nome: 'Relação Cintura-Quadril (RCQ)',
+          categoria: 'Composição Corporal & Antropometria',
+          unidade: '',
+          extrair: ev => {
+            if (ev.composicao?.rcq != null) return parseFloat(ev.composicao.rcq);
+            if (ev.composicao?.cintura && ev.composicao?.quadril) {
+              return parseFloat((ev.composicao.cintura / ev.composicao.quadril).toFixed(2));
+            }
+            return null;
+          },
+          classificar: val => {
+            if (val == null) return '--';
+            return val <= (sexo === 'M' ? 0.90 : 0.80) ? 'Baixo Risco' : 'Risco Moderado/Alto';
+          }
+        });
+
+        // Desempenho Funcional & Força
+        metricas.push({
+          id: 'ad_flexoes',
+          nome: 'Flexões de Braço (Reps Máximas)',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'reps',
+          extrair: ev => (ev.testes?.flexoesReps != null && ev.testes?.flexoesReps !== '') ? parseInt(ev.testes.flexoesReps, 10) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= (sexo === 'M' ? 29 : 21) ? 'Excelente / Acima da Média' : (val >= 17 ? 'Médio / Adequado' : 'Regular');
+          }
+        });
+        metricas.push({
+          id: 'ad_extensora_1rm',
+          nome: 'Cadeira Extensora (1RM Estimado)',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'kg',
+          extrair: ev => (ev.testes?.extensora1RM != null && ev.testes?.extensora1RM !== '') ? parseFloat(ev.testes.extensora1RM) : null,
+          classificar: () => 'Carga máxima estimada'
+        });
+        metricas.push({
+          id: 'ad_extensora_rel',
+          nome: 'Cadeira Extensora (Força Relativa)',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'x PC',
+          extrair: ev => (ev.testes?.extensoraRelativo != null && ev.testes?.extensoraRelativo !== '') ? parseFloat(ev.testes.extensoraRelativo) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= (sexo === 'M' ? 0.80 : 0.60) ? 'Bom / Superior' : 'Adequado';
+          }
+        });
+        metricas.push({
+          id: 'ad_esteira_vpico',
+          nome: 'Esteira: Velocidade de Pico (Vpico)',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'km/h',
+          opcional: true,
+          extrair: ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVelPico != null) ? parseFloat(ev.testes.esteiraVelPico) : null,
+          classificar: () => 'Velocidade de pico atingida'
+        });
+        metricas.push({
+          id: 'ad_esteira_vo2',
+          nome: 'Esteira: VO2máx Estimado',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'ml/kg/min',
+          opcional: true,
+          extrair: ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVo2 != null) ? parseFloat(ev.testes.esteiraVo2) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= (sexo === 'M' ? 44 : 38) ? 'Excelente Aptidão Aeróbia' : 'Bom Condicionamento';
+          }
+        });
+
+        // Sinais Vitais & Cardiovasculares
+        metricas.push({
+          id: 'ad_pas',
+          nome: 'Pressão Arterial Sistólica',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null,
+          classificar: val => val <= 120 ? 'Pressão Ótima' : (val <= 129 ? 'Pressão Normal' : 'Alerta PA')
+        });
+        metricas.push({
+          id: 'ad_pad',
+          nome: 'Pressão Arterial Diastólica',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'mmHg',
+          extrair: ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null,
+          classificar: val => val <= 80 ? 'Pressão Ótima' : (val <= 84 ? 'Pressão Normal' : 'Alerta PA')
+        });
+        metricas.push({
+          id: 'ad_fc',
+          nome: 'Frequência Cardíaca de Repouso',
+          categoria: 'Sinais Vitais & Cardiovasculares',
+          unidade: 'bpm',
+          extrair: ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null,
+          classificar: val => (val >= 60 && val <= 85) ? 'Eucardia Normal' : (val < 60 ? 'Bradicardia (Atleta)' : 'Basal Elevada')
+        });
+      }
+
+      // Filtra métricas que tenham ao menos uma medição válida em evalsSlice
+      return metricas.filter(m => {
+        return evalsSlice.some(ev => {
+          const v = m.extrair(ev);
+          return v !== null && v !== undefined && !isNaN(v);
+        });
+      });
+    }
+
+    function criarGraficoMisto(canvasId, labels, valores, unidade, nomeMetrica) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Medição Pontual',
+              data: valores,
+              backgroundColor: 'rgba(31, 78, 120, 0.72)',
+              borderColor: '#1F4E78',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 46,
+              barPercentage: labels.length === 1 ? 0.35 : 0.55,
+              categoryPercentage: 0.7,
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Curva de Evolução',
+              data: valores,
+              borderColor: '#0b1929',
+              backgroundColor: '#ffffff',
+              borderWidth: 2.5,
+              tension: 0.25,
+              fill: false,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#1F4E78',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointHoverBackgroundColor: '#1F4E78',
+              pointHoverBorderColor: '#ffffff',
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 11,
+                boxHeight: 11,
+                usePointStyle: true,
+                font: {
+                  size: 10,
+                  weight: '600',
+                  family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  return prefix + val + (unidade ? ' ' + unidade : '');
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 11, weight: '600' },
+                color: '#475569'
+              }
+            },
+            y: {
+              beginAtZero: false,
+              grace: '10%',
+              grid: {
+                color: 'rgba(226, 232, 240, 0.8)'
+              },
+              ticks: {
+                font: { size: 10 },
+                color: '#64748b',
+                callback: function(val) {
+                  return val + (unidade ? ' ' + unidade : '');
+                }
+              }
+            }
+          }
         }
       });
 
-      if (itensVisiveis.length === 0) {
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    function renderizarCardDestaque(metrica, labels, evalsSlice) {
+      if (!metrica) return;
+      const cardEl = document.getElementById('card-grafico-destaque');
+      if (!cardEl) return;
+
+      const tituloEl = document.getElementById('destaque-titulo');
+      const deltaEl = document.getElementById('destaque-delta');
+      const statusEl = document.getElementById('destaque-status');
+      const canvasEl = document.getElementById('canvas-destaque');
+      if (!canvasEl) return;
+
+      if (tituloEl) tituloEl.textContent = metrica.nome;
+
+      const valores = evalsSlice.map(ev => metrica.extrair(ev));
+      const valoresValidos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
+
+      // Delta
+      if (evalsSlice.length > 1 && valoresValidos.length > 1) {
+        const vPrim = valoresValidos[0];
+        const vUlt = valoresValidos[valoresValidos.length - 1];
+        const diff = vUlt - vPrim;
+        const sinal = diff > 0 ? '+' : '';
+        const diffFormatada = Number.isInteger(diff) ? diff : diff.toFixed(1);
+        if (deltaEl) {
+          deltaEl.textContent = 'Δ ' + sinal + diffFormatada + (metrica.unidade ? ' ' + metrica.unidade : '');
+          deltaEl.style.display = 'inline-block';
+        }
+      } else if (deltaEl) {
+        deltaEl.textContent = 'Medição Inicial';
+        deltaEl.style.display = 'inline-block';
+      }
+
+      // Status
+      const ultimoEv = evalsSlice[evalsSlice.length - 1];
+      const vUltimo = metrica.extrair(ultimoEv);
+      const statusTexto = metrica.classificar(vUltimo, ultimoEv);
+      if (statusEl) {
+        if (statusTexto && statusTexto !== '--') {
+          statusEl.textContent = statusTexto;
+          statusEl.style.display = 'inline-block';
+        } else {
+          statusEl.style.display = 'none';
+        }
+      }
+
+      // Destrói instância anterior do destaque se houver
+      if (chartDestaqueInstance) {
+        try {
+          chartDestaqueInstance.destroy();
+        } catch (e) {
+          console.warn('Erro ao destruir gráfico destaque:', e);
+        }
+        chartDestaqueInstance = null;
+      }
+
+      const ctx = canvasEl.getContext('2d');
+      if (!ctx) return;
+
+      chartDestaqueInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Medição Pontual',
+              data: valores,
+              backgroundColor: 'rgba(31, 78, 120, 0.75)',
+              borderColor: '#1F4E78',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 56,
+              barPercentage: labels.length === 1 ? 0.35 : 0.55,
+              categoryPercentage: 0.7,
+              order: 2
+            },
+            {
+              type: 'line',
+              label: 'Curva de Evolução',
+              data: valores,
+              borderColor: '#0b1929',
+              backgroundColor: '#ffffff',
+              borderWidth: 3,
+              tension: 0.25,
+              fill: false,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#1F4E78',
+              pointBorderWidth: 2.5,
+              pointRadius: 6,
+              pointHoverRadius: 8,
+              pointHoverBackgroundColor: '#1F4E78',
+              pointHoverBorderColor: '#ffffff',
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 14,
+                boxHeight: 14,
+                usePointStyle: true,
+                font: {
+                  size: 12,
+                  weight: '600',
+                  family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+                },
+                color: '#334155'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 12, weight: 'bold' },
+              bodyFont: { size: 12 },
+              padding: 10,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  return prefix + val + (metrica.unidade ? ' ' + metrica.unidade : '');
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { size: 12, weight: '600' },
+                color: '#334155'
+              }
+            },
+            y: {
+              beginAtZero: false,
+              grace: '10%',
+              grid: {
+                color: 'rgba(226, 232, 240, 0.8)'
+              },
+              ticks: {
+                font: { size: 11 },
+                color: '#64748b',
+                callback: function(val) {
+                  return val + (metrica.unidade ? ' ' + metrica.unidade : '');
+                }
+              }
+            }
+          }
+        }
+      });
+
+      chartInstancesComparativos.push(chartDestaqueInstance);
+    }
+
+    function aoTrocarMetricaDestaque(id) {
+      metricaDestaqueAtualId = id;
+      const metrica = metricasAtuaisComparativo.find(m => m.id === id);
+      if (metrica) {
+        renderizarCardDestaque(metrica, labelsAtuaisComparativo, evalsAtuaisComparativo);
+      }
+    }
+
+    function renderizarGraficosComparativosMistos(aluno, avBase, avTarget, ehReavaliacao) {
+      const container = document.getElementById('container-graficos-comparativos');
+      if (!container) return;
+
+      destruirGraficosComparativos();
+
+      if (!aluno || !aluno.avaliacoes || aluno.avaliacoes.length === 0) {
         container.innerHTML = `
           <div style="text-align: center; padding: 30px; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-weight: 500;">
             Nenhum dado ou avaliação disponível para geração dos gráficos comparativos.
@@ -6670,103 +7440,153 @@
         return;
       }
 
-      function inferirCategoria(param) {
-        const p = param.toLowerCase();
-        if (p.includes('pressão') || p.includes('pa ') || p.includes('frequência cardíaca') || p.includes('fc ')) {
-          return 'Sinais Vitais & Cardiovasculares';
-        }
-        if (p.includes('flexão') || p.includes('extensora') || p.includes('força') || p.includes('preensão') || p.includes('ftsst') || p.includes('tug') || p.includes('equilíbrio') || p.includes('salto') || p.includes('abdominal') || p.includes('agilidade') || p.includes('marcha') || p.includes('aeróbi') || p.includes('corrida') || p.includes('esteira') || p.includes('flexibilidade')) {
-          return 'Desempenho Funcional & Aptidão Motora';
-        }
-        return 'Composição Corporal & Antropometria';
+      if (typeof Chart === 'undefined') {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 25px; color: #b91c1c; background: #fef2f2; border: 1px solid #fecdd3; border-radius: 8px;">
+            A biblioteca de gráficos (Chart.js) não pôde ser carregada. Verifique se o arquivo chart.min.js está presente.
+          </div>
+        `;
+        return;
       }
 
-      const categorias = {};
-      itensVisiveis.forEach(item => {
-        const cat = item.categoria || inferirCategoria(item.param);
-        if (!categorias[cat]) categorias[cat] = [];
-        categorias[cat].push(item);
+      const evalsSlice = obterAvaliacoesComparativas(aluno, avTarget);
+      if (evalsSlice.length === 0) return;
+
+      const labels = evalsSlice.map((ev, i) => {
+        const idxTotal = aluno.avaliacoes.findIndex(a => a.id === ev.id);
+        const numAv = (idxTotal >= 0 ? idxTotal + 1 : i + 1);
+        return 'Avaliação ' + numAv + ' - ' + formatarDataDDMM(ev.data);
+      });
+
+      const metricas = obterDefinicoesMetricas(aluno, evalsSlice);
+      if (metricas.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 30px; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-weight: 500;">
+            Nenhum dado mensurado disponível para geração dos gráficos comparativos.
+          </div>
+        `;
+        return;
+      }
+
+      metricasAtuaisComparativo = metricas;
+      labelsAtuaisComparativo = labels;
+      evalsAtuaisComparativo = evalsSlice;
+
+      if (!metricaDestaqueAtualId || !metricas.some(m => m.id === metricaDestaqueAtualId)) {
+        const defPref = metricas.find(m => m.id.includes('gordura')) ||
+                        metricas.find(m => m.id.includes('peso')) ||
+                        metricas.find(m => m.id.includes('pas')) ||
+                        metricas[0];
+        metricaDestaqueAtualId = defPref.id;
+      }
+
+      const metricaDestaque = metricas.find(m => m.id === metricaDestaqueAtualId) || metricas[0];
+
+      const categoriasMap = {};
+      metricas.forEach(m => {
+        if (!categoriasMap[m.categoria]) categoriasMap[m.categoria] = [];
+        categoriasMap[m.categoria].push(m);
       });
 
       let html = '';
 
-      for (const catNome of Object.keys(categorias)) {
+      // Barra de Seleção do Gráfico em Destaque (no-print)
+      html += `
+        <div class="no-print" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 2px 6px rgba(31, 78, 120, 0.05);">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span style="font-size: 12px; font-weight: 700; color: #1F4E78; text-transform: uppercase;">Métrica em Destaque:</span>
+            <select id="seletor-metrica-destaque" onchange="aoTrocarMetricaDestaque(this.value)" style="padding: 6px 12px; font-size: 12px; font-weight: 600; border: 1px solid #1F4E78; border-radius: 6px; background: #f8fafc; color: #0f172a; cursor: pointer;">
+              ${metricas.map(m => `<option value="${m.id}" ${m.id === metricaDestaque.id ? 'selected' : ''}>${m.nome} (${m.categoria})</option>`).join('')}
+            </select>
+          </div>
+          <span style="font-size: 11px; color: #64748b; font-weight: 600;">
+            Comparando ${evalsSlice.length} avaliação(ões) em gráfico misto (barras + linha)
+          </span>
+        </div>
+      `;
+
+      // Card do Gráfico em Destaque (no-print)
+      html += `
+        <div id="card-grafico-destaque" class="chart-mixed-card no-print" style="margin-bottom: 22px; padding: 18px; border: 2px solid #1F4E78; background: #ffffff;">
+          <div class="chart-mixed-header" style="margin-bottom: 14px;">
+            <div>
+              <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; color: #1F4E78; letter-spacing: 0.5px;">Evolução Detalhada</span>
+              <h4 id="destaque-titulo" class="chart-mixed-title" style="font-size: 16px; margin-top: 2px;">--</h4>
+            </div>
+            <div class="chart-mixed-meta">
+              <span id="destaque-delta" class="chart-delta-badge" style="font-size: 12px; padding: 3px 10px;">--</span>
+              <span id="destaque-status" class="chart-status-badge" style="font-size: 12px; padding: 3px 10px;">--</span>
+            </div>
+          </div>
+          <div class="chart-canvas-box" style="height: 260px;">
+            <canvas id="canvas-destaque"></canvas>
+          </div>
+        </div>
+      `;
+
+      // Grade de Gráficos Organizada por Categorias
+      for (const catNome of Object.keys(categoriasMap)) {
         html += `<div class="chart-section-title">${catNome}</div>`;
+        html += `<div class="charts-grid-container">`;
 
-        categorias[catNome].forEach(item => {
-          const nBase = extrairNumero(item.vBase);
-          const nTarget = extrairNumero(item.vTarget);
+        categoriasMap[catNome].forEach(m => {
+          const valores = evalsSlice.map(ev => m.extrair(ev));
+          const valoresValidos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
 
-          let maxScale = 100;
-          if (nBase !== null && nTarget !== null) {
-            maxScale = Math.max(nBase, nTarget, 1) * 1.25;
-          } else if (nTarget !== null) {
-            maxScale = Math.max(nTarget, 1) * 1.25;
-          } else if (nBase !== null) {
-            maxScale = Math.max(nBase, 1) * 1.25;
-          }
-
-          const pctBase = (nBase !== null && maxScale > 0) ? Math.min(Math.max((nBase / maxScale) * 100, 4), 100) : 0;
-          const pctTarget = (nTarget !== null && maxScale > 0) ? Math.min(Math.max((nTarget / maxScale) * 100, 4), 100) : 0;
-
-          let deltaBadgeHtml = '';
-          if (ehReavaliacao && item.delta && item.delta !== '--') {
-            deltaBadgeHtml = `<span class="chart-delta-badge">Δ ${item.delta}</span>`;
-          }
-
-          let statusBadgeHtml = '';
-          if (item.status && item.status !== '--') {
-            statusBadgeHtml = `<span class="chart-status-badge">${item.status}</span>`;
-          }
-
-          let barsHtml = '';
-          if (ehReavaliacao) {
-            barsHtml += `
-              <div class="chart-bar-row">
-                <span class="chart-bar-label">Anterior (${avBase ? avBase.data : 'Base'}):</span>
-                <div class="chart-bar-track">
-                  <div class="chart-bar-fill base" style="width: ${pctBase.toFixed(1)}%;"></div>
-                  <span class="chart-bar-val">${item.vBase}</span>
-                </div>
-              </div>
-              <div class="chart-bar-row">
-                <span class="chart-bar-label active">Atual (${avTarget ? avTarget.data : 'Atual'}):</span>
-                <div class="chart-bar-track">
-                  <div class="chart-bar-fill target" style="width: ${pctTarget.toFixed(1)}%;"></div>
-                  <span class="chart-bar-val">${item.vTarget}</span>
-                </div>
-              </div>
-            `;
+          let deltaBadge = '';
+          if (evalsSlice.length > 1 && valoresValidos.length > 1) {
+            const vPrim = valoresValidos[0];
+            const vUlt = valoresValidos[valoresValidos.length - 1];
+            const diff = vUlt - vPrim;
+            const sinal = diff > 0 ? '+' : '';
+            const diffFormatada = Number.isInteger(diff) ? diff : diff.toFixed(1);
+            deltaBadge = 'Δ ' + sinal + diffFormatada + (m.unidade ? ' ' + m.unidade : '');
           } else {
-            barsHtml += `
-              <div class="chart-bar-row">
-                <span class="chart-bar-label active">Resultado (${avTarget ? avTarget.data : 'Atual'}):</span>
-                <div class="chart-bar-track">
-                  <div class="chart-bar-fill target" style="width: ${pctTarget.toFixed(1)}%;"></div>
-                  <span class="chart-bar-val">${item.vTarget}</span>
-                </div>
-              </div>
-            `;
+            deltaBadge = 'Medição Inicial';
           }
+
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const vUltimo = m.extrair(ultimoEv);
+          const statusTexto = m.classificar(vUltimo, ultimoEv);
 
           html += `
-            <div class="chart-item-card">
-              <div class="chart-item-header">
-                <span class="chart-item-name">${item.param}</span>
-                <div class="chart-item-meta">
-                  ${deltaBadgeHtml}
-                  ${statusBadgeHtml}
+            <div class="chart-mixed-card">
+              <div class="chart-mixed-header">
+                <div>
+                  <span class="chart-mixed-title">${m.nome}</span>
+                  <span style="font-size: 11px; color: #64748b; margin-left: 6px; font-weight: 500;">
+                    (Último: <strong style="color: #1F4E78;">${vUltimo != null ? vUltimo + (m.unidade ? ' ' + m.unidade : '') : '--'}</strong>)
+                  </span>
+                </div>
+                <div class="chart-mixed-meta">
+                  ${deltaBadge ? `<span class="chart-delta-badge">${deltaBadge}</span>` : ''}
+                  ${statusTexto && statusTexto !== '--' ? `<span class="chart-status-badge">${statusTexto}</span>` : ''}
                 </div>
               </div>
-              <div class="chart-bars-container">
-                ${barsHtml}
+              <div class="chart-canvas-box">
+                <canvas id="canvas-chart-${m.id}"></canvas>
               </div>
             </div>
           `;
         });
+
+        html += `</div>`;
       }
 
       container.innerHTML = html;
+
+      // Renderiza Gráfico em Destaque
+      renderizarCardDestaque(metricaDestaque, labels, evalsSlice);
+
+      // Renderiza cada gráfico da grade
+      metricas.forEach(m => {
+        const valores = evalsSlice.map(ev => m.extrair(ev));
+        criarGraficoMisto('canvas-chart-' + m.id, labels, valores, m.unidade, m.nome);
+      });
+    }
+
+    function renderizarGraficosComparativos(itens, ehReavaliacao, avBase, avTarget) {
+      // Mantido para compatibilidade retroativa
     }
 
     // Tabela Detalhada - Idosos
@@ -7024,8 +7844,6 @@
           <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
         </tr>
       `).join('');
-
-      renderizarGraficosComparativos(itensVisiveis, ehReavaliacao, base, target);
     }
 
     // Tabela Detalhada - Adultos
@@ -7255,8 +8073,6 @@
           <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
         </tr>
       `).join('');
-
-      renderizarGraficosComparativos(itensVisiveis, ehReavaliacao, base, target);
     }
 
     // Tabela Detalhada - Crianças e Adolescentes
@@ -7399,8 +8215,6 @@
           <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
         </tr>
       `).join('');
-
-      renderizarGraficosComparativos(itens, ehReavaliacao, base, target);
     }
 
     function iniciarReavaliacao() {
