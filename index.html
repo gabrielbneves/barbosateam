@@ -793,7 +793,10 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      box-shadow: 0 4px 12px rgba(20, 53, 82, 0.15);
+      box-shadow: 0 6px 20px rgba(20, 53, 82, 0.25);
+      position: sticky;
+      top: 10px;
+      z-index: 40;
     }
     .treadmill-timer-header {
       display: flex;
@@ -853,6 +856,13 @@
     .treadmill-btn-pause:hover {
       background: #b45309;
     }
+    .treadmill-btn-recovery {
+      background: #0284c7;
+      color: #ffffff;
+    }
+    .treadmill-btn-recovery:hover {
+      background: #0369a1;
+    }
     .treadmill-btn-reset {
       background: rgba(255, 255, 255, 0.2);
       color: #ffffff;
@@ -872,11 +882,14 @@
     }
     .treadmill-table-wrapper {
       overflow-x: auto;
+      overflow-y: auto;
+      max-height: 480px;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       background: #ffffff;
       margin-bottom: 16px;
       -webkit-overflow-scrolling: touch;
+      scroll-behavior: smooth;
     }
     .treadmill-table {
       width: 100%;
@@ -892,6 +905,10 @@
       text-align: center;
       border-bottom: 2px solid #cbd5e1;
       border-right: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     .treadmill-table td {
       padding: 8px 6px;
@@ -2047,72 +2064,169 @@
 
         <form id="form-testes-adulto" onsubmit="salvarPasso3Adulto(event)">
 
-          <!-- TESTE 1: TESTE DE FLEXÕES DE BRAÇO - REPETIÇÕES MÁXIMAS -->
+          <!-- TESTE 1: AVALIAÇÃO DE FORÇA - MEMBROS SUPERIORES (MMSS) -->
           <div class="test-box">
             <div class="test-header">
-              <h4>1. Teste de Flexões de Braço - Repetições Máximas (Push-up Test)</h4>
-              <span id="ad_badge_flexoes" class="status-badge badge-neutral">Aguardando dados</span>
+              <div>
+                <h4 id="ad_titulo_mmss">1. Avaliação de Força - Membros Superiores</h4>
+                <p style="font-size: 11px; color: #64748b; margin-top: 2px;">Escolha o exercício e a fórmula científica para predição de 1RM</p>
+              </div>
+              <span id="ad_badge_mmss" class="status-badge badge-neutral">Aguardando dados</span>
             </div>
-            <div class="test-instructions">
-              <strong>Como aplicar:</strong> Teste de força e resistência muscular de membros superiores e tronco (peitoral, deltoide anterior e tríceps). Executar o maior número possível de repetições completas até a fadiga voluntária ou falha técnica. Homens utilizam apoio tradicional nas pontas dos pés; mulheres podem utilizar a posição com apoio nos joelhos. Digite o total de repetições realizadas.
-            </div>
-            <div class="form-grid">
+            
+            <div class="form-grid" style="margin-bottom: 12px;">
               <div class="form-group">
-                <label for="ad_flexoes_reps">Repetições Máximas Realizadas</label>
-                <input type="number" id="ad_flexoes_reps" min="0" max="150" placeholder="Ex: 28" oninput="calcularFlexoesAdulto()">
-                <span style="font-size: 10px; color: #64748b;">(Até a fadiga concêntrica / falha técnica)</span>
+                <label for="ad_mmss_exercicio">Exercício de MMSS (Barra Suspensa):</label>
+                <select id="ad_mmss_exercicio" onchange="aoTrocarExercicioMMSS()">
+                  <option value="flexao">Flexão de Braços (Push-up Test)</option>
+                  <option value="supino">Supino Reto (Barra / Halteres)</option>
+                  <option value="puxada">Puxada no Pulley / Puxada Alta</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ad_mmss_formula">Fórmula Científica de 1RM:</label>
+                <select id="ad_mmss_formula" onchange="calcularForcaMMSS()">
+                  <option value="brzycki">Brzycki (1993) [Padrão Ouro MMSS]</option>
+                  <option value="epley">Epley (1985)</option>
+                  <option value="lander">Lander (1985)</option>
+                  <option value="mayhew">Mayhew et al. (1992)</option>
+                  <option value="wathan">Wathan (1994)</option>
+                </select>
               </div>
             </div>
 
-            <div class="results-grid" style="margin-top: 12px;">
-              <div class="result-card">
-                <h4>Repetições Realizadas</h4>
-                <div class="value" id="ad_res_flexoes_reps">-- reps</div>
-                <span id="ad_res_flexoes_sub" class="status-badge badge-neutral">Aguardando teste</span>
-              </div>
-              <div class="result-card">
-                <h4>Classificação Normativa</h4>
-                <div class="value" id="ad_res_flexoes_badge" class="status-badge badge-neutral" style="font-size: 13px; padding: 6px 10px; height: auto;">Classificação Funcional</div>
-                <span class="status-badge badge-neutral" style="margin-top: 4px;">Tabela por Idade &amp; Sexo</span>
-              </div>
+            <div id="ad_mmss_instrucoes" class="test-instructions">
+              <strong>Como aplicar:</strong> Teste de força e resistência de membros superiores e tronco (peitoral, deltoide anterior e tríceps). Executar repetições máximas completas até a fadiga voluntária ou falha técnica.
             </div>
-            <p id="ad_flexoes_feedback" style="font-size: 12px; margin-top: 8px; color: #475569;"></p>
-          </div>
 
-          <!-- TESTE 2: TESTE DE REPETIÇÕES MÁXIMAS NA CADEIRA EXTENSORA -->
-          <div class="test-box">
-            <div class="test-header">
-              <h4>2. Teste de Repetições Máximas (RM) - Cadeira Extensora</h4>
-              <span id="ad_badge_extensora" class="status-badge badge-neutral">Aguardando dados</span>
-            </div>
-            <div class="test-instructions">
-              <strong>Como aplicar:</strong> Teste de força muscular isolada de extensores do joelho (quadríceps). Pode ser realizado como <strong>1RM direto</strong> ou teste submáximo de repetições máximas (1 a 12 repetições até a falha técnica). Digite a carga selecionada na máquina (em kg) e as repetições realizadas com amplitude completa. O sistema calcula o <strong>1RM Estimado</strong> e a <strong>Força Relativa</strong> (1RM / Peso Corporal).
-            </div>
-            <div class="form-grid">
+            <!-- Campos quando for Flexão de Braços -->
+            <div id="ad_mmss_campos_flexao" class="form-grid">
               <div class="form-group">
-                <label for="ad_extensora_carga">Carga na Máquina (kg)</label>
-                <input type="number" step="0.5" id="ad_extensora_carga" min="5" max="300" placeholder="Ex: 55.0" oninput="calcularRMExtensoraAdulto()">
+                <label for="ad_flexao_apoio">Variação / Tipo de Apoio:</label>
+                <select id="ad_flexao_apoio" onchange="calcularForcaMMSS()">
+                  <option value="tradicional">Pontas dos Pés / Tradicional (64% do Peso Corporal)</option>
+                  <option value="joelhos">Apoio nos Joelhos / Adaptado (53% do Peso Corporal)</option>
+                </select>
               </div>
               <div class="form-group">
-                <label for="ad_extensora_reps">Repetições Máximas Realizadas (1 a 15)</label>
-                <input type="number" id="ad_extensora_reps" min="1" max="15" placeholder="Ex: 8" oninput="calcularRMExtensoraAdulto()">
+                <label for="ad_flexoes_reps">Repetições Máximas Realizadas (Push-ups):</label>
+                <input type="number" id="ad_flexoes_reps" min="0" max="150" placeholder="Ex: 28" oninput="calcularForcaMMSS()">
+                <span style="font-size: 10px; color: #64748b;">(Até a falha concêntrica / fadiga voluntária)</span>
+              </div>
+              <div class="form-group">
+                <label for="ad_flexao_sobrecarga">Sobrecarga Adicional em kg (Opcional):</label>
+                <input type="number" step="0.5" id="ad_flexao_sobrecarga" min="0" max="100" placeholder="0.0" value="0" oninput="calcularForcaMMSS()">
+                <span style="font-size: 10px; color: #64748b;">(Colete de peso ou anilha nas costas, se houver)</span>
+              </div>
+            </div>
+
+            <!-- Campos quando for Supino ou Puxada -->
+            <div id="ad_mmss_campos_peso" class="form-grid" style="display: none;">
+              <div class="form-group">
+                <label for="ad_mmss_carga" id="lbl_ad_mmss_carga">Carga Levantada (kg):</label>
+                <input type="number" step="0.5" id="ad_mmss_carga" min="5" max="350" placeholder="Ex: 80.0" oninput="calcularForcaMMSS()">
+              </div>
+              <div class="form-group">
+                <label for="ad_mmss_reps">Repetições Máximas Realizadas (1 a 15):</label>
+                <input type="number" id="ad_mmss_reps" min="1" max="15" placeholder="Ex: 6" oninput="calcularForcaMMSS()">
                 <span style="font-size: 10px; color: #64748b;">(Digite 1 se foi teste de 1RM direto)</span>
               </div>
             </div>
 
             <div class="results-grid" style="margin-top: 12px;">
               <div class="result-card">
-                <h4>1RM Estimado</h4>
-                <div class="value" id="ad_res_extensora_1rm">-- kg</div>
-                <span id="ad_res_extensora_sub" class="status-badge badge-neutral">Aguardando teste</span>
+                <h4 id="lbl_ad_res_mmss_1rm">1RM Estimado</h4>
+                <div class="value" id="ad_res_mmss_1rm">-- kg</div>
+                <span id="ad_res_mmss_sub" class="status-badge badge-neutral">Aguardando teste</span>
               </div>
               <div class="result-card">
                 <h4>Força Relativa (1RM / Peso)</h4>
-                <div class="value" id="ad_res_extensora_rel">-- x PC</div>
-                <span id="ad_res_extensora_badge_rel" class="status-badge badge-neutral">Classificação Funcional</span>
+                <div class="value" id="ad_res_mmss_rel">-- x PC</div>
+                <span id="ad_res_mmss_badge_rel" class="status-badge badge-neutral">Classificação Funcional</span>
+              </div>
+              <div class="result-card" id="card_res_flexoes_acsm" style="display: block;">
+                <h4>Classificação ACSM</h4>
+                <div class="value" id="ad_res_flexoes_badge" class="status-badge badge-neutral" style="font-size: 13px; padding: 6px 10px; height: auto;">Classificação Reps</div>
+                <span id="ad_res_flexoes_reps" style="display: none;">-- reps</span>
+                <span id="ad_badge_flexoes" style="display: none;"></span>
+                <span class="status-badge badge-neutral" style="margin-top: 4px;">Normas por Idade &amp; Sexo</span>
               </div>
             </div>
-            <p id="ad_extensora_feedback" style="font-size: 12px; margin-top: 8px; color: #475569;"></p>
+            <p id="ad_mmss_feedback" style="font-size: 12px; margin-top: 8px; color: #475569;"></p>
+            <p id="ad_flexoes_feedback" style="display: none;"></p>
+          </div>
+
+          <!-- TESTE 2: AVALIAÇÃO DE FORÇA - MEMBROS INFERIORES (MMII) -->
+          <div class="test-box">
+            <div class="test-header">
+              <div>
+                <h4 id="ad_titulo_mmii">2. Avaliação de Força - Membros Inferiores</h4>
+                <p style="font-size: 11px; color: #64748b; margin-top: 2px;">Escolha o exercício e a fórmula científica para predição de 1RM</p>
+              </div>
+              <span id="ad_badge_mmii" class="status-badge badge-neutral">Aguardando dados</span>
+              <span id="ad_badge_extensora" style="display: none;"></span>
+            </div>
+
+            <div class="form-grid" style="margin-bottom: 12px;">
+              <div class="form-group">
+                <label for="ad_mmii_exercicio">Exercício de MMII (Barra Suspensa):</label>
+                <select id="ad_mmii_exercicio" onchange="aoTrocarExercicioMMII()">
+                  <option value="extensora">Cadeira Extensora (Extensão de Joelhos)</option>
+                  <option value="agachamento">Agachamento (Back Squat / Barra Livre)</option>
+                  <option value="leg_press">Leg Press (45º / Horizontal)</option>
+                  <option value="terra">Levantamento Terra (Deadlift)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="ad_mmii_formula">Fórmula Científica de 1RM:</label>
+                <select id="ad_mmii_formula" onchange="calcularForcaMMII()">
+                  <option value="brzycki">Brzycki (1993) [Padrão para Cadeira Extensora]</option>
+                  <option value="epley">Epley (1985) [Padrão Ouro para Agachamento e Terra]</option>
+                  <option value="lander">Lander (1985) [Recomendada para Leg Press]</option>
+                  <option value="wathan">Wathan (1994)</option>
+                  <option value="mayhew">Mayhew et al. (1992)</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="ad_mmii_instrucoes" class="test-instructions">
+              <strong>Como aplicar:</strong> Teste de força dinâmica máxima (1RM direto) ou submáximo (1 a 12 repetições até a falha concêntrica). Digite a carga selecionada e as repetições realizadas com amplitude completa.
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="ad_mmii_carga" id="lbl_ad_mmii_carga">Carga Selecionada (kg):</label>
+                <input type="number" step="0.5" id="ad_mmii_carga" min="5" max="600" placeholder="Ex: 55.0" oninput="calcularForcaMMII()">
+                <!-- Input oculto para compatibilidade com seletores antigos -->
+                <input type="hidden" id="ad_extensora_carga">
+              </div>
+              <div class="form-group">
+                <label for="ad_mmii_reps">Repetições Máximas Realizadas (1 a 15):</label>
+                <input type="number" id="ad_mmii_reps" min="1" max="15" placeholder="Ex: 8" oninput="calcularForcaMMII()">
+                <span style="font-size: 10px; color: #64748b;">(Digite 1 se foi teste de 1RM direto)</span>
+                <!-- Input oculto para compatibilidade com seletores antigos -->
+                <input type="hidden" id="ad_extensora_reps">
+              </div>
+            </div>
+
+            <div class="results-grid" style="margin-top: 12px;">
+              <div class="result-card">
+                <h4>1RM Estimado</h4>
+                <div class="value" id="ad_res_mmii_1rm">-- kg</div>
+                <span id="ad_res_mmii_sub" class="status-badge badge-neutral">Aguardando teste</span>
+                <span id="ad_res_extensora_1rm" style="display: none;">-- kg</span>
+                <span id="ad_res_extensora_sub" style="display: none;"></span>
+              </div>
+              <div class="result-card">
+                <h4>Força Relativa (1RM / Peso)</h4>
+                <div class="value" id="ad_res_mmii_rel">-- x PC</div>
+                <span id="ad_res_mmii_badge_rel" class="status-badge badge-neutral">Classificação Funcional</span>
+                <span id="ad_res_extensora_rel" style="display: none;">-- x PC</span>
+                <span id="ad_res_extensora_badge_rel" style="display: none;"></span>
+              </div>
+            </div>
+            <p id="ad_mmii_feedback" style="font-size: 12px; margin-top: 8px; color: #475569;"></p>
+            <p id="ad_extensora_feedback" style="display: none;"></p>
           </div>
 
           <!-- TESTE 3: TESTE DE ESFORÇO PROGRESSIVO NA ESTEIRA (OPCIONAL) -->
@@ -2193,6 +2307,22 @@
                         <button type="button" class="treadmill-stepper-btn" onclick="ajustarInclinacao(0.5)" title="Aumentar inclinação em 0.5%">+</button>
                       </div>
                     </div>
+                    <div class="form-group">
+                      <label for="ad_proto_recovery_dur">Tempo de Recuperação (min):</label>
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTempoRecuperacao(-1)" title="Diminuir 1 minuto de recuperação">-</button>
+                        <input type="number" id="ad_proto_recovery_dur" class="treadmill-stepper-input" value="3" min="1" max="10" step="1" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarTempoRecuperacao(1)" title="Aumentar 1 minuto de recuperação">+</button>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="ad_proto_recovery_vel">Velocidade da Recuperação (km/h):</label>
+                      <div class="treadmill-stepper">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeRecuperacao(-0.5)" title="Diminuir velocidade de recuperação em 0.5 km/h">-</button>
+                        <input type="number" id="ad_proto_recovery_vel" class="treadmill-stepper-input" value="4.0" min="1.0" max="10.0" step="0.1" oninput="gerarTabelaProtocoloEsteira()">
+                        <button type="button" class="treadmill-stepper-btn" onclick="ajustarVelocidadeRecuperacao(0.5)" title="Aumentar velocidade de recuperação em 0.5 km/h">+</button>
+                      </div>
+                    </div>
                   </div>
                   <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                     <span style="font-size: 11px; font-weight: 700; color: #475569;">Presets Rápidos:</span>
@@ -2239,6 +2369,12 @@
                     </button>
                     <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="ajustarTempoAquecimento(-1)" title="Reduzir 1 minuto de aquecimento do teste">
                       -1 min Aquec.
+                    </button>
+                    <button type="button" id="treadmill-btn-recovery" class="treadmill-btn treadmill-btn-recovery" onclick="iniciarRecuperacaoEsteira()" title="Iniciar fase de recuperação imediatamente (desaquecimento ativo e registro de FC)">
+                      Iniciar Recuperação
+                    </button>
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="ajustarTempoRecuperacao(1)" title="Adicionar 1 minuto de recuperação">
+                      +1 min Rec.
                     </button>
                     <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="adicionarMinutoProtocoloEsteira()">
                       + Minuto Extra
@@ -2363,6 +2499,11 @@
                   <h4>Critério de Esforço (% FCmáx)</h4>
                   <div class="value" id="ad_res_fc_atingida">--</div>
                   <span id="ad_res_fc_criterio_badge" class="status-badge badge-neutral">Aguardando FC</span>
+                </div>
+                <div class="result-card" id="card_res_rfc">
+                  <h4>Recuperação FC (1º min)</h4>
+                  <div class="value" id="ad_res_rfc">-- bpm</div>
+                  <span id="ad_res_rfc_badge" class="status-badge badge-neutral">Aguardando recuperação</span>
                 </div>
               </div>
             </div>
@@ -3733,7 +3874,7 @@
     var bancoDados = carregarBanco();
 
     // Estado da sessão atual
-    let dadosAluno = {
+    var dadosAluno = {
       id: null,
       identificacao: {},
       grupoEtario: 'idoso',
@@ -3741,6 +3882,7 @@
       composicao: {},
       testes: {}
     };
+    window.dadosAluno = dadosAluno;
 
     window.addEventListener('DOMContentLoaded', () => {
       // Aplica o estado de autenticação (Portal de Login vs Sistema)
@@ -3922,8 +4064,46 @@
       }
 
       if (document.getElementById('ad_flexoes_reps')) document.getElementById('ad_flexoes_reps').value = '';
+      if (document.getElementById('ad_flexao_sobrecarga')) document.getElementById('ad_flexao_sobrecarga').value = '0';
+      if (document.getElementById('ad_flexao_apoio')) document.getElementById('ad_flexao_apoio').selectedIndex = 0;
+      if (document.getElementById('ad_mmss_exercicio')) document.getElementById('ad_mmss_exercicio').selectedIndex = 0;
+      if (document.getElementById('ad_mmss_carga')) document.getElementById('ad_mmss_carga').value = '';
+      if (document.getElementById('ad_mmss_reps')) document.getElementById('ad_mmss_reps').value = '';
+      if (document.getElementById('ad_mmii_exercicio')) document.getElementById('ad_mmii_exercicio').selectedIndex = 0;
+      if (document.getElementById('ad_mmii_carga')) document.getElementById('ad_mmii_carga').value = '';
+      if (document.getElementById('ad_mmii_reps')) document.getElementById('ad_mmii_reps').value = '';
       if (document.getElementById('ad_extensora_carga')) document.getElementById('ad_extensora_carga').value = '';
       if (document.getElementById('ad_extensora_reps')) document.getElementById('ad_extensora_reps').value = '';
+      if (document.getElementById('ad_res_mmss_1rm')) document.getElementById('ad_res_mmss_1rm').textContent = '-- kg';
+      if (document.getElementById('ad_res_mmss_sub')) {
+        document.getElementById('ad_res_mmss_sub').className = 'status-badge badge-neutral';
+        document.getElementById('ad_res_mmss_sub').textContent = 'Aguardando teste';
+      }
+      if (document.getElementById('ad_res_mmss_rel')) document.getElementById('ad_res_mmss_rel').textContent = '-- x PC';
+      if (document.getElementById('ad_res_mmss_badge_rel')) {
+        document.getElementById('ad_res_mmss_badge_rel').className = 'status-badge badge-neutral';
+        document.getElementById('ad_res_mmss_badge_rel').textContent = 'Classificação Funcional';
+      }
+      if (document.getElementById('ad_badge_mmss')) {
+        document.getElementById('ad_badge_mmss').className = 'status-badge badge-neutral';
+        document.getElementById('ad_badge_mmss').textContent = 'Aguardando dados';
+      }
+      if (document.getElementById('ad_mmss_feedback')) document.getElementById('ad_mmss_feedback').textContent = '';
+      if (document.getElementById('ad_res_mmii_1rm')) document.getElementById('ad_res_mmii_1rm').textContent = '-- kg';
+      if (document.getElementById('ad_res_mmii_sub')) {
+        document.getElementById('ad_res_mmii_sub').className = 'status-badge badge-neutral';
+        document.getElementById('ad_res_mmii_sub').textContent = 'Aguardando teste';
+      }
+      if (document.getElementById('ad_res_mmii_rel')) document.getElementById('ad_res_mmii_rel').textContent = '-- x PC';
+      if (document.getElementById('ad_res_mmii_badge_rel')) {
+        document.getElementById('ad_res_mmii_badge_rel').className = 'status-badge badge-neutral';
+        document.getElementById('ad_res_mmii_badge_rel').textContent = 'Classificação Funcional';
+      }
+      if (document.getElementById('ad_badge_mmii')) {
+        document.getElementById('ad_badge_mmii').className = 'status-badge badge-neutral';
+        document.getElementById('ad_badge_mmii').textContent = 'Aguardando dados';
+      }
+      if (document.getElementById('ad_mmii_feedback')) document.getElementById('ad_mmii_feedback').textContent = '';
       if (document.getElementById('ad_res_flexoes_reps')) document.getElementById('ad_res_flexoes_reps').textContent = '-- reps';
       if (document.getElementById('ad_badge_flexoes')) {
         document.getElementById('ad_badge_flexoes').className = 'status-badge badge-neutral';
@@ -4226,12 +4406,6 @@
         const ultAv = aluno.avaliacoes[aluno.avaliacoes.length - 1];
         dadosAluno.composicao = { ...ultAv.composicao };
         dadosAluno.testes = { ...ultAv.testes };
-        if (ultAv.testes) {
-          if (document.getElementById('ad_flexoes_reps')) document.getElementById('ad_flexoes_reps').value = ultAv.testes.flexoesReps || '';
-          if (document.getElementById('ad_extensora_carga')) document.getElementById('ad_extensora_carga').value = ultAv.testes.extensoraCarga || '';
-          if (document.getElementById('ad_extensora_reps')) document.getElementById('ad_extensora_reps').value = ultAv.testes.extensoraReps || '';
-        }
-
         if (aluno.idade < 18) {
           if (ultAv.composicao) {
             if (document.getElementById('ped_data_avaliacao')) document.getElementById('ped_data_avaliacao').value = ultAv.composicao.data || '';
@@ -4259,8 +4433,7 @@
             }
             if (document.getElementById('ped_aerobio_metros')) document.getElementById('ped_aerobio_metros').value = ultAv.testes.aerobioMetros || '';
           }
-        }
-        if (aluno.idade >= 60) {
+        } else if (aluno.idade >= 60) {
           if (ultAv.composicao) {
             if (document.getElementById('data_avaliacao')) document.getElementById('data_avaliacao').value = ultAv.composicao.data || '';
             if (document.getElementById('idoso_peso')) document.getElementById('idoso_peso').value = ultAv.composicao.peso || '';
@@ -4293,6 +4466,80 @@
             if (document.getElementById('id_cardio_pfa')) document.getElementById('id_cardio_pfa').value = ultAv.testes.cardioPfa || '13';
             if (document.getElementById('id_cardio_par')) document.getElementById('id_cardio_par').value = ultAv.testes.cardioPar || '4';
           }
+        } else {
+          // Perfil Adulto (18 a 59 anos)
+          if (ultAv.composicao) {
+            if (document.getElementById('ad_data_avaliacao')) document.getElementById('ad_data_avaliacao').value = ultAv.composicao.data || '';
+            if (document.getElementById('ad_pa_sistolica')) document.getElementById('ad_pa_sistolica').value = ultAv.composicao.paSistolica || '';
+            if (document.getElementById('ad_pa_diastolica')) document.getElementById('ad_pa_diastolica').value = ultAv.composicao.paDiastolica || '';
+            if (document.getElementById('ad_fc_repouso')) document.getElementById('ad_fc_repouso').value = ultAv.composicao.fcRepouso || '';
+            if (document.getElementById('ad_peso')) document.getElementById('ad_peso').value = ultAv.composicao.peso || '';
+            if (document.getElementById('ad_altura')) document.getElementById('ad_altura').value = ultAv.composicao.altura || '';
+            if (document.getElementById('ad_cintura')) document.getElementById('ad_cintura').value = ultAv.composicao.cintura || '';
+            if (document.getElementById('ad_quadril')) document.getElementById('ad_quadril').value = ultAv.composicao.quadril || '';
+            if (document.getElementById('ad_metodo_gordura')) document.getElementById('ad_metodo_gordura').value = ultAv.composicao.metodoGordura || 'dobras';
+            if (ultAv.composicao.dobras) {
+              if (document.getElementById('ad_dobra_peitoral')) document.getElementById('ad_dobra_peitoral').value = ultAv.composicao.dobras.peitoral || '';
+              if (document.getElementById('ad_dobra_abdomen')) document.getElementById('ad_dobra_abdomen').value = ultAv.composicao.dobras.abdomen || '';
+              if (document.getElementById('ad_dobra_coxa_m')) document.getElementById('ad_dobra_coxa_m').value = ultAv.composicao.dobras.coxa || '';
+              if (document.getElementById('ad_dobra_triceps')) document.getElementById('ad_dobra_triceps').value = ultAv.composicao.dobras.triceps || '';
+              if (document.getElementById('ad_dobra_suprailiaca')) document.getElementById('ad_dobra_suprailiaca').value = ultAv.composicao.dobras.suprailiaca || '';
+              if (document.getElementById('ad_dobra_coxa_f')) document.getElementById('ad_dobra_coxa_f').value = ultAv.composicao.dobras.coxa || '';
+            }
+            if (document.getElementById('ad_bio_gordura')) document.getElementById('ad_bio_gordura').value = ultAv.composicao.percentualGordura || '';
+          }
+          if (ultAv.testes) {
+            // Módulo de Membros Superiores (MMSS)
+            if (ultAv.testes.forcaMMSS) {
+              const mmss = ultAv.testes.forcaMMSS;
+              if (document.getElementById('ad_mmss_exercicio')) document.getElementById('ad_mmss_exercicio').value = mmss.exercicio || 'flexao';
+              aoTrocarExercicioMMSS();
+              if (document.getElementById('ad_mmss_formula')) document.getElementById('ad_mmss_formula').value = mmss.formula || 'brzycki';
+              if (mmss.exercicio === 'flexao') {
+                if (document.getElementById('ad_flexao_apoio')) document.getElementById('ad_flexao_apoio').value = mmss.apoio || 'tradicional';
+                if (document.getElementById('ad_flexoes_reps')) document.getElementById('ad_flexoes_reps').value = mmss.reps || '';
+                if (document.getElementById('ad_flexao_sobrecarga')) document.getElementById('ad_flexao_sobrecarga').value = (mmss.sobrecarga != null ? mmss.sobrecarga : '0');
+              } else {
+                if (document.getElementById('ad_mmss_carga')) document.getElementById('ad_mmss_carga').value = mmss.carga || '';
+                if (document.getElementById('ad_mmss_reps')) document.getElementById('ad_mmss_reps').value = mmss.reps || '';
+              }
+            } else if (ultAv.testes.flexoesReps != null) {
+              if (document.getElementById('ad_mmss_exercicio')) document.getElementById('ad_mmss_exercicio').value = 'flexao';
+              aoTrocarExercicioMMSS();
+              if (document.getElementById('ad_flexoes_reps')) document.getElementById('ad_flexoes_reps').value = ultAv.testes.flexoesReps;
+            }
+
+            // Módulo de Membros Inferiores (MMII)
+            if (ultAv.testes.forcaMMII) {
+              const mmii = ultAv.testes.forcaMMII;
+              if (document.getElementById('ad_mmii_exercicio')) document.getElementById('ad_mmii_exercicio').value = mmii.exercicio || 'extensora';
+              aoTrocarExercicioMMII();
+              if (document.getElementById('ad_mmii_formula')) document.getElementById('ad_mmii_formula').value = mmii.formula || 'brzycki';
+              if (document.getElementById('ad_mmii_carga')) document.getElementById('ad_mmii_carga').value = mmii.carga || '';
+              if (document.getElementById('ad_mmii_reps')) document.getElementById('ad_mmii_reps').value = mmii.reps || '';
+              if (document.getElementById('ad_extensora_carga')) document.getElementById('ad_extensora_carga').value = mmii.carga || '';
+              if (document.getElementById('ad_extensora_reps')) document.getElementById('ad_extensora_reps').value = mmii.reps || '';
+            } else if (ultAv.testes.extensoraCarga != null) {
+              if (document.getElementById('ad_mmii_exercicio')) document.getElementById('ad_mmii_exercicio').value = 'extensora';
+              aoTrocarExercicioMMII();
+              if (document.getElementById('ad_mmii_carga')) document.getElementById('ad_mmii_carga').value = ultAv.testes.extensoraCarga;
+              if (document.getElementById('ad_mmii_reps')) document.getElementById('ad_mmii_reps').value = ultAv.testes.extensoraReps || '';
+              if (document.getElementById('ad_extensora_carga')) document.getElementById('ad_extensora_carga').value = ultAv.testes.extensoraCarga;
+              if (document.getElementById('ad_extensora_reps')) document.getElementById('ad_extensora_reps').value = ultAv.testes.extensoraReps || '';
+            }
+
+            // Teste de Esteira
+            if (document.getElementById('ad_check_esteira')) {
+              document.getElementById('ad_check_esteira').checked = !!ultAv.testes.fezEsteira;
+              alternarTesteEsteiraAdulto();
+            }
+            if (ultAv.testes.fezEsteira) {
+              if (document.getElementById('ad_esteira_vel_completa')) document.getElementById('ad_esteira_vel_completa').value = ultAv.testes.esteiraVelCompleta || '';
+              if (document.getElementById('ad_esteira_segundos')) document.getElementById('ad_esteira_segundos').value = ultAv.testes.esteiraSegundos || '';
+              if (document.getElementById('ad_esteira_fc_pico')) document.getElementById('ad_esteira_fc_pico').value = ultAv.testes.esteiraFcPico || '';
+              if (document.getElementById('ad_esteira_borg')) document.getElementById('ad_esteira_borg').value = ultAv.testes.esteiraBorg || '19';
+            }
+          }
         }
       }
 
@@ -4306,8 +4553,13 @@
         calcularCardioIdoso();
       } else if (aluno.idade >= 18) {
         atualizarCamposSexoAdulto();
-        calcularFlexoesAdulto();
-        calcularRMExtensoraAdulto();
+        alternarMetodoGorduraAdulto();
+        calcularComposicaoAdulto();
+        calcularForcaMMSS();
+        calcularForcaMMII();
+        if (document.getElementById('ad_check_esteira')?.checked) {
+          calcularEsteiraAdulto();
+        }
       } else {
         alternarMetodoGorduraJovem();
         alternarTesteAerobioJovem();
@@ -5308,6 +5560,116 @@
     // ==========================================
     // FUNÇÕES DE TESTES DO ADULTO (PASSO 3)
     // ==========================================
+
+    // Cálculo universal de 1RM com equações científicas
+    function calcularFormula1RM(formula, carga, reps) {
+      if (!carga || carga <= 0) return 0;
+      if (!reps || reps <= 1) return Number(carga.toFixed(1));
+      let rm = carga;
+      switch (formula) {
+        case 'epley':
+          // Epley (1985): 1RM = Carga * (1 + 0.0333 * reps)
+          rm = carga * (1 + (0.0333 * reps));
+          break;
+        case 'lander':
+          // Lander (1985): 1RM = (100 * Carga) / (101.3 - 2.67123 * reps)
+          const divLander = 101.3 - (2.67123 * reps);
+          rm = divLander > 0 ? (100 * carga) / divLander : carga * 1.5;
+          break;
+        case 'mayhew':
+          // Mayhew et al. (1992): 1RM = (100 * Carga) / (52.2 + 41.9 * e^(-0.055 * reps))
+          rm = (100 * carga) / (52.2 + (41.9 * Math.exp(-0.055 * reps)));
+          break;
+        case 'wathan':
+          // Wathan (1994): 1RM = (100 * Carga) / (48.8 + 53.8 * e^(-0.075 * reps))
+          rm = (100 * carga) / (48.8 + (53.8 * Math.exp(-0.075 * reps)));
+          break;
+        case 'brzycki':
+        default:
+          // Brzycki (1993): 1RM = Carga / (1.0278 - 0.0278 * reps)
+          const divBrzycki = 1.0278 - (0.0278 * reps);
+          rm = divBrzycki > 0 ? (carga / divBrzycki) : carga * 1.5;
+          break;
+      }
+      return Number(rm.toFixed(1));
+    }
+
+    function obterNomeFormula(formula) {
+      switch (formula) {
+        case 'epley': return 'Epley (1985)';
+        case 'lander': return 'Lander (1985)';
+        case 'mayhew': return 'Mayhew et al. (1992)';
+        case 'wathan': return 'Wathan (1994)';
+        case 'brzycki':
+        default: return 'Brzycki (1993)';
+      }
+    }
+
+    function aoTrocarExercicioMMSS() {
+      const ex = document.getElementById('ad_mmss_exercicio')?.value || 'flexao';
+      const fSelect = document.getElementById('ad_mmss_formula');
+      const camposFlexao = document.getElementById('ad_mmss_campos_flexao');
+      const camposPeso = document.getElementById('ad_mmss_campos_peso');
+      const cardFlexaoAcsm = document.getElementById('card_res_flexoes_acsm');
+      const lblCarga = document.getElementById('lbl_ad_mmss_carga');
+      const lbl1RM = document.getElementById('lbl_ad_res_mmss_1rm');
+      const instr = document.getElementById('ad_mmss_instrucoes');
+
+      if (ex === 'flexao') {
+        if (camposFlexao) camposFlexao.style.display = 'grid';
+        if (camposPeso) camposPeso.style.display = 'none';
+        if (cardFlexaoAcsm) cardFlexaoAcsm.style.display = 'block';
+        if (lbl1RM) lbl1RM.textContent = '1RM Equivalente (Empurrar)';
+        if (fSelect) fSelect.value = 'brzycki';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de flexões de braço. Homens utilizam apoio nas pontas dos pés (64% PC); mulheres podem utilizar apoio nos joelhos (53% PC). O sistema calcula o 1RM equivalente de empurrar e a classificação normativa de repetições do ACSM.';
+      } else if (ex === 'supino') {
+        if (camposFlexao) camposFlexao.style.display = 'none';
+        if (camposPeso) camposPeso.style.display = 'grid';
+        if (cardFlexaoAcsm) cardFlexaoAcsm.style.display = 'none';
+        if (lblCarga) lblCarga.textContent = 'Carga Levantada no Supino (kg):';
+        if (lbl1RM) lbl1RM.textContent = '1RM Estimado no Supino';
+        if (fSelect) fSelect.value = 'brzycki';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força dinâmica máxima ou submáxima no Supino Reto (barra ou halteres). Realizar repetições completas (1 a 12 reps) até a falha técnica. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+      } else if (ex === 'puxada') {
+        if (camposFlexao) camposFlexao.style.display = 'none';
+        if (camposPeso) camposPeso.style.display = 'grid';
+        if (cardFlexaoAcsm) cardFlexaoAcsm.style.display = 'none';
+        if (lblCarga) lblCarga.textContent = 'Carga Levantada na Puxada (kg):';
+        if (lbl1RM) lbl1RM.textContent = '1RM Estimado na Puxada';
+        if (fSelect) fSelect.value = 'brzycki';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de puxada vertical (Lat Pulldown no pulley alto). Realizar repetições com pegada pronada ou supinada até a falha técnica. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+      }
+
+      calcularForcaMMSS();
+    }
+
+    function aoTrocarExercicioMMII() {
+      const ex = document.getElementById('ad_mmii_exercicio')?.value || 'extensora';
+      const fSelect = document.getElementById('ad_mmii_formula');
+      const lblCarga = document.getElementById('lbl_ad_mmii_carga');
+      const instr = document.getElementById('ad_mmii_instrucoes');
+
+      if (ex === 'agachamento') {
+        if (lblCarga) lblCarga.textContent = 'Carga no Agachamento (kg - Barra + Anilhas):';
+        if (fSelect) fSelect.value = 'epley';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de membros inferiores no Agachamento (Back Squat). Realizar repetições com amplitude completa até a falha concêntrica. Fórmula recomendada: <strong>Epley (1985)</strong>.';
+      } else if (ex === 'leg_press') {
+        if (lblCarga) lblCarga.textContent = 'Carga no Leg Press (kg):';
+        if (fSelect) fSelect.value = 'lander';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força em máquina de Leg Press (45º ou horizontal). Descer até 90º de flexão dos joelhos e empurrar até a extensão controlada. Fórmula recomendada: <strong>Lander (1985)</strong>.';
+      } else if (ex === 'terra') {
+        if (lblCarga) lblCarga.textContent = 'Carga no Levantamento Terra (kg):';
+        if (fSelect) fSelect.value = 'epley';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força multiarticular de cadeia posterior no Levantamento Terra (Deadlift). Levantar a barra do chão mantendo coluna neutra. Fórmula recomendada: <strong>Epley (1985)</strong>.';
+      } else {
+        if (lblCarga) lblCarga.textContent = 'Carga na Cadeira Extensora (kg):';
+        if (fSelect) fSelect.value = 'brzycki';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força isolada de extensores do joelho (quadríceps). Digite a carga selecionada e as repetições realizadas com amplitude completa. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+      }
+
+      calcularForcaMMII();
+    }
+
     function calcularFlexoesAdulto() {
       const repsInput = document.getElementById('ad_flexoes_reps')?.value;
       const badge = document.getElementById('ad_badge_flexoes');
@@ -5335,7 +5697,6 @@
         resSub.textContent = (sexo === 'M') ? 'Apoio tradicional (pés)' : 'Apoio modificado (joelhos)';
       }
 
-      // Tabela de Classificação Normativa ACSM (10ª/11ª ed. & CSEP)
       let statusTxt = '';
       let badgeClass = 'badge-ok';
       let feedbackTxt = '';
@@ -5367,7 +5728,6 @@
           else { statusTxt = 'Abaixo da Média (≤6 reps)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força muscular de membros superiores.`; }
         }
       } else {
-        // Mulheres (com apoio nos joelhos)
         if (idade <= 29) {
           if (reps >= 30) { statusTxt = 'Excelente (≥30 reps)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente nível de resistência muscular de membros superiores (${reps} reps).`; }
           else if (reps >= 21) { statusTxt = 'Bom (21-29 reps)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom desempenho na resistência de empurrar (${reps} reps).`; }
@@ -5402,24 +5762,178 @@
       return { reps, status: statusTxt };
     }
 
-    function calcularRMExtensoraAdulto() {
-      const cargaInput = document.getElementById('ad_extensora_carga')?.value;
-      const repsInput = document.getElementById('ad_extensora_reps')?.value;
-      const badge = document.getElementById('ad_badge_extensora');
-      const res1RM = document.getElementById('ad_res_extensora_1rm');
-      const resSub = document.getElementById('ad_res_extensora_sub');
-      const resRel = document.getElementById('ad_res_extensora_rel');
-      const badgeRel = document.getElementById('ad_res_extensora_badge_rel');
-      const fb = document.getElementById('ad_extensora_feedback');
+    function calcularForcaMMSS() {
+      const ex = document.getElementById('ad_mmss_exercicio')?.value || 'flexao';
+      const formula = document.getElementById('ad_mmss_formula')?.value || 'brzycki';
+      const peso = parseFloat(document.getElementById('ad_peso')?.value) || (dadosAluno.composicao && dadosAluno.composicao.peso) || 70;
+      const sexo = dadosAluno.identificacao.sexo || document.getElementById('sexo')?.value || 'M';
+
+      const badgeHeader = document.getElementById('ad_badge_mmss');
+      const res1RM = document.getElementById('ad_res_mmss_1rm');
+      const resSub = document.getElementById('ad_res_mmss_sub');
+      const resRel = document.getElementById('ad_res_mmss_rel');
+      const badgeRel = document.getElementById('ad_res_mmss_badge_rel');
+      const fb = document.getElementById('ad_mmss_feedback');
+
+      let carga = 0;
+      let reps = 0;
+      let rm1 = 0;
+      let rel = 0;
+
+      if (ex === 'flexao') {
+        const apoio = document.getElementById('ad_flexao_apoio')?.value || (sexo === 'M' ? 'tradicional' : 'joelhos');
+        const sobrecarga = parseFloat(document.getElementById('ad_flexao_sobrecarga')?.value) || 0;
+        const repsInput = document.getElementById('ad_flexoes_reps')?.value;
+
+        const acsmRes = calcularFlexoesAdulto();
+
+        if (!repsInput || isNaN(repsInput) || parseInt(repsInput) <= 0) {
+          if (badgeHeader) { badgeHeader.className = 'status-badge badge-neutral'; badgeHeader.textContent = 'Aguardando dados'; }
+          if (res1RM) res1RM.textContent = '-- kg';
+          if (resSub) { resSub.className = 'status-badge badge-neutral'; resSub.textContent = 'Aguardando teste'; }
+          if (resRel) resRel.textContent = '-- x PC';
+          if (badgeRel) { badgeRel.className = 'status-badge badge-neutral'; badgeRel.textContent = 'Classificação Funcional'; }
+          if (fb) fb.textContent = '';
+          return { exercicio: ex, exercicioNome: 'Flexões de Braço', carga: null, reps: null, rm1: null, relativo: null, formula };
+        }
+
+        reps = parseInt(repsInput);
+        const fatorCorporal = (apoio === 'tradicional') ? 0.64 : 0.53;
+        carga = Number(((peso * fatorCorporal) + sobrecarga).toFixed(1));
+
+        rm1 = calcularFormula1RM(formula, carga, reps);
+        rel = Number((rm1 / peso).toFixed(2));
+
+        if (res1RM) res1RM.textContent = `${rm1.toFixed(1)} kg`;
+        if (resSub) {
+          resSub.className = 'status-badge badge-ok';
+          resSub.textContent = `Carga Equiv.: ${carga.toFixed(1)}kg (${reps} reps) | ${obterNomeFormula(formula)}`;
+        }
+        if (resRel) resRel.textContent = `${rel.toFixed(2)}x PC`;
+
+        let statusTxt = acsmRes.status || 'Classificado pelo ACSM';
+        let badgeClass = 'badge-ok';
+        if (badgeHeader) { badgeHeader.className = `status-badge ${badgeClass}`; badgeHeader.textContent = `${reps} reps - ${statusTxt.split('(')[0].trim()}`; }
+        if (badgeRel) { badgeRel.className = `status-badge ${badgeClass}`; badgeRel.textContent = `Potência: ${rel.toFixed(2)}x PC`; }
+        if (fb) fb.textContent = `Teste de flexões realizado com ${reps} repetições (${apoio === 'tradicional' ? 'pés' : 'joelhos'}, ${carga} kg equiv.). 1RM estimado de empurrar: ${rm1.toFixed(1)} kg (${rel.toFixed(2)}x PC) via ${obterNomeFormula(formula)}.`;
+
+        return { exercicio: ex, exercicioNome: 'Flexões de Braço', carga, reps, rm1, relativo: rel, formula, formulaNome: obterNomeFormula(formula), apoio, sobrecarga, classificacaoAcsm: statusTxt };
+
+      } else {
+        const cargaInput = document.getElementById('ad_mmss_carga')?.value;
+        const repsInput = document.getElementById('ad_mmss_reps')?.value;
+        const exNome = ex === 'supino' ? 'Supino Reto' : 'Puxada no Pulley';
+
+        if (!cargaInput || isNaN(cargaInput) || parseFloat(cargaInput) <= 0 || !repsInput || isNaN(repsInput) || parseInt(repsInput) <= 0) {
+          if (badgeHeader) { badgeHeader.className = 'status-badge badge-neutral'; badgeHeader.textContent = 'Aguardando dados'; }
+          if (res1RM) res1RM.textContent = '-- kg';
+          if (resSub) { resSub.className = 'status-badge badge-neutral'; resSub.textContent = 'Aguardando teste'; }
+          if (resRel) resRel.textContent = '-- x PC';
+          if (badgeRel) { badgeRel.className = 'status-badge badge-neutral'; badgeRel.textContent = 'Classificação Funcional'; }
+          if (fb) fb.textContent = '';
+          return { exercicio: ex, exercicioNome: exNome, carga: null, reps: null, rm1: null, relativo: null, formula };
+        }
+
+        carga = parseFloat(cargaInput);
+        reps = parseInt(repsInput);
+        rm1 = calcularFormula1RM(formula, carga, reps);
+        rel = Number((rm1 / peso).toFixed(2));
+
+        if (res1RM) res1RM.textContent = `${rm1.toFixed(1)} kg`;
+        if (resSub) {
+          resSub.className = 'status-badge badge-ok';
+          resSub.textContent = `${reps === 1 ? '1RM Direto' : `${reps} reps`} (${carga}kg) | ${obterNomeFormula(formula)}`;
+        }
+        if (resRel) resRel.textContent = `${rel.toFixed(2)}x PC`;
+
+        let statusTxt = '';
+        let badgeClass = 'badge-ok';
+        let feedbackTxt = '';
+
+        if (ex === 'supino') {
+          if (sexo === 'M') {
+            if (rel >= 1.25) { statusTxt = 'Excelente / Superior (≥ 1.25x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Força muscular superior no supino (${rel.toFixed(2)}x PC). Padrão avançado.`; }
+            else if (rel >= 1.00) { statusTxt = 'Bom / Acima da Média (1.00 a 1.24x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força no supino (${rel.toFixed(2)}x peso corporal).`; }
+            else if (rel >= 0.80) { statusTxt = 'Médio / Adequado (0.80 a 0.99x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada para o padrão médio masculino (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.65) { statusTxt = 'Regular (0.65 a 0.79x)'; badgeClass = 'badge-warn'; feedbackTxt = `Força ligeiramente abaixo da média recomendada no supino.`; }
+            else { statusTxt = 'Fraco (< 0.65x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em membros superiores. Focar em progressão de cargas no supino.`; }
+          } else {
+            if (rel >= 0.80) { statusTxt = 'Excelente / Superior (≥ 0.80x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de empurrar no supino (${rel.toFixed(2)}x peso corporal).`; }
+            else if (rel >= 0.65) { statusTxt = 'Bom / Acima da Média (0.65 a 0.79x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força em peitoral e tríceps (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.50) { statusTxt = 'Médio / Adequado (0.50 a 0.64x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força dentro do padrão feminino saudável (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.40) { statusTxt = 'Regular (0.40 a 0.49x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média feminina recomendada.`; }
+            else { statusTxt = 'Fraco (< 0.40x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força de membros superiores. Priorizar fortalecimento resistido.`; }
+          }
+        } else {
+          if (sexo === 'M') {
+            if (rel >= 1.05) { statusTxt = 'Excelente / Superior (≥ 1.05x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de tração dorsal na puxada (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.85) { statusTxt = 'Bom / Acima da Média (0.85 a 1.04x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força muscular na puxada (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.70) { statusTxt = 'Médio / Adequado (0.70 a 0.84x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força dentro do padrão médio saudável (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.55) { statusTxt = 'Regular (0.55 a 0.69x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média masculina recomendada.`; }
+            else { statusTxt = 'Fraco (< 0.55x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em dorsais e flexores de cotovelo.`; }
+          } else {
+            if (rel >= 0.75) { statusTxt = 'Excelente / Superior (≥ 0.75x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de puxada vertical (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.60) { statusTxt = 'Bom / Acima da Média (0.60 a 0.74x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força em membros superiores (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.45) { statusTxt = 'Médio / Adequado (0.45 a 0.59x)'; badgeClass = 'badge-ok'; feedbackTxt = `Dentro do padrão médio feminino (${rel.toFixed(2)}x PC).`; }
+            else if (rel >= 0.35) { statusTxt = 'Regular (0.35 a 0.44x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média feminina recomendada.`; }
+            else { statusTxt = 'Fraco (< 0.35x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em membros superiores.`; }
+          }
+        }
+
+        if (badgeHeader) { badgeHeader.className = `status-badge ${badgeClass}`; badgeHeader.textContent = statusTxt.split('(')[0].trim(); }
+        if (badgeRel) { badgeRel.className = `status-badge ${badgeClass}`; badgeRel.textContent = statusTxt.split('(')[0].trim(); }
+        if (fb) fb.textContent = `${feedbackTxt} Estimado via ${obterNomeFormula(formula)}.`;
+
+        return { exercicio: ex, exercicioNome: exNome, carga, reps, rm1, relativo: rel, formula, formulaNome: obterNomeFormula(formula) };
+      }
+    }
+
+    function calcularForcaMMII() {
+      const ex = document.getElementById('ad_mmii_exercicio')?.value || 'extensora';
+      const formula = document.getElementById('ad_mmii_formula')?.value || (ex === 'extensora' ? 'brzycki' : (ex === 'leg_press' ? 'lander' : 'epley'));
+      const cargaInput = document.getElementById('ad_mmii_carga')?.value;
+      const repsInput = document.getElementById('ad_mmii_reps')?.value;
+
+      const legExtCarga = document.getElementById('ad_extensora_carga');
+      const legExtReps = document.getElementById('ad_extensora_reps');
+      if (legExtCarga) legExtCarga.value = cargaInput || '';
+      if (legExtReps) legExtReps.value = repsInput || '';
+
+      const badgeHeader = document.getElementById('ad_badge_mmii');
+      const badgeExtLegacy = document.getElementById('ad_badge_extensora');
+      const res1RM = document.getElementById('ad_res_mmii_1rm');
+      const res1RMLegacy = document.getElementById('ad_res_extensora_1rm');
+      const resSub = document.getElementById('ad_res_mmii_sub');
+      const resSubLegacy = document.getElementById('ad_res_extensora_sub');
+      const resRel = document.getElementById('ad_res_mmii_rel');
+      const resRelLegacy = document.getElementById('ad_res_extensora_rel');
+      const badgeRel = document.getElementById('ad_res_mmii_badge_rel');
+      const badgeRelLegacy = document.getElementById('ad_res_extensora_badge_rel');
+      const fb = document.getElementById('ad_mmii_feedback');
+      const fbLegacy = document.getElementById('ad_extensora_feedback');
+
+      const exMapNome = {
+        'extensora': 'Cadeira Extensora',
+        'agachamento': 'Agachamento',
+        'leg_press': 'Leg Press',
+        'terra': 'Levantamento Terra'
+      };
+      const exNome = exMapNome[ex] || 'Membros Inferiores';
 
       if (!cargaInput || isNaN(cargaInput) || parseFloat(cargaInput) <= 0 || !repsInput || isNaN(repsInput) || parseInt(repsInput) <= 0) {
-        if (badge) { badge.className = 'status-badge badge-neutral'; badge.textContent = 'Aguardando dados'; }
+        if (badgeHeader) { badgeHeader.className = 'status-badge badge-neutral'; badgeHeader.textContent = 'Aguardando dados'; }
+        if (badgeExtLegacy) { badgeExtLegacy.className = 'status-badge badge-neutral'; badgeExtLegacy.textContent = 'Aguardando dados'; }
         if (res1RM) res1RM.textContent = '-- kg';
+        if (res1RMLegacy) res1RMLegacy.textContent = '-- kg';
         if (resSub) { resSub.className = 'status-badge badge-neutral'; resSub.textContent = 'Aguardando teste'; }
+        if (resSubLegacy) { resSubLegacy.className = 'status-badge badge-neutral'; resSubLegacy.textContent = 'Aguardando teste'; }
         if (resRel) resRel.textContent = '-- x PC';
+        if (resRelLegacy) resRelLegacy.textContent = '-- x PC';
         if (badgeRel) { badgeRel.className = 'status-badge badge-neutral'; badgeRel.textContent = 'Classificação Funcional'; }
+        if (badgeRelLegacy) { badgeRelLegacy.className = 'status-badge badge-neutral'; badgeRelLegacy.textContent = 'Classificação Funcional'; }
         if (fb) fb.textContent = '';
-        return { carga: null, reps: null, rm1: null, relativo: null };
+        if (fbLegacy) fbLegacy.textContent = '';
+        return { exercicio: ex, exercicioNome: exNome, carga: null, reps: null, rm1: null, relativo: null, formula };
       }
 
       const carga = parseFloat(cargaInput);
@@ -5427,73 +5941,97 @@
       const peso = parseFloat(document.getElementById('ad_peso')?.value) || (dadosAluno.composicao && dadosAluno.composicao.peso) || 70;
       const sexo = dadosAluno.identificacao.sexo || document.getElementById('sexo')?.value || 'M';
 
-      let rm1 = carga;
-      if (reps > 1) {
-        // Equação de Brzycki (1993)
-        rm1 = carga / (1.0278 - (0.0278 * reps));
-      }
-      rm1 = Math.round(rm1 * 10) / 10;
-      const rel = Math.round((rm1 / peso) * 100) / 100;
+      const rm1 = calcularFormula1RM(formula, carga, reps);
+      const rel = Number((rm1 / peso).toFixed(2));
 
       if (res1RM) res1RM.textContent = `${rm1.toFixed(1)} kg`;
+      if (res1RMLegacy) res1RMLegacy.textContent = `${rm1.toFixed(1)} kg`;
       if (resRel) resRel.textContent = `${rel.toFixed(2)}x PC`;
+      if (resRelLegacy) resRelLegacy.textContent = `${rel.toFixed(2)}x PC`;
+
+      if (resSub) {
+        resSub.className = 'status-badge badge-ok';
+        resSub.textContent = `${reps === 1 ? '1RM Direto' : `${reps} reps`} (${carga}kg) | ${obterNomeFormula(formula)}`;
+      }
+      if (resSubLegacy) {
+        resSubLegacy.className = 'status-badge badge-ok';
+        resSubLegacy.textContent = `${reps === 1 ? '1RM Direto' : `${reps} reps`} (${carga}kg)`;
+      }
 
       let statusTxt = '';
       let badgeClass = 'badge-ok';
       let feedbackTxt = '';
 
-      if (sexo === 'M') {
-        if (rel >= 1.00) {
-          statusTxt = 'Excelente / Superior (≥ 1.00x PC)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Excelente força de extensores de joelho (${rel.toFixed(2)}x peso corporal). Alta potência de quadríceps.`;
-        } else if (rel >= 0.80) {
-          statusTxt = 'Bom / Acima da Média (0.80 a 0.99x)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Bom nível de força muscular em quadríceps (${rel.toFixed(2)}x peso corporal).`;
-        } else if (rel >= 0.65) {
-          statusTxt = 'Médio / Adequado (0.65 a 0.79x)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Força adequada dentro do padrão médio masculino (${rel.toFixed(2)}x PC).`;
-        } else if (rel >= 0.50) {
-          statusTxt = 'Regular (0.50 a 0.64x)';
-          badgeClass = 'badge-warn';
-          feedbackTxt = `Abaixo da média esperada. Focar em fortalecimento concêntrico e excêntrico de quadríceps.`;
+      if (ex === 'agachamento') {
+        if (sexo === 'M') {
+          if (rel >= 1.70) { statusTxt = 'Excelente / Superior (≥ 1.70x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Alta força máxima no agachamento (${rel.toFixed(2)}x PC). Padrão avançado.`; }
+          else if (rel >= 1.40) { statusTxt = 'Bom / Acima da Média (1.40 a 1.69x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força em membros inferiores (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.15) { statusTxt = 'Médio / Adequado (1.15 a 1.39x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada dentro da média populacional (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.90) { statusTxt = 'Regular (0.90 a 1.14x)'; badgeClass = 'badge-warn'; feedbackTxt = `Força abaixo do ideal para agachamento livre.`; }
+          else { statusTxt = 'Fraco (< 0.90x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força relativa de agachamento.`; }
         } else {
-          statusTxt = 'Fraco (< 0.50x)';
-          badgeClass = 'badge-alert';
-          feedbackTxt = `Baixa força relativa de membros inferiores. Priorizar hipertrofia e estabilização patelar.`;
+          if (rel >= 1.25) { statusTxt = 'Excelente / Superior (≥ 1.25x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de membros inferiores no agachamento (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.00) { statusTxt = 'Bom / Acima da Média (1.00 a 1.24x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom padrão de força no agachamento (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.80) { statusTxt = 'Médio / Adequado (0.80 a 0.99x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada ao padrão feminino saudável (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.65) { statusTxt = 'Regular (0.65 a 0.79x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média feminina recomendada.`; }
+          else { statusTxt = 'Fraco (< 0.65x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em membros inferiores.`; }
+        }
+      } else if (ex === 'leg_press') {
+        if (sexo === 'M') {
+          if (rel >= 3.50) { statusTxt = 'Excelente / Superior (≥ 3.50x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força e potência muscular no Leg Press (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 2.80) { statusTxt = 'Bom / Acima da Média (2.80 a 3.49x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força no Leg Press (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 2.10) { statusTxt = 'Médio / Adequado (2.10 a 2.79x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força média adequada (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.60) { statusTxt = 'Regular (1.60 a 2.09x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo do padrão populacional de Leg Press.`; }
+          else { statusTxt = 'Fraco (< 1.60x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa capacidade de empurrar membros inferiores.`; }
+        } else {
+          if (rel >= 2.50) { statusTxt = 'Excelente / Superior (≥ 2.50x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de membros inferiores no Leg Press (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 2.00) { statusTxt = 'Bom / Acima da Média (2.00 a 2.49x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom desempenho de força no Leg Press (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.50) { statusTxt = 'Médio / Adequado (1.50 a 1.99x)'; badgeClass = 'badge-ok'; feedbackTxt = `Dentro do padrão médio saudável (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.15) { statusTxt = 'Regular (1.15 a 1.49x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média feminina esperada.`; }
+          else { statusTxt = 'Fraco (< 1.15x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em pernas e glúteos.`; }
+        }
+      } else if (ex === 'terra') {
+        if (sexo === 'M') {
+          if (rel >= 1.90) { statusTxt = 'Excelente / Superior (≥ 1.90x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força máxima de cadeia posterior no levantamento terra (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.55) { statusTxt = 'Bom / Acima da Média (1.55 a 1.89x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força no levantamento terra (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.30) { statusTxt = 'Médio / Adequado (1.30 a 1.54x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada de cadeia posterior (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.00) { statusTxt = 'Regular (1.00 a 1.29x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média masculina esperada.`; }
+          else { statusTxt = 'Fraco (< 1.00x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força de cadeia posterior e eretores da espinha.`; }
+        } else {
+          if (rel >= 1.40) { statusTxt = 'Excelente / Superior (≥ 1.40x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força no levantamento terra (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 1.15) { statusTxt = 'Bom / Acima da Média (1.15 a 1.39x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força em cadeia posterior (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.90) { statusTxt = 'Médio / Adequado (0.90 a 1.14x)'; badgeClass = 'badge-ok'; feedbackTxt = `Dentro do padrão médio saudável (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.70) { statusTxt = 'Regular (0.70 a 0.89x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média feminina recomendada.`; }
+          else { statusTxt = 'Fraco (< 0.70x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em cadeia posterior.`; }
         }
       } else {
-        if (rel >= 0.75) {
-          statusTxt = 'Excelente / Superior (≥ 0.75x PC)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Excelente força de extensores de joelho (${rel.toFixed(2)}x peso corporal).`;
-        } else if (rel >= 0.60) {
-          statusTxt = 'Bom / Acima da Média (0.60 a 0.74x)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Bom nível de força em quadríceps (${rel.toFixed(2)}x peso corporal).`;
-        } else if (rel >= 0.45) {
-          statusTxt = 'Médio / Adequado (0.45 a 0.59x)';
-          badgeClass = 'badge-ok';
-          feedbackTxt = `Força adequada dentro do padrão feminino (${rel.toFixed(2)}x PC).`;
-        } else if (rel >= 0.35) {
-          statusTxt = 'Regular (0.35 a 0.44x)';
-          badgeClass = 'badge-warn';
-          feedbackTxt = `Força de membros inferiores abaixo do ideal para proteção articular dos joelhos.`;
+        if (sexo === 'M') {
+          if (rel >= 1.00) { statusTxt = 'Excelente / Superior (≥ 1.00x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de extensores de joelho (${rel.toFixed(2)}x peso corporal). Alta potência de quadríceps.`; }
+          else if (rel >= 0.80) { statusTxt = 'Bom / Acima da Média (0.80 a 0.99x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força muscular em quadríceps (${rel.toFixed(2)}x peso corporal).`; }
+          else if (rel >= 0.65) { statusTxt = 'Médio / Adequado (0.65 a 0.79x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada dentro do padrão médio masculino (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.50) { statusTxt = 'Regular (0.50 a 0.64x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo da média esperada. Focar em fortalecimento de quadríceps.`; }
+          else { statusTxt = 'Fraco (< 0.50x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força relativa de membros inferiores.`; }
         } else {
-          statusTxt = 'Fraco (< 0.35x)';
-          badgeClass = 'badge-alert';
-          feedbackTxt = `Baixa força em quadríceps. Priorizar treino de força resistida e estabilização de joelhos.`;
+          if (rel >= 0.75) { statusTxt = 'Excelente / Superior (≥ 0.75x PC)'; badgeClass = 'badge-ok'; feedbackTxt = `Excelente força de extensores de joelho (${rel.toFixed(2)}x peso corporal).`; }
+          else if (rel >= 0.60) { statusTxt = 'Bom / Acima da Média (0.60 a 0.74x)'; badgeClass = 'badge-ok'; feedbackTxt = `Bom nível de força em quadríceps (${rel.toFixed(2)}x peso corporal).`; }
+          else if (rel >= 0.45) { statusTxt = 'Médio / Adequado (0.45 a 0.59x)'; badgeClass = 'badge-ok'; feedbackTxt = `Força adequada dentro do padrão feminino (${rel.toFixed(2)}x PC).`; }
+          else if (rel >= 0.35) { statusTxt = 'Regular (0.35 a 0.44x)'; badgeClass = 'badge-warn'; feedbackTxt = `Abaixo do ideal para proteção articular dos joelhos.`; }
+          else { statusTxt = 'Fraco (< 0.35x)'; badgeClass = 'badge-alert'; feedbackTxt = `Baixa força em quadríceps.`; }
         }
       }
 
-      if (badge) { badge.className = `status-badge ${badgeClass}`; badge.textContent = statusTxt; }
-      if (resSub) { resSub.className = `status-badge ${badgeClass}`; resSub.textContent = (reps === 1) ? '1RM Direto' : `${reps} reps máximas`; }
+      if (badgeHeader) { badgeHeader.className = `status-badge ${badgeClass}`; badgeHeader.textContent = statusTxt.split('(')[0].trim(); }
+      if (badgeExtLegacy) { badgeExtLegacy.className = `status-badge ${badgeClass}`; badgeExtLegacy.textContent = statusTxt; }
       if (badgeRel) { badgeRel.className = `status-badge ${badgeClass}`; badgeRel.textContent = statusTxt.split('(')[0].trim(); }
-      if (fb) fb.textContent = feedbackTxt;
+      if (badgeRelLegacy) { badgeRelLegacy.className = `status-badge ${badgeClass}`; badgeRelLegacy.textContent = statusTxt.split('(')[0].trim(); }
+      if (fb) fb.textContent = `${feedbackTxt} Estimado via ${obterNomeFormula(formula)}.`;
+      if (fbLegacy) fbLegacy.textContent = feedbackTxt;
 
-      return { carga, reps, rm1, relativo: rel };
+      return { exercicio: ex, exercicioNome: exNome, carga, reps, rm1, relativo: rel, formula, formulaNome: obterNomeFormula(formula) };
+    }
+
+    function calcularRMExtensoraAdulto() {
+      return calcularForcaMMII();
     }
 
     // ==========================================
@@ -5502,6 +6040,7 @@
     var esteiraTimerInterval = null;
     var esteiraSegundosTotais = 0;
     var esteiraEmExecucao = false;
+    var esteiraPicoSegundos = 0; // Registra o tempo em segundos no instante do pico se a recuperação for iniciada
 
     function alternarModoEsteira(modo) {
       const btnLive = document.getElementById('btn-mode-treadmill-live');
@@ -5532,7 +6071,7 @@
       cont.style.display = chk ? 'block' : 'none';
       if (chk) {
         const tbody = document.getElementById('treadmill-protocolo-corpo');
-        if (tbody && (!tbody.hasChildNodes() || tbody.children.length === 0)) {
+        if (!tbody || !tbody.hasChildNodes() || tbody.children.length === 0) {
           gerarTabelaProtocoloEsteira();
         }
         calcularEsteiraAdulto();
@@ -5545,6 +6084,8 @@
       const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
       const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
       const incline = parseFloat(document.getElementById('ad_proto_incline')?.value) || 1.0;
+      const recoveryDur = parseInt(document.getElementById('ad_proto_recovery_dur')?.value, 10) || 3;
+      const recoveryVel = parseFloat(document.getElementById('ad_proto_recovery_vel')?.value) || 4.0;
 
       const tbody = document.getElementById('treadmill-protocolo-corpo');
       if (!tbody) return;
@@ -5561,28 +6102,44 @@
         }
       });
 
-      const totalMinutos = warmupDur + 12;
+      const totalMinutos = warmupDur + 12 + recoveryDur;
       let html = '';
 
       for (let m = 1; m <= totalMinutos; m++) {
-        const ehAquecimento = m <= warmupDur;
         let faseNome = '';
         let vel = 0;
+        let inc = incline;
         let tipoEstagio = '';
 
-        if (ehAquecimento) {
+        if (m <= warmupDur) {
           faseNome = `Aquecimento - Min ${m}`;
           vel = warmupVel;
           tipoEstagio = 'aquecimento';
-        } else {
+        } else if (m <= (warmupDur + 12)) {
           const estagioNum = m - warmupDur;
           faseNome = `Teste - Estágio ${estagioNum}`;
           vel = testVelIni + ((estagioNum - 1) * incTaxa);
           tipoEstagio = 'teste';
+        } else {
+          const recNum = m - (warmupDur + 12);
+          faseNome = `Recuperação - Rec ${recNum}`;
+          vel = recoveryVel;
+          inc = 0.0;
+          tipoEstagio = 'recuperacao';
         }
 
-        const prev = valoresPrevios[m] || { fc: '', borg: (ehAquecimento ? '7' : '13'), status: 'normal' };
-        html += renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev);
+        let bDefault = '13';
+        if (tipoEstagio === 'aquecimento') bDefault = '7';
+        else if (tipoEstagio === 'recuperacao') bDefault = '9';
+
+        let sDefault = (tipoEstagio === 'recuperacao') ? 'recuperacao' : 'normal';
+
+        const prev = valoresPrevios[m] || {
+          fc: '',
+          borg: bDefault,
+          status: sDefault
+        };
+        html += renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, inc, prev);
       }
 
       tbody.innerHTML = html;
@@ -5594,14 +6151,26 @@
     }
 
     function renderizarLinhaProtocoloHtml(m, faseNome, tipoEstagio, vel, incline, prev) {
-      const bVal = prev.borg || (tipoEstagio === 'aquecimento' ? '7' : '13');
-      const sVal = prev.status || 'normal';
+      let bDefault = '13';
+      if (tipoEstagio === 'aquecimento') bDefault = '7';
+      else if (tipoEstagio === 'recuperacao') bDefault = '9';
+      const bVal = prev.borg || bDefault;
+
+      const sDefault = tipoEstagio === 'recuperacao' ? 'recuperacao' : 'normal';
+      const sVal = prev.status || sDefault;
+
+      let badgeBg = '#e0f2fe; color: #0369a1;';
+      if (tipoEstagio === 'aquecimento') {
+        badgeBg = '#fef3c7; color: #92400e;';
+      } else if (tipoEstagio === 'recuperacao') {
+        badgeBg = '#ecfdf5; color: #065f46; border: 1px solid #a7f3d0;';
+      }
 
       return `
         <tr id="treadmill-row-${m}" data-minuto="${m}" data-fase="${faseNome}" data-tipo="${tipoEstagio}" data-vel="${vel.toFixed(1)}" data-incline="${incline.toFixed(1)}">
           <td style="text-align: center; font-weight: 700; color: #1F4E78;">${m} min</td>
           <td>
-            <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: ${tipoEstagio === 'aquecimento' ? '#fef3c7; color: #92400e;' : '#e0f2fe; color: #0369a1;'}">
+            <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: ${badgeBg}">
               ${faseNome}
             </span>
           </td>
@@ -5686,12 +6255,32 @@
       gerarTabelaProtocoloEsteira();
     }
 
+    function ajustarTempoRecuperacao(delta) {
+      const inp = document.getElementById('ad_proto_recovery_dur');
+      if (!inp) return;
+      let val = parseInt(inp.value, 10) || 3;
+      val = Math.max(1, Math.min(10, val + delta));
+      inp.value = val;
+      gerarTabelaProtocoloEsteira();
+    }
+
+    function ajustarVelocidadeRecuperacao(delta) {
+      const inp = document.getElementById('ad_proto_recovery_vel');
+      if (!inp) return;
+      let val = parseFloat(inp.value) || 4.0;
+      val = Math.max(1.0, Math.min(10.0, Number((val + delta).toFixed(1))));
+      inp.value = val.toFixed(1);
+      gerarTabelaProtocoloEsteira();
+    }
+
     function aplicarPresetProtocoloEsteira(tipo) {
       const inpWd = document.getElementById('ad_proto_warmup_dur');
       const inpWv = document.getElementById('ad_proto_warmup_vel');
       const inpTv = document.getElementById('ad_proto_test_vel_ini');
       const inpIt = document.getElementById('ad_proto_inc_taxa');
       const inpIn = document.getElementById('ad_proto_incline');
+      const inpRd = document.getElementById('ad_proto_recovery_dur');
+      const inpRv = document.getElementById('ad_proto_recovery_vel');
 
       if (tipo === 'caminhada') {
         if (inpWd) inpWd.value = 2;
@@ -5699,18 +6288,24 @@
         if (inpTv) inpTv.value = '5.0';
         if (inpIt) inpIt.value = '0.5';
         if (inpIn) inpIn.value = '1.0';
+        if (inpRd) inpRd.value = 2;
+        if (inpRv) inpRv.value = '3.0';
       } else if (tipo === 'padrao') {
         if (inpWd) inpWd.value = 3;
         if (inpWv) inpWv.value = '5.0';
         if (inpTv) inpTv.value = '8.0';
         if (inpIt) inpIt.value = '1.0';
         if (inpIn) inpIn.value = '1.0';
+        if (inpRd) inpRd.value = 3;
+        if (inpRv) inpRv.value = '4.0';
       } else if (tipo === 'avancado') {
         if (inpWd) inpWd.value = 3;
         if (inpWv) inpWv.value = '6.0';
         if (inpTv) inpTv.value = '10.0';
         if (inpIt) inpIt.value = '1.0';
         if (inpIn) inpIn.value = '1.0';
+        if (inpRd) inpRd.value = 3;
+        if (inpRv) inpRv.value = '5.0';
       }
       gerarTabelaProtocoloEsteira();
     }
@@ -5732,8 +6327,16 @@
       let tipoEstagio = '';
 
       if (linhas.length > 0) {
-        const ultimaVel = parseFloat(linhas[linhas.length - 1].getAttribute('data-vel')) || 8.0;
-        if (novoMinuto <= warmupDur) {
+        const ultimaLinha = linhas[linhas.length - 1];
+        const ultimaVel = parseFloat(ultimaLinha.getAttribute('data-vel')) || 8.0;
+        const ultimoTipo = ultimaLinha.getAttribute('data-tipo');
+
+        if (ultimoTipo === 'recuperacao') {
+          const recCount = tbody.querySelectorAll('tr[data-tipo="recuperacao"]').length + 1;
+          faseNome = `Recuperação - Rec ${recCount}`;
+          vel = ultimaVel;
+          tipoEstagio = 'recuperacao';
+        } else if (novoMinuto <= warmupDur) {
           faseNome = `Aquecimento - Min ${novoMinuto}`;
           vel = ultimaVel;
           tipoEstagio = 'aquecimento';
@@ -5749,8 +6352,74 @@
         tipoEstagio = 'teste';
       }
 
-      const prev = { fc: '', borg: '17', status: 'normal' };
+      const prev = { fc: '', borg: (tipoEstagio === 'recuperacao' ? '9' : '17'), status: (tipoEstagio === 'recuperacao' ? 'recuperacao' : 'normal') };
       tbody.insertAdjacentHTML('beforeend', renderizarLinhaProtocoloHtml(novoMinuto, faseNome, tipoEstagio, vel, incline, prev));
+    }
+
+    function iniciarRecuperacaoEsteira() {
+      const tbody = document.getElementById('treadmill-protocolo-corpo');
+      if (!tbody) return;
+
+      const recoveryDur = parseInt(document.getElementById('ad_proto_recovery_dur')?.value, 10) || 3;
+      const recoveryVel = parseFloat(document.getElementById('ad_proto_recovery_vel')?.value) || 4.0;
+      const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
+      const warmupSegundos = warmupDur * 60;
+
+      const minutoAtual = esteiraSegundosTotais > 0 ? Math.floor((esteiraSegundosTotais - 1) / 60) + 1 : 1;
+
+      // Se ainda não registrou pico, salva o momento exato
+      if (esteiraPicoSegundos === 0 && esteiraSegundosTotais > warmupSegundos) {
+        esteiraPicoSegundos = esteiraSegundosTotais;
+      }
+
+      // Marcar linha corrente como pico se estava normal
+      const linhaAtual = document.getElementById(`treadmill-row-${minutoAtual}`);
+      if (linhaAtual) {
+        const selStatus = linhaAtual.querySelector('.treadmill-select-status');
+        if (selStatus && selStatus.value === 'normal') {
+          selStatus.value = 'pico';
+        }
+      }
+
+      // Coletar valores de linhas já preenchidas
+      const valoresSalvos = {};
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const m = parseInt(tr.getAttribute('data-minuto'), 10);
+        if (m) {
+          valoresSalvos[m] = {
+            fc: tr.querySelector('.treadmill-input-fc')?.value || '',
+            borg: tr.querySelector('.treadmill-select-borg')?.value || '',
+            status: tr.querySelector('.treadmill-select-status')?.value || 'normal'
+          };
+        }
+      });
+
+      // Remover estágios futuros de teste que estavam previstos
+      Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
+        const m = parseInt(tr.getAttribute('data-minuto'), 10);
+        if (m > minutoAtual) {
+          tr.remove();
+        }
+      });
+
+      // Inserir linhas de recuperação a partir do próximo minuto
+      let recHtml = '';
+      for (let r = 1; r <= recoveryDur; r++) {
+        const mRec = minutoAtual + r;
+        const faseNome = `Recuperação - Rec ${r}`;
+        const prev = valoresSalvos[mRec] || { fc: '', borg: '9', status: 'recuperacao' };
+        recHtml += renderizarLinhaProtocoloHtml(mRec, faseNome, 'recuperacao', recoveryVel, 0.0, prev);
+      }
+
+      tbody.insertAdjacentHTML('beforeend', recHtml);
+
+      const stagePill = document.getElementById('treadmill-current-stage');
+      if (stagePill) {
+        stagePill.textContent = `Recuperação Iniciada (${recoveryVel.toFixed(1)} km/h)`;
+      }
+
+      sincronizarResultadosEsteiraInterativa();
+      atualizarDisplayTimerEsteira();
     }
 
     function resetarConfigProtocoloEsteira() {
@@ -5759,12 +6428,16 @@
       const inpTv = document.getElementById('ad_proto_test_vel_ini');
       const inpIt = document.getElementById('ad_proto_inc_taxa');
       const inpIn = document.getElementById('ad_proto_incline');
+      const inpRd = document.getElementById('ad_proto_recovery_dur');
+      const inpRv = document.getElementById('ad_proto_recovery_vel');
 
       if (inpWd) inpWd.value = 3;
       if (inpWv) inpWv.value = '5.0';
       if (inpTv) inpTv.value = '8.0';
       if (inpIt) inpIt.value = '1.0';
       if (inpIn) inpIn.value = '1.0';
+      if (inpRd) inpRd.value = 3;
+      if (inpRv) inpRv.value = '4.0';
 
       gerarTabelaProtocoloEsteira();
     }
@@ -5815,6 +6488,7 @@
     function resetarTimerEsteira() {
       pausarTimerEsteira();
       esteiraSegundosTotais = 0;
+      esteiraPicoSegundos = 0;
       const btnStart = document.getElementById('treadmill-btn-start');
       if (btnStart) {
         btnStart.textContent = 'Iniciar Cronômetro';
@@ -5857,6 +6531,10 @@
           const fase = activeRow.getAttribute('data-fase') || `Minuto ${minutoAtivo}`;
           const vel = activeRow.getAttribute('data-vel') || '';
           if (stagePill) stagePill.textContent = `${fase} (${vel} km/h)`;
+          // Rolagem automática suave focando na linha do minuto ativo sob o cronômetro fixo
+          try {
+            activeRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          } catch (e) {}
         }
       } else if (stagePill && !esteiraEmExecucao) {
         stagePill.textContent = 'Pronto para iniciar';
@@ -5922,16 +6600,19 @@
       const warmupVel = parseFloat(document.getElementById('ad_proto_warmup_vel')?.value) || 5.0;
       const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
       const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
-
       const warmupSegundos = warmupDur * 60;
+
+      // Se a recuperação foi acionada, usar esteiraPicoSegundos como referência de esforço máximo
+      const segsConsiderados = (esteiraPicoSegundos > 0) ? esteiraPicoSegundos : esteiraSegundosTotais;
+
       let velCompleta = 0;
       let segundosIncompletos = 0;
 
-      if (esteiraSegundosTotais <= warmupSegundos) {
+      if (segsConsiderados <= warmupSegundos) {
         velCompleta = warmupVel;
-        segundosIncompletos = Math.max(0, esteiraSegundosTotais % 60);
+        segundosIncompletos = Math.max(0, segsConsiderados % 60);
       } else {
-        const segsTeste = esteiraSegundosTotais - warmupSegundos;
+        const segsTeste = segsConsiderados - warmupSegundos;
         const estagiosCompletos = Math.floor(segsTeste / 60);
         segundosIncompletos = segsTeste % 60;
 
@@ -5944,13 +6625,24 @@
 
       let maxFc = 0;
       let ultimoBorg = 19;
+      let fcRec1 = null;
+
       const tbody = document.getElementById('treadmill-protocolo-corpo');
       if (tbody) {
+        let encontrouPrimeiraRec = false;
         tbody.querySelectorAll('tr').forEach(tr => {
+          const tipo = tr.getAttribute('data-tipo');
           const fc = parseInt(tr.querySelector('.treadmill-input-fc')?.value, 10);
           if (!isNaN(fc) && fc > maxFc) maxFc = fc;
           const bg = parseInt(tr.querySelector('.treadmill-select-borg')?.value, 10);
           if (!isNaN(bg) && (fc > 0 || tr.classList.contains('treadmill-row-active'))) ultimoBorg = bg;
+
+          if (tipo === 'recuperacao' && !encontrouPrimeiraRec) {
+            encontrouPrimeiraRec = true;
+            if (!isNaN(fc) && fc > 0) {
+              fcRec1 = fc;
+            }
+          }
         });
       }
 
@@ -5966,6 +6658,27 @@
 
       calcularEsteiraAdulto();
 
+      // Cálculo de Recuperação da Frequência Cardíaca (RFC 1º minuto)
+      const elRfc = document.getElementById('ad_res_rfc');
+      const badgeRfc = document.getElementById('ad_res_rfc_badge');
+      if (fcRec1 && maxFc > 0 && maxFc >= fcRec1) {
+        const queda = maxFc - fcRec1;
+        if (elRfc) elRfc.textContent = `-${queda} bpm`;
+        if (badgeRfc) {
+          if (queda >= 12) {
+            badgeRfc.className = 'status-badge badge-ok';
+            badgeRfc.textContent = `Recuperação Normal (≥ 12 bpm)`;
+          } else {
+            badgeRfc.className = 'status-badge badge-alert';
+            badgeRfc.textContent = `Recuperação Lenta (< 12 bpm)`;
+          }
+        }
+      } else if (elRfc && badgeRfc) {
+        elRfc.textContent = '-- bpm';
+        badgeRfc.className = 'status-badge badge-neutral';
+        badgeRfc.textContent = 'Sem dados de recuperação';
+      }
+
       const stagePill = document.getElementById('treadmill-current-stage');
       if (stagePill) stagePill.textContent = 'Teste Concluído';
     }
@@ -5977,13 +6690,14 @@
       tbody.querySelectorAll('tr').forEach(tr => {
         const m = parseInt(tr.getAttribute('data-minuto'), 10) || 0;
         const fase = tr.getAttribute('data-fase') || '';
+        const tipo = tr.getAttribute('data-tipo') || '';
         const vel = parseFloat(tr.getAttribute('data-vel')) || 0;
         const inc = parseFloat(tr.getAttribute('data-incline')) || 0;
         const fc = tr.querySelector('.treadmill-input-fc')?.value || '';
         const borg = tr.querySelector('.treadmill-select-borg')?.value || '';
         const status = tr.querySelector('.treadmill-select-status')?.value || 'normal';
         if (fc || status !== 'normal' || m <= (Math.floor(esteiraSegundosTotais / 60) + 1)) {
-          linhas.push({ minuto: m, fase, velocidade: vel, inclinacao: inc, fc, borg, status });
+          linhas.push({ minuto: m, fase, tipo, velocidade: vel, inclinacao: inc, fc, borg, status });
         }
       });
       return linhas;
@@ -6078,8 +6792,8 @@
     function salvarPasso3Adulto(e) {
       e.preventDefault();
 
-      const flexRes = calcularFlexoesAdulto();
-      const extRes = calcularRMExtensoraAdulto();
+      const mmssRes = calcularForcaMMSS();
+      const mmiiRes = calcularForcaMMII();
       const fezEsteira = document.getElementById('ad_check_esteira').checked;
 
       let esteiraDados = { fezEsteira: false };
@@ -6091,6 +6805,9 @@
         const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(2));
         const vo2 = Number(((3.333 * velPico) + 3.5).toFixed(1));
 
+        const rfcTxt = document.getElementById('ad_res_rfc')?.textContent;
+        const rfcVal = (rfcTxt && rfcTxt.includes('-')) ? parseInt(rfcTxt.replace(/[^0-9]/g, ''), 10) : null;
+
         esteiraDados = {
           fezEsteira: true,
           esteiraVelCompleta: velComp,
@@ -6099,16 +6816,21 @@
           esteiraVo2: vo2,
           esteiraFcPico: fcPico,
           esteiraBorg: borg,
+          esteiraRfc1Min: rfcVal,
           esteiraProtocoloLinhas: obterDadosProtocoloEsteira()
         };
       }
 
       dadosAluno.testes = {
-        flexoesReps: flexRes.reps,
-        extensoraCarga: extRes.carga,
-        extensoraReps: extRes.reps,
-        extensora1RM: extRes.rm1,
-        extensoraRelativo: extRes.relativo,
+        // Dados de MMSS
+        forcaMMSS: mmssRes,
+        flexoesReps: (mmssRes.exercicio === 'flexao' ? mmssRes.reps : (dadosAluno.testes?.flexoesReps || null)),
+        // Dados de MMII
+        forcaMMII: mmiiRes,
+        extensoraCarga: (mmiiRes.exercicio === 'extensora' ? mmiiRes.carga : (dadosAluno.testes?.extensoraCarga || mmiiRes.carga)),
+        extensoraReps: (mmiiRes.exercicio === 'extensora' ? mmiiRes.reps : (dadosAluno.testes?.extensoraReps || mmiiRes.reps)),
+        extensora1RM: mmiiRes.rm1,
+        extensoraRelativo: mmiiRes.relativo,
         ...esteiraDados
       };
 
@@ -7222,20 +7944,41 @@
         elRcq.style.color = ehRcqBom ? '#059669' : '#dc2626';
         subRcq.textContent = rcqT != null ? (ehRcqBom ? 'Baixo Risco Metabólico' : 'Risco Aumentado') : 'Risco Cintura-Quadril';
 
-        if (tT.flexoesReps !== undefined && tT.flexoesReps !== null) {
+        if (tT.forcaMMSS || (tT.flexoesReps !== undefined && tT.flexoesReps !== null)) {
           if (cardFlex) cardFlex.style.display = 'block';
-          elFlex.textContent = `${tT.flexoesReps} reps`;
-          elFlex.style.color = '#059669';
-          subFlex.textContent = (sexo === 'M' ? 'Apoio nos pés' : 'Apoio nos joelhos');
+          const exMMSS = tT.forcaMMSS || {};
+          const nomeMMSS = exMMSS.exercicioNome || 'Flexões de Braço';
+          const lblFlex = cardFlex.querySelector('.title');
+          if (lblFlex) lblFlex.textContent = nomeMMSS;
+
+          if (exMMSS.exercicio && exMMSS.exercicio !== 'flexao') {
+            elFlex.textContent = `${exMMSS.rm1} kg`;
+            elFlex.style.color = '#059669';
+            subFlex.textContent = exMMSS.relativo ? `1RM (${exMMSS.formulaNome}): ${exMMSS.relativo}x PC (${exMMSS.carga}kg x ${exMMSS.reps} reps)` : '1RM Estimado';
+          } else {
+            const reps = exMMSS.reps != null ? exMMSS.reps : tT.flexoesReps;
+            elFlex.textContent = `${reps} reps`;
+            elFlex.style.color = '#059669';
+            subFlex.textContent = exMMSS.classificacaoAcsm ? `${exMMSS.classificacaoAcsm} (ACSM)` : (sexo === 'M' ? 'Apoio nos pés' : 'Apoio nos joelhos');
+          }
         } else if (cardFlex) {
           cardFlex.style.display = 'none';
         }
 
-        if (tT.extensora1RM !== undefined && tT.extensora1RM !== null) {
+        if (tT.forcaMMII || (tT.extensora1RM !== undefined && tT.extensora1RM !== null)) {
           if (cardExt) cardExt.style.display = 'block';
-          elExt.textContent = `${tT.extensora1RM} kg`;
+          const exMMII = tT.forcaMMII || {};
+          const nomeMMII = exMMII.exercicioNome || 'Cadeira Extensora';
+          const lblExt = cardExt.querySelector('.title');
+          if (lblExt) lblExt.textContent = nomeMMII;
+
+          const rm1 = exMMII.rm1 != null ? exMMII.rm1 : tT.extensora1RM;
+          const rel = exMMII.relativo != null ? exMMII.relativo : tT.extensoraRelativo;
+          const carga = exMMII.carga != null ? exMMII.carga : tT.extensoraCarga;
+          const reps = exMMII.reps != null ? exMMII.reps : tT.extensoraReps;
+          elExt.textContent = `${rm1} kg`;
           elExt.style.color = '#059669';
-          subExt.textContent = tT.extensoraRelativo ? `Força Rel: ${tT.extensoraRelativo}x PC (${tT.extensoraCarga}kg x ${tT.extensoraReps} reps)` : 'Extensora Inicial';
+          subExt.textContent = rel ? `Força Rel: ${rel}x PC (${carga}kg x ${reps} reps)` : 'Extensora Inicial';
         } else if (cardExt) {
           cardExt.style.display = 'none';
         }
@@ -7293,34 +8036,59 @@
         elRcq.textContent = '--';
       }
 
-      // Delta Flexões
-      if (tB.flexoesReps !== undefined && tB.flexoesReps !== null && tT.flexoesReps !== undefined && tT.flexoesReps !== null) {
+      // Delta MMSS
+      const fMB = tB.forcaMMSS || (tB.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tB.flexoesReps } : null);
+      const fMT = tT.forcaMMSS || (tT.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tT.flexoesReps } : null);
+      if (fMT) {
         if (cardFlex) cardFlex.style.display = 'block';
-        const dFlex = tT.flexoesReps - tB.flexoesReps;
-        elFlex.textContent = `${dFlex > 0 ? `+${dFlex}` : dFlex} reps`;
-        elFlex.style.color = dFlex >= 0 ? '#059669' : '#dc2626';
-        subFlex.textContent = dFlex > 0 ? 'Ganho de resistência muscular!' : (dFlex === 0 ? 'Resistência mantida' : 'Atenção: queda de repetições');
-      } else if (tT.flexoesReps !== undefined && tT.flexoesReps !== null) {
-        if (cardFlex) cardFlex.style.display = 'block';
-        elFlex.textContent = `${tT.flexoesReps} reps`;
-        elFlex.style.color = '#059669';
-        subFlex.textContent = 'Novo teste';
+        const lblFlex = cardFlex.querySelector('.title');
+        if (lblFlex) lblFlex.textContent = fMT.exercicioNome || (fMT.exercicio === 'flexao' ? 'Flexões de Braço' : 'Força MMSS');
+
+        if (fMB && fMB.exercicio === fMT.exercicio) {
+          if (fMT.exercicio === 'flexao') {
+            const dFlex = fMT.reps - fMB.reps;
+            elFlex.textContent = `${dFlex > 0 ? `+${dFlex}` : dFlex} reps`;
+            elFlex.style.color = dFlex >= 0 ? '#059669' : '#dc2626';
+            subFlex.textContent = dFlex > 0 ? 'Ganho de resistência muscular!' : (dFlex === 0 ? 'Resistência mantida' : 'Atenção: queda de repetições');
+          } else {
+            const d1rm = Number((fMT.rm1 - fMB.rm1).toFixed(1));
+            elFlex.textContent = `${d1rm > 0 ? `+${d1rm}` : d1rm} kg`;
+            elFlex.style.color = d1rm >= 0 ? '#059669' : '#dc2626';
+            subFlex.textContent = d1rm > 0 ? `Ganho de 1RM! (${fMB.rm1}kg para ${fMT.rm1}kg)` : (d1rm === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
+          }
+        } else {
+          if (fMT.exercicio === 'flexao') {
+            elFlex.textContent = `${fMT.reps} reps`;
+            elFlex.style.color = '#059669';
+            subFlex.textContent = 'Novo teste de flexões';
+          } else {
+            elFlex.textContent = `${fMT.rm1} kg`;
+            elFlex.style.color = '#059669';
+            subFlex.textContent = `1RM: ${fMT.relativo || '--'}x PC`;
+          }
+        }
       } else if (cardFlex) {
         cardFlex.style.display = 'none';
       }
 
-      // Delta Cadeira Extensora
-      if (tB.extensora1RM !== undefined && tB.extensora1RM !== null && tT.extensora1RM !== undefined && tT.extensora1RM !== null) {
+      // Delta MMII
+      const fIB = tB.forcaMMII || (tB.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tB.extensora1RM, relativo: tB.extensoraRelativo } : null);
+      const fIT = tT.forcaMMII || (tT.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tT.extensora1RM, relativo: tT.extensoraRelativo } : null);
+      if (fIT) {
         if (cardExt) cardExt.style.display = 'block';
-        const dExt = Number((tT.extensora1RM - tB.extensora1RM).toFixed(1));
-        elExt.textContent = `${dExt > 0 ? `+${dExt}` : dExt} kg`;
-        elExt.style.color = dExt >= 0 ? '#059669' : '#dc2626';
-        subExt.textContent = dExt > 0 ? `Ganho em membros inf.! (${tB.extensora1RM}kg para ${tT.extensora1RM}kg)` : (dExt === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
-      } else if (tT.extensora1RM !== undefined && tT.extensora1RM !== null) {
-        if (cardExt) cardExt.style.display = 'block';
-        elExt.textContent = `${tT.extensora1RM} kg`;
-        elExt.style.color = '#059669';
-        subExt.textContent = `Novo teste (Força: ${tT.extensoraRelativo || '--'}x PC)`;
+        const lblExt = cardExt.querySelector('.title');
+        if (lblExt) lblExt.textContent = fIT.exercicioNome || 'Cadeira Extensora';
+
+        if (fIB && fIB.rm1 && fIT.rm1) {
+          const dExt = Number((fIT.rm1 - fIB.rm1).toFixed(1));
+          elExt.textContent = `${dExt > 0 ? `+${dExt}` : dExt} kg`;
+          elExt.style.color = dExt >= 0 ? '#059669' : '#dc2626';
+          subExt.textContent = dExt > 0 ? `Ganho em membros inf.! (${fIB.rm1}kg para ${fIT.rm1}kg)` : (dExt === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
+        } else {
+          elExt.textContent = `${fIT.rm1} kg`;
+          elExt.style.color = '#059669';
+          subExt.textContent = `Novo teste (Força: ${fIT.relativo || '--'}x PC)`;
+        }
       } else if (cardExt) {
         cardExt.style.display = 'none';
       }
@@ -8032,31 +8800,43 @@
         });
 
         // Desempenho Funcional & Força
+        const evalsArr = evalsSlice || [];
+        const temSupinoOuPuxada = evalsArr.some(ev => ev.testes?.forcaMMSS && ev.testes.forcaMMSS.exercicio !== 'flexao');
+        const nomeMMSSMetrica = temSupinoOuPuxada ? (((evalsArr.find(ev => ev.testes?.forcaMMSS?.exercicioNome)?.testes.forcaMMSS.exercicioNome) || 'Membros Superiores') + ' (1RM Estimado)') : 'Flexões de Braço (Reps Máximas)';
+        const unidadeMMSS = temSupinoOuPuxada ? 'kg' : 'reps';
+
         metricas.push({
           id: 'ad_flexoes',
-          nome: 'Flexões de Braço (Reps Máximas)',
+          nome: nomeMMSSMetrica,
           categoria: 'Desempenho Funcional & Força',
-          unidade: 'reps',
-          extrair: ev => (ev.testes?.flexoesReps != null && ev.testes?.flexoesReps !== '') ? parseInt(ev.testes.flexoesReps, 10) : null,
+          unidade: unidadeMMSS,
+          extrair: ev => {
+            if (ev.testes?.forcaMMSS) {
+              return ev.testes.forcaMMSS.exercicio === 'flexao' ? ev.testes.forcaMMSS.reps : ev.testes.forcaMMSS.rm1;
+            }
+            return (ev.testes?.flexoesReps != null && ev.testes?.flexoesReps !== '') ? parseInt(ev.testes.flexoesReps, 10) : null;
+          },
           classificar: val => {
             if (val == null) return '--';
             return val >= (sexo === 'M' ? 29 : 21) ? 'Excelente / Acima da Média' : (val >= 17 ? 'Médio / Adequado' : 'Regular');
           }
         });
+
+        const nomeMMIIMetrica = (evalsArr.find(ev => ev.testes?.forcaMMII?.exercicioNome)?.testes.forcaMMII.exercicioNome) || 'Cadeira Extensora';
         metricas.push({
           id: 'ad_extensora_1rm',
-          nome: 'Cadeira Extensora (1RM Estimado)',
+          nome: `${nomeMMIIMetrica} (1RM Estimado)`,
           categoria: 'Desempenho Funcional & Força',
           unidade: 'kg',
-          extrair: ev => (ev.testes?.extensora1RM != null && ev.testes?.extensora1RM !== '') ? parseFloat(ev.testes.extensora1RM) : null,
+          extrair: ev => (ev.testes?.forcaMMII?.rm1 != null ? parseFloat(ev.testes.forcaMMII.rm1) : ((ev.testes?.extensora1RM != null && ev.testes?.extensora1RM !== '') ? parseFloat(ev.testes.extensora1RM) : null)),
           classificar: () => 'Carga máxima estimada'
         });
         metricas.push({
           id: 'ad_extensora_rel',
-          nome: 'Cadeira Extensora (Força Relativa)',
+          nome: `${nomeMMIIMetrica} (Força Relativa)`,
           categoria: 'Desempenho Funcional & Força',
           unidade: 'x PC',
-          extrair: ev => (ev.testes?.extensoraRelativo != null && ev.testes?.extensoraRelativo !== '') ? parseFloat(ev.testes.extensoraRelativo) : null,
+          extrair: ev => (ev.testes?.forcaMMII?.relativo != null ? parseFloat(ev.testes.forcaMMII.relativo) : ((ev.testes?.extensoraRelativo != null && ev.testes?.extensoraRelativo !== '') ? parseFloat(ev.testes.extensoraRelativo) : null)),
           classificar: val => {
             if (val == null) return '--';
             return val >= (sexo === 'M' ? 0.80 : 0.60) ? 'Bom / Superior' : 'Adequado';
@@ -8081,6 +8861,18 @@
           classificar: val => {
             if (val == null) return '--';
             return val >= (sexo === 'M' ? 44 : 38) ? 'Excelente Aptidão Aeróbia' : 'Bom Condicionamento';
+          }
+        });
+        metricas.push({
+          id: 'ad_esteira_rfc',
+          nome: 'Esteira: Recuperação da FC (RFC 1º min)',
+          categoria: 'Desempenho Funcional & Força',
+          unidade: 'bpm',
+          opcional: true,
+          extrair: ev => (ev.testes?.fezEsteira && ev.testes?.esteiraRfc1Min != null) ? parseInt(ev.testes.esteiraRfc1Min, 10) : null,
+          classificar: val => {
+            if (val == null) return '--';
+            return val >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)';
           }
         });
 
@@ -8849,95 +9641,6 @@
       const rcqB = (cB.rcq != null) ? Number(cB.rcq) : (cB.cintura && cB.quadril ? Number((cB.cintura / cB.quadril).toFixed(2)) : null);
       const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
 
-      const itens = [
-        {
-          param: 'Pressão Arterial (PA Repouso)',
-          vBase: cB.paSistolica ? `${cB.paSistolica}/${cB.paDiastolica} mmHg` : '--',
-          vTarget: cT.paSistolica ? `${cT.paSistolica}/${cT.paDiastolica} mmHg` : '--',
-          delta: (ehReavaliacao && cB.paSistolica && cT.paSistolica) ? `${cT.paSistolica - cB.paSistolica}/${cT.paDiastolica - cB.paDiastolica}` : '--',
-          status: (cT.paSistolica <= 129 && cT.paDiastolica <= 84) ? 'Pressão Normal' : 'Alerta PA'
-        },
-        {
-          param: 'Frequência Cardíaca de Repouso',
-          vBase: cB.fcRepouso ? `${cB.fcRepouso} bpm` : '--',
-          vTarget: cT.fcRepouso ? `${cT.fcRepouso} bpm` : '--',
-          delta: (ehReavaliacao && cB.fcRepouso && cT.fcRepouso) ? `${cT.fcRepouso - cB.fcRepouso} bpm` : '--',
-          status: (cT.fcRepouso >= 60 && cT.fcRepouso <= 85) ? 'Eucardia (Ideal)' : (cT.fcRepouso < 60 ? 'Bradicardia (Atleta)' : 'Basal Elevada')
-        },
-        {
-          param: 'Massa Corporal (Peso)',
-          vBase: cB.peso ? `${cB.peso} kg` : '--',
-          vTarget: cT.peso ? `${cT.peso} kg` : '--',
-          delta: (ehReavaliacao && cB.peso && cT.peso) ? `${(cT.peso - cB.peso > 0 ? '+' : '')}${(cT.peso - cB.peso).toFixed(1)} kg` : '--',
-          status: 'Peso corporal total'
-        },
-        {
-          param: 'Índice de Massa Corporal (IMC)',
-          vBase: cB.imc ? `${cB.imc} kg/m²` : '--',
-          vTarget: cT.imc ? `${cT.imc} kg/m²` : '--',
-          delta: (ehReavaliacao && cB.imc && cT.imc) ? `${(cT.imc - cB.imc > 0 ? '+' : '')}${(cT.imc - cB.imc).toFixed(1)}` : '--',
-          status: cT.imc < 25.0 ? 'Peso Normal (Eutrofia)' : (cT.imc < 30.0 ? 'Sobrepeso' : 'Obesidade')
-        },
-        {
-          param: 'Circunferência da Cintura',
-          vBase: cB.cintura ? `${cB.cintura} cm` : '--',
-          vTarget: cT.cintura ? `${cT.cintura} cm` : '--',
-          delta: (ehReavaliacao && cB.cintura && cT.cintura) ? `${(cT.cintura - cB.cintura > 0 ? '+' : '')}${(cT.cintura - cB.cintura).toFixed(1)} cm` : '--',
-          status: cT.cintura <= (sexo === 'M' ? 94 : 80) ? 'Risco Normal' : 'Risco Aumentado'
-        },
-        {
-          param: 'Circunferência do Quadril',
-          vBase: cB.quadril ? `${cB.quadril} cm` : '--',
-          vTarget: cT.quadril ? `${cT.quadril} cm` : '--',
-          delta: (ehReavaliacao && cB.quadril && cT.quadril) ? `${(cT.quadril - cB.quadril > 0 ? '+' : '')}${(cT.quadril - cB.quadril).toFixed(1)} cm` : '--',
-          status: 'Perimetria de quadril'
-        },
-        {
-          param: 'Relação Cintura-Quadril (RCQ)',
-          vBase: (rcqB != null) ? `${rcqB.toFixed(2)}` : '--',
-          vTarget: (rcqT != null) ? `${rcqT.toFixed(2)}` : '--',
-          delta: (ehReavaliacao && rcqB != null && rcqT != null) ? `${(rcqT - rcqB > 0 ? '+' : '')}${(rcqT - rcqB).toFixed(2)}` : '--',
-          status: (rcqT != null && rcqT <= (sexo === 'M' ? 0.90 : 0.80)) ? 'Baixo Risco Cardiovascular' : (rcqT != null ? 'Risco Moderado/Alto' : '--')
-        },
-        {
-          param: '% de Gordura Corporal (%G)',
-          vBase: cB.percentualGordura ? `${cB.percentualGordura}%` : '--',
-          vTarget: cT.percentualGordura ? `${cT.percentualGordura}%` : '--',
-          delta: (ehReavaliacao && cB.percentualGordura !== undefined && cT.percentualGordura !== undefined) ? `${(cT.percentualGordura - cB.percentualGordura > 0 ? '+' : '')}${(cT.percentualGordura - cB.percentualGordura).toFixed(1)}%` : '--',
-          status: cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média'
-        },
-        {
-          param: 'Massa Gorda Total',
-          vBase: cB.massaGorda ? `${cB.massaGorda} kg` : '--',
-          vTarget: cT.massaGorda ? `${cT.massaGorda} kg` : '--',
-          delta: (ehReavaliacao && cB.massaGorda && cT.massaGorda) ? `${(cT.massaGorda - cB.massaGorda > 0 ? '+' : '')}${(cT.massaGorda - cB.massaGorda).toFixed(1)} kg` : '--',
-          status: ehReavaliacao ? ((cB.massaGorda && cT.massaGorda && cT.massaGorda < cB.massaGorda) ? 'Perda de gordura' : 'Tecido adiposo monitorado') : (cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Nível Saudável de Gordura' : 'Adiposidade Acima da Média')
-        },
-        {
-          param: 'Massa Magra Livre de Gordura',
-          vBase: cB.massaMagra ? `${cB.massaMagra} kg` : '--',
-          vTarget: cT.massaMagra ? `${cT.massaMagra} kg` : '--',
-          delta: (ehReavaliacao && cB.massaMagra && cT.massaMagra) ? `${(cT.massaMagra - cB.massaMagra > 0 ? '+' : '')}${(cT.massaMagra - cB.massaMagra).toFixed(1)} kg` : '--',
-          status: ehReavaliacao ? ((cB.massaMagra && cT.massaMagra && cT.massaMagra > cB.massaMagra) ? 'Hipertrofia Muscular' : 'Massa magra monitorada') : 'Massa Livre de Gordura (Músculos/Ossos)'
-        },
-        {
-          param: 'Flexões de Braço (Repetições Máximas)',
-          vBase: (tB.flexoesReps !== undefined && tB.flexoesReps !== null && tB.flexoesReps !== '') ? `${tB.flexoesReps} reps` : '--',
-          vTarget: (tT.flexoesReps !== undefined && tT.flexoesReps !== null && tT.flexoesReps !== '') ? `${tT.flexoesReps} reps` : '--',
-          delta: (ehReavaliacao && tB.flexoesReps !== undefined && tB.flexoesReps !== null && tB.flexoesReps !== '' && tT.flexoesReps !== undefined && tT.flexoesReps !== null && tT.flexoesReps !== '') ? `${(tT.flexoesReps - tB.flexoesReps > 0 ? '+' : '')}${tT.flexoesReps - tB.flexoesReps} reps` : '--',
-          status: classificarFlexoesTabela(tT.flexoesReps, idade, sexo),
-          opcional: true
-        },
-        {
-          param: 'Cadeira Extensora (1RM Estimado / Força Relativa)',
-          vBase: (tB.extensora1RM !== undefined && tB.extensora1RM !== null && tB.extensora1RM !== '') ? `${tB.extensora1RM} kg (${tB.extensoraRelativo}x PC) [${tB.extensoraCarga}kg x ${tB.extensoraReps} reps]` : '--',
-          vTarget: (tT.extensora1RM !== undefined && tT.extensora1RM !== null && tT.extensora1RM !== '') ? `${tT.extensora1RM} kg (${tT.extensoraRelativo}x PC) [${tT.extensoraCarga}kg x ${tT.extensoraReps} reps]` : '--',
-          delta: (ehReavaliacao && tB.extensora1RM !== undefined && tB.extensora1RM !== null && tB.extensora1RM !== '' && tT.extensora1RM !== undefined && tT.extensora1RM !== null && tT.extensora1RM !== '') ? `${(tT.extensora1RM - tB.extensora1RM > 0 ? '+' : '')}${(tT.extensora1RM - tB.extensora1RM).toFixed(1)} kg` : '--',
-          status: classificarExtensoraTabela(tT.extensoraRelativo, sexo),
-          opcional: true
-        }
-      ];
-
       function classificarFlexoesTabela(reps, age, sex) {
         if (reps === undefined || reps === null || reps === '') return '--';
         const r = parseInt(reps);
@@ -9017,6 +9720,164 @@
         }
       }
 
+      // MMSS para tabela comparativa
+      const mmssTarget = tT.forcaMMSS || (tT.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tT.flexoesReps } : null);
+      const mmssBase = tB.forcaMMSS || (tB.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tB.flexoesReps } : null);
+      const mmssNome = (mmssTarget && mmssTarget.exercicioNome) || (mmssBase && mmssBase.exercicioNome) || 'Flexões de Braço';
+      const ehFlexaoMMSS = (!mmssTarget || mmssTarget.exercicio === 'flexao');
+
+      let mmssVBase = '--';
+      let mmssVTarget = '--';
+      let mmssDelta = '--';
+      let mmssStatus = '--';
+
+      if (ehFlexaoMMSS) {
+        const repsBase = mmssBase ? mmssBase.reps : tB.flexoesReps;
+        const repsTarget = mmssTarget ? mmssTarget.reps : tT.flexoesReps;
+        if (repsBase != null && repsBase !== '') mmssVBase = `${repsBase} reps`;
+        if (repsTarget != null && repsTarget !== '') mmssVTarget = `${repsTarget} reps`;
+        if (ehReavaliacao && repsBase != null && repsTarget != null && repsBase !== '' && repsTarget !== '') {
+          const dF = repsTarget - repsBase;
+          mmssDelta = `${(dF > 0 ? '+' : '')}${dF} reps`;
+        }
+        mmssStatus = (mmssTarget && mmssTarget.classificacaoAcsm) ? `${mmssTarget.classificacaoAcsm} (ACSM)` : classificarFlexoesTabela(repsTarget, idade, sexo);
+      } else {
+        if (mmssBase && mmssBase.rm1) {
+          mmssVBase = `${mmssBase.rm1} kg (${mmssBase.relativo}x PC) [${mmssBase.carga}kg x ${mmssBase.reps} reps]`;
+        }
+        if (mmssTarget && mmssTarget.rm1) {
+          mmssVTarget = `${mmssTarget.rm1} kg (${mmssTarget.relativo}x PC) [${mmssTarget.carga}kg x ${mmssTarget.reps} reps]`;
+          mmssStatus = mmssTarget.classificacao || 'Aguardando dados';
+        }
+        if (ehReavaliacao && mmssBase && mmssBase.rm1 && mmssTarget && mmssTarget.rm1 && mmssBase.exercicio === mmssTarget.exercicio) {
+          const dRm = Number((mmssTarget.rm1 - mmssBase.rm1).toFixed(1));
+          mmssDelta = `${(dRm > 0 ? '+' : '')}${dRm} kg`;
+        }
+      }
+
+      // MMII para tabela comparativa
+      const mmiiTarget = tT.forcaMMII || (tT.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tT.extensora1RM, relativo: tT.extensoraRelativo, carga: tT.extensoraCarga, reps: tT.extensoraReps } : null);
+      const mmiiBase = tB.forcaMMII || (tB.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tB.extensora1RM, relativo: tB.extensoraRelativo, carga: tB.extensoraCarga, reps: tB.extensoraReps } : null);
+      const mmiiNome = (mmiiTarget && mmiiTarget.exercicioNome) || (mmiiBase && mmiiBase.exercicioNome) || 'Cadeira Extensora';
+
+      let mmiiVBase = '--';
+      let mmiiVTarget = '--';
+      let mmiiDelta = '--';
+      let mmiiStatus = '--';
+
+      if (mmiiBase && (mmiiBase.rm1 != null || tB.extensora1RM != null)) {
+        const rm = mmiiBase.rm1 != null ? mmiiBase.rm1 : tB.extensora1RM;
+        const rel = mmiiBase.relativo != null ? mmiiBase.relativo : tB.extensoraRelativo;
+        const c = mmiiBase.carga != null ? mmiiBase.carga : tB.extensoraCarga;
+        const r = mmiiBase.reps != null ? mmiiBase.reps : tB.extensoraReps;
+        mmiiVBase = `${rm} kg (${rel}x PC) [${c}kg x ${r} reps]`;
+      }
+      if (mmiiTarget && (mmiiTarget.rm1 != null || tT.extensora1RM != null)) {
+        const rm = mmiiTarget.rm1 != null ? mmiiTarget.rm1 : tT.extensora1RM;
+        const rel = mmiiTarget.relativo != null ? mmiiTarget.relativo : tT.extensoraRelativo;
+        const c = mmiiTarget.carga != null ? mmiiTarget.carga : tT.extensoraCarga;
+        const r = mmiiTarget.reps != null ? mmiiTarget.reps : tT.extensoraReps;
+        mmiiVTarget = `${rm} kg (${rel}x PC) [${c}kg x ${r} reps]`;
+        mmiiStatus = mmiiTarget.classificacao || classificarExtensoraTabela(rel, sexo);
+      }
+      if (ehReavaliacao) {
+        const rmB = (mmiiBase && mmiiBase.rm1 != null) ? mmiiBase.rm1 : tB.extensora1RM;
+        const rmT = (mmiiTarget && mmiiTarget.rm1 != null) ? mmiiTarget.rm1 : tT.extensora1RM;
+        if (rmB != null && rmT != null && (!mmiiBase || !mmiiTarget || mmiiBase.exercicio === mmiiTarget.exercicio)) {
+          const dRm = Number((rmT - rmB).toFixed(1));
+          mmiiDelta = `${(dRm > 0 ? '+' : '')}${dRm} kg`;
+        }
+      }
+
+      const itens = [
+        {
+          param: 'Pressão Arterial (PA Repouso)',
+          vBase: cB.paSistolica ? `${cB.paSistolica}/${cB.paDiastolica} mmHg` : '--',
+          vTarget: cT.paSistolica ? `${cT.paSistolica}/${cT.paDiastolica} mmHg` : '--',
+          delta: (ehReavaliacao && cB.paSistolica && cT.paSistolica) ? `${cT.paSistolica - cB.paSistolica}/${cT.paDiastolica - cB.paDiastolica}` : '--',
+          status: (cT.paSistolica <= 129 && cT.paDiastolica <= 84) ? 'Pressão Normal' : 'Alerta PA'
+        },
+        {
+          param: 'Frequência Cardíaca de Repouso',
+          vBase: cB.fcRepouso ? `${cB.fcRepouso} bpm` : '--',
+          vTarget: cT.fcRepouso ? `${cT.fcRepouso} bpm` : '--',
+          delta: (ehReavaliacao && cB.fcRepouso && cT.fcRepouso) ? `${cT.fcRepouso - cB.fcRepouso} bpm` : '--',
+          status: (cT.fcRepouso >= 60 && cT.fcRepouso <= 85) ? 'Eucardia (Ideal)' : (cT.fcRepouso < 60 ? 'Bradicardia (Atleta)' : 'Basal Elevada')
+        },
+        {
+          param: 'Massa Corporal (Peso)',
+          vBase: cB.peso ? `${cB.peso} kg` : '--',
+          vTarget: cT.peso ? `${cT.peso} kg` : '--',
+          delta: (ehReavaliacao && cB.peso && cT.peso) ? `${(cT.peso - cB.peso > 0 ? '+' : '')}${(cT.peso - cB.peso).toFixed(1)} kg` : '--',
+          status: 'Peso corporal total'
+        },
+        {
+          param: 'Índice de Massa Corporal (IMC)',
+          vBase: cB.imc ? `${cB.imc} kg/m²` : '--',
+          vTarget: cT.imc ? `${cT.imc} kg/m²` : '--',
+          delta: (ehReavaliacao && cB.imc && cT.imc) ? `${(cT.imc - cB.imc > 0 ? '+' : '')}${(cT.imc - cB.imc).toFixed(1)}` : '--',
+          status: cT.imc < 25.0 ? 'Peso Normal (Eutrofia)' : (cT.imc < 30.0 ? 'Sobrepeso' : 'Obesidade')
+        },
+        {
+          param: 'Circunferência da Cintura',
+          vBase: cB.cintura ? `${cB.cintura} cm` : '--',
+          vTarget: cT.cintura ? `${cT.cintura} cm` : '--',
+          delta: (ehReavaliacao && cB.cintura && cT.cintura) ? `${(cT.cintura - cB.cintura > 0 ? '+' : '')}${(cT.cintura - cB.cintura).toFixed(1)} cm` : '--',
+          status: cT.cintura <= (sexo === 'M' ? 94 : 80) ? 'Risco Normal' : 'Risco Aumentado'
+        },
+        {
+          param: 'Circunferência do Quadril',
+          vBase: cB.quadril ? `${cB.quadril} cm` : '--',
+          vTarget: cT.quadril ? `${cT.quadril} cm` : '--',
+          delta: (ehReavaliacao && cB.quadril && cT.quadril) ? `${(cT.quadril - cB.quadril > 0 ? '+' : '')}${(cT.quadril - cB.quadril).toFixed(1)} cm` : '--',
+          status: 'Perimetria de quadril'
+        },
+        {
+          param: 'Relação Cintura-Quadril (RCQ)',
+          vBase: (rcqB != null) ? `${rcqB.toFixed(2)}` : '--',
+          vTarget: (rcqT != null) ? `${rcqT.toFixed(2)}` : '--',
+          delta: (ehReavaliacao && rcqB != null && rcqT != null) ? `${(rcqT - rcqB > 0 ? '+' : '')}${(rcqT - rcqB).toFixed(2)}` : '--',
+          status: (rcqT != null && rcqT <= (sexo === 'M' ? 0.90 : 0.80)) ? 'Baixo Risco Cardiovascular' : (rcqT != null ? 'Risco Moderado/Alto' : '--')
+        },
+        {
+          param: '% de Gordura Corporal (%G)',
+          vBase: cB.percentualGordura ? `${cB.percentualGordura}%` : '--',
+          vTarget: cT.percentualGordura ? `${cT.percentualGordura}%` : '--',
+          delta: (ehReavaliacao && cB.percentualGordura !== undefined && cT.percentualGordura !== undefined) ? `${(cT.percentualGordura - cB.percentualGordura > 0 ? '+' : '')}${(cT.percentualGordura - cB.percentualGordura).toFixed(1)}%` : '--',
+          status: cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média'
+        },
+        {
+          param: 'Massa Gorda Total',
+          vBase: cB.massaGorda ? `${cB.massaGorda} kg` : '--',
+          vTarget: cT.massaGorda ? `${cT.massaGorda} kg` : '--',
+          delta: (ehReavaliacao && cB.massaGorda && cT.massaGorda) ? `${(cT.massaGorda - cB.massaGorda > 0 ? '+' : '')}${(cT.massaGorda - cB.massaGorda).toFixed(1)} kg` : '--',
+          status: ehReavaliacao ? ((cB.massaGorda && cT.massaGorda && cT.massaGorda < cB.massaGorda) ? 'Perda de gordura' : 'Tecido adiposo monitorado') : (cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Nível Saudável de Gordura' : 'Adiposidade Acima da Média')
+        },
+        {
+          param: 'Massa Magra Livre de Gordura',
+          vBase: cB.massaMagra ? `${cB.massaMagra} kg` : '--',
+          vTarget: cT.massaMagra ? `${cT.massaMagra} kg` : '--',
+          delta: (ehReavaliacao && cB.massaMagra && cT.massaMagra) ? `${(cT.massaMagra - cB.massaMagra > 0 ? '+' : '')}${(cT.massaMagra - cB.massaMagra).toFixed(1)} kg` : '--',
+          status: ehReavaliacao ? ((cB.massaMagra && cT.massaMagra && cT.massaMagra > cB.massaMagra) ? 'Hipertrofia Muscular' : 'Massa magra monitorada') : 'Massa Livre de Gordura (Músculos/Ossos)'
+        },
+        {
+          param: ehFlexaoMMSS ? `${mmssNome} (Repetições Máximas)` : `${mmssNome} (1RM Estimado / Força Relativa)`,
+          vBase: mmssVBase,
+          vTarget: mmssVTarget,
+          delta: mmssDelta,
+          status: mmssStatus,
+          opcional: true
+        },
+        {
+          param: `${mmiiNome} (1RM Estimado / Força Relativa)`,
+          vBase: mmiiVBase,
+          vTarget: mmiiVTarget,
+          delta: mmiiDelta,
+          status: mmiiStatus,
+          opcional: true
+        }
+      ];
+
       // Se realizou teste de esteira
       if ((tT && tT.fezEsteira) || (tB && tB.fezEsteira)) {
         itens.push({
@@ -9042,6 +9903,17 @@
           delta: (ehReavaliacao && tB.esteiraFcPico && tT.esteiraFcPico) ? `${(tT.esteiraFcPico - tB.esteiraFcPico > 0 ? '+' : '')}${tT.esteiraFcPico - tB.esteiraFcPico} bpm` : '--',
           status: (tT && tT.esteiraFcPico) ? `${Math.round((tT.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista` : '--'
         });
+
+        if ((tT && tT.esteiraRfc1Min != null) || (tB && tB.esteiraRfc1Min != null)) {
+          itens.push({
+            param: 'Esteira: Recuperação da FC (RFC 1º min)',
+            vBase: (tB && tB.esteiraRfc1Min != null) ? `-${tB.esteiraRfc1Min} bpm` : '--',
+            vTarget: (tT && tT.esteiraRfc1Min != null) ? `-${tT.esteiraRfc1Min} bpm` : '--',
+            delta: (ehReavaliacao && tB.esteiraRfc1Min != null && tT.esteiraRfc1Min != null) ? `${(tT.esteiraRfc1Min - tB.esteiraRfc1Min > 0 ? '+' : '')}${tT.esteiraRfc1Min - tB.esteiraRfc1Min} bpm` : '--',
+            status: (tT && tT.esteiraRfc1Min >= 12) ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)',
+            opcional: true
+          });
+        }
       }
 
       const itensVisiveis = itens.filter(item => {
@@ -9309,6 +10181,11 @@
         document.getElementById('ad_dobra_coxa_f').value = '';
         document.getElementById('ad_bio_gordura').value = '';
         document.getElementById('ad_flexoes_reps').value = '';
+        if (document.getElementById('ad_flexao_sobrecarga')) document.getElementById('ad_flexao_sobrecarga').value = '0';
+        if (document.getElementById('ad_mmss_carga')) document.getElementById('ad_mmss_carga').value = '';
+        if (document.getElementById('ad_mmss_reps')) document.getElementById('ad_mmss_reps').value = '';
+        if (document.getElementById('ad_mmii_carga')) document.getElementById('ad_mmii_carga').value = '';
+        if (document.getElementById('ad_mmii_reps')) document.getElementById('ad_mmii_reps').value = '';
         document.getElementById('ad_extensora_carga').value = '';
         document.getElementById('ad_extensora_reps').value = '';
         document.getElementById('ad_check_esteira').checked = false;
@@ -9320,9 +10197,10 @@
         resetarTimerEsteira();
 
         atualizarCamposSexoAdulto();
+        alternarMetodoGorduraAdulto();
         calcularComposicaoAdulto();
-        calcularFlexoesAdulto();
-        calcularRMExtensoraAdulto();
+        calcularForcaMMSS();
+        calcularForcaMMII();
         calcularEsteiraAdulto();
       }
 
