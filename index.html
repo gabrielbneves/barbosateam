@@ -666,10 +666,10 @@
     }
     .charts-grid-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 16px;
     }
-    @media (max-width: 650px) {
+    @media (max-width: 720px) {
       .charts-grid-container {
         grid-template-columns: 1fr;
       }
@@ -731,15 +731,20 @@
       width: 100%;
     }
     @media print {
+      .charts-grid-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+      }
       .chart-mixed-card {
-        break-inside: avoid;
-        page-break-inside: avoid;
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
         box-shadow: none !important;
         border: 1px solid #cbd5e1 !important;
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
       }
       .chart-canvas-box {
-        height: 200px !important;
+        height: 190px !important;
       }
       .treadmill-control-card, .treadmill-mode-toggle, .treadmill-timer-card {
         display: none !important;
@@ -2086,8 +2091,11 @@
               <div class="form-group">
                 <label for="ad_mmss_formula">Fórmula Científica de 1RM:</label>
                 <select id="ad_mmss_formula" onchange="calcularForcaMMSS()">
-                  <option value="brzycki">Brzycki (1993) [Padrão Ouro MMSS]</option>
+                  <option value="oconnor">O'Connor et al. (1989) [Melhor para Supino - Meneses 2013]</option>
+                  <option value="brzycki">Brzycki (1993) [Melhor para Remada/Puxada - Meneses 2013]</option>
+                  <option value="adams">Adams (1998) [Válida para Supino - Meneses 2013]</option>
                   <option value="epley">Epley (1985)</option>
+                  <option value="baechle">Baechle &amp; Groves (2000)</option>
                   <option value="lander">Lander (1985)</option>
                   <option value="mayhew">Mayhew et al. (1992)</option>
                   <option value="wathan">Wathan (1994)</option>
@@ -2180,9 +2188,12 @@
               <div class="form-group">
                 <label for="ad_mmii_formula">Fórmula Científica de 1RM:</label>
                 <select id="ad_mmii_formula" onchange="calcularForcaMMII()">
-                  <option value="brzycki">Brzycki (1993) [Padrão para Cadeira Extensora]</option>
+                  <option value="oconnor">O'Connor et al. (1989) [Melhor para Extensora e Leg Press - Meneses 2013]</option>
                   <option value="epley">Epley (1985) [Padrão Ouro para Agachamento e Terra]</option>
-                  <option value="lander">Lander (1985) [Recomendada para Leg Press]</option>
+                  <option value="brzycki">Brzycki (1993)</option>
+                  <option value="baechle">Baechle &amp; Groves (2000) [Melhor para Flexão de Joelhos - Meneses 2013]</option>
+                  <option value="adams">Adams (1998) [Meneses 2013]</option>
+                  <option value="lander">Lander (1985)</option>
                   <option value="wathan">Wathan (1994)</option>
                   <option value="mayhew">Mayhew et al. (1992)</option>
                 </select>
@@ -3056,7 +3067,15 @@
               <strong>1. Resistência Muscular de Membros Superiores (Push-Up Test / Flexões Máximas):</strong> American College of Sports Medicine (ACSM, 2018; 10ª/11ª ed.) &amp; Canadian Society for Exercise Physiology (CSEP). Avaliação da força e resistência de peitoral, deltoides e tríceps. Posição padrão com pontas dos pés (homens) ou apoio modificado com joelhos no solo (mulheres) até a fadiga voluntária. Tabela de percentis e categorias de saúde por faixa etária e sexo (Excelente, Bom, Médio, Regular, Abaixo da Média).
             </div>
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
-              <strong>2. Força Dinâmica na Cadeira Extensora (1RM Estimado &amp; Força Relativa):</strong> Brzycki, M. (1993). <em>Strength testing: Predicting a one-rep max from reps-to-fatigue</em>. JOPERD, 64(1): 88–90. Equação: 1RM = Carga / [1.0278 - (0.0278 × Reps)]. Avaliação de força de extensores de joelho (quadríceps). Classificação por Força Relativa (1RM/PC) padronizada conforme ACSM e The Cooper Institute.
+              <strong>2. Predição de 1RM por Exercício em Adultos Treinados (Menêses et al., 2013):</strong> Menêses, A. L., Santana, F. S., Soares, A. H. G., Souza, B. C. C., Souza, D. J. C. A., Santos, M. A. M., Cyrino, E. S., &amp; Ritti-Dias, R. M. (2013). <em>Validade das equações preditivas de uma repetição máxima varia de acordo com o exercício realizado em adultos jovens treinados</em>. Revista Brasileira de Atividade Física &amp; Saúde, 18(1): 95–104. Demonstra que a precisão das equações é exercício-dependente:
+              <ul style="margin: 6px 0 0 18px; padding: 0; font-size: 11px; color: #334155; line-height: 1.5;">
+                <li><strong>Supino Reto:</strong> Equação de O'Connor et al. (1989) apresentou o melhor desempenho (bias = 2,0 kg; erro de ~2,5%).</li>
+                <li><strong>Cadeira Extensora (Extensão de Joelhos):</strong> Equação de O'Connor et al. (1989) obteve o melhor desempenho entre todas as fórmulas (bias = -1,0 kg; r = 0,95).</li>
+                <li><strong>Leg Press 45°:</strong> O'Connor et al. (1989) apresentou a menor superestimação de 1RM (bias = 15,1 kg vs 32-36 kg das demais).</li>
+                <li><strong>Remada Central / Puxada:</strong> Brzycki (1993) apresentou o menor erro de estimativa e melhor concordância Bland-Altman (bias = 1,5 kg; r = 0,93).</li>
+                <li><strong>Flexão de Joelhos:</strong> Baechle &amp; Groves (2000) apresentou a melhor concordância (bias = 0,1 kg).</li>
+                <li><strong>Agachamento &amp; Terra:</strong> Epley (1985) e Brzycki (1993) padrão-ouro para levantamentos livres com barra (LeSuer et al., 1997).</li>
+              </ul>
             </div>
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
               <strong>3. Dobras Cutâneas (Protocolo Jackson &amp; Pollock 3 Dobras):</strong> Jackson &amp; Pollock (1978, homens: Peitoral, Abdômen, Coxa) e Jackson, Pollock &amp; Ward (1980, mulheres: Tríceps, Supra-ilíaca, Coxa). Conversão para %G via equação de Siri (1961).
@@ -4494,7 +4513,7 @@
               const mmss = ultAv.testes.forcaMMSS;
               if (document.getElementById('ad_mmss_exercicio')) document.getElementById('ad_mmss_exercicio').value = mmss.exercicio || 'flexao';
               aoTrocarExercicioMMSS();
-              if (document.getElementById('ad_mmss_formula')) document.getElementById('ad_mmss_formula').value = mmss.formula || 'brzycki';
+              if (mmss.formula && document.getElementById('ad_mmss_formula')) document.getElementById('ad_mmss_formula').value = mmss.formula;
               if (mmss.exercicio === 'flexao') {
                 if (document.getElementById('ad_flexao_apoio')) document.getElementById('ad_flexao_apoio').value = mmss.apoio || 'tradicional';
                 if (document.getElementById('ad_flexoes_reps')) document.getElementById('ad_flexoes_reps').value = mmss.reps || '';
@@ -4514,7 +4533,7 @@
               const mmii = ultAv.testes.forcaMMII;
               if (document.getElementById('ad_mmii_exercicio')) document.getElementById('ad_mmii_exercicio').value = mmii.exercicio || 'extensora';
               aoTrocarExercicioMMII();
-              if (document.getElementById('ad_mmii_formula')) document.getElementById('ad_mmii_formula').value = mmii.formula || 'brzycki';
+              if (mmii.formula && document.getElementById('ad_mmii_formula')) document.getElementById('ad_mmii_formula').value = mmii.formula;
               if (document.getElementById('ad_mmii_carga')) document.getElementById('ad_mmii_carga').value = mmii.carga || '';
               if (document.getElementById('ad_mmii_reps')) document.getElementById('ad_mmii_reps').value = mmii.reps || '';
               if (document.getElementById('ad_extensora_carga')) document.getElementById('ad_extensora_carga').value = mmii.carga || '';
@@ -5567,6 +5586,20 @@
       if (!reps || reps <= 1) return Number(carga.toFixed(1));
       let rm = carga;
       switch (formula) {
+        case 'oconnor':
+          // O'Connor et al. (1989): 1RM = Carga * (1 + 0.025 * reps)
+          // Recomendada por Meneses et al. (2013) para Supino, Extensora e Leg Press
+          rm = carga * (1 + (0.025 * reps));
+          break;
+        case 'adams':
+          // Adams (1998): 1RM = (100 * Carga) / (100 - 2 * reps)
+          const divAdams = 100 - (2 * reps);
+          rm = divAdams > 0 ? (100 * carga) / divAdams : carga * 1.5;
+          break;
+        case 'baechle':
+          // Baechle & Groves (2000): 1RM = Carga * (0.0375 * reps + 0.978)
+          rm = carga * ((0.0375 * reps) + 0.978);
+          break;
         case 'epley':
           // Epley (1985): 1RM = Carga * (1 + 0.0333 * reps)
           rm = carga * (1 + (0.0333 * reps));
@@ -5596,6 +5629,9 @@
 
     function obterNomeFormula(formula) {
       switch (formula) {
+        case 'oconnor': return "O'Connor et al. (1989)";
+        case 'adams': return 'Adams (1998)';
+        case 'baechle': return 'Baechle & Groves (2000)';
         case 'epley': return 'Epley (1985)';
         case 'lander': return 'Lander (1985)';
         case 'mayhew': return 'Mayhew et al. (1992)';
@@ -5620,16 +5656,16 @@
         if (camposPeso) camposPeso.style.display = 'none';
         if (cardFlexaoAcsm) cardFlexaoAcsm.style.display = 'block';
         if (lbl1RM) lbl1RM.textContent = '1RM Equivalente (Empurrar)';
-        if (fSelect) fSelect.value = 'brzycki';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de flexões de braço. Homens utilizam apoio nas pontas dos pés (64% PC); mulheres podem utilizar apoio nos joelhos (53% PC). O sistema calcula o 1RM equivalente de empurrar e a classificação normativa de repetições do ACSM.';
+        if (fSelect) fSelect.value = 'oconnor';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de flexões de braço. Homens utilizam apoio nas pontas dos pés (64% PC); mulheres podem utilizar apoio nos joelhos (53% PC). Fórmula recomendada: <strong>O\'Connor et al. (1989)</strong> (Meneses et al., 2013).';
       } else if (ex === 'supino') {
         if (camposFlexao) camposFlexao.style.display = 'none';
         if (camposPeso) camposPeso.style.display = 'grid';
         if (cardFlexaoAcsm) cardFlexaoAcsm.style.display = 'none';
         if (lblCarga) lblCarga.textContent = 'Carga Levantada no Supino (kg):';
         if (lbl1RM) lbl1RM.textContent = '1RM Estimado no Supino';
-        if (fSelect) fSelect.value = 'brzycki';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força dinâmica máxima ou submáxima no Supino Reto (barra ou halteres). Realizar repetições completas (1 a 12 reps) até a falha técnica. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+        if (fSelect) fSelect.value = 'oconnor';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força dinâmica máxima ou submáxima no Supino Reto (barra ou halteres). Realizar repetições completas (1 a 12 reps) até a falha técnica. Fórmula recomendada: <strong>O\'Connor et al. (1989)</strong> (Meneses et al., 2013 - menor viés de 2,0 kg e erro de 2,5%).';
       } else if (ex === 'puxada') {
         if (camposFlexao) camposFlexao.style.display = 'none';
         if (camposPeso) camposPeso.style.display = 'grid';
@@ -5637,7 +5673,7 @@
         if (lblCarga) lblCarga.textContent = 'Carga Levantada na Puxada (kg):';
         if (lbl1RM) lbl1RM.textContent = '1RM Estimado na Puxada';
         if (fSelect) fSelect.value = 'brzycki';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de puxada vertical (Lat Pulldown no pulley alto). Realizar repetições com pegada pronada ou supinada até a falha técnica. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de puxada vertical (Lat Pulldown no pulley alto). Realizar repetições com pegada pronada ou supinada até a falha técnica. Fórmula recomendada: <strong>Brzycki (1993)</strong> (Meneses et al., 2013 - menor viés de 1,5 kg e r=0,93).';
       }
 
       calcularForcaMMSS();
@@ -5652,19 +5688,19 @@
       if (ex === 'agachamento') {
         if (lblCarga) lblCarga.textContent = 'Carga no Agachamento (kg - Barra + Anilhas):';
         if (fSelect) fSelect.value = 'epley';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de membros inferiores no Agachamento (Back Squat). Realizar repetições com amplitude completa até a falha concêntrica. Fórmula recomendada: <strong>Epley (1985)</strong>.';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força de membros inferiores no Agachamento (Back Squat). Realizar repetições com amplitude completa até a falha concêntrica. Fórmula recomendada: <strong>Epley (1985)</strong> (Padrão ouro para peso livre - LeSuer 1997 / Meneses 2013).';
       } else if (ex === 'leg_press') {
         if (lblCarga) lblCarga.textContent = 'Carga no Leg Press (kg):';
-        if (fSelect) fSelect.value = 'lander';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força em máquina de Leg Press (45º ou horizontal). Descer até 90º de flexão dos joelhos e empurrar até a extensão controlada. Fórmula recomendada: <strong>Lander (1985)</strong>.';
+        if (fSelect) fSelect.value = 'oconnor';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força em máquina de Leg Press (45º ou horizontal). Descer até 90º de flexão dos joelhos e empurrar até a extensão controlada. Fórmula recomendada: <strong>O\'Connor et al. (1989)</strong> (Meneses et al., 2013 - menor viés e menor superestimação).';
       } else if (ex === 'terra') {
         if (lblCarga) lblCarga.textContent = 'Carga no Levantamento Terra (kg):';
         if (fSelect) fSelect.value = 'epley';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força multiarticular de cadeia posterior no Levantamento Terra (Deadlift). Levantar a barra do chão mantendo coluna neutra. Fórmula recomendada: <strong>Epley (1985)</strong>.';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força multiarticular de cadeia posterior no Levantamento Terra (Deadlift). Levantar a barra do chão mantendo coluna neutra. Fórmula recomendada: <strong>Epley (1985)</strong> (Padrão ouro para peso livre - LeSuer 1997 / Meneses 2013).';
       } else {
         if (lblCarga) lblCarga.textContent = 'Carga na Cadeira Extensora (kg):';
-        if (fSelect) fSelect.value = 'brzycki';
-        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força isolada de extensores do joelho (quadríceps). Digite a carga selecionada e as repetições realizadas com amplitude completa. Fórmula recomendada: <strong>Brzycki (1993)</strong>.';
+        if (fSelect) fSelect.value = 'oconnor';
+        if (instr) instr.innerHTML = '<strong>Como aplicar:</strong> Teste de força isolada de extensores do joelho (quadríceps). Digite a carga selecionada e as repetições realizadas com amplitude completa. Fórmula recomendada: <strong>O\'Connor et al. (1989)</strong> (Meneses et al., 2013 - bias=-1,0 kg e r=0,95).';
       }
 
       calcularForcaMMII();
@@ -5764,7 +5800,7 @@
 
     function calcularForcaMMSS() {
       const ex = document.getElementById('ad_mmss_exercicio')?.value || 'flexao';
-      const formula = document.getElementById('ad_mmss_formula')?.value || 'brzycki';
+      const formula = document.getElementById('ad_mmss_formula')?.value || (ex === 'puxada' ? 'brzycki' : 'oconnor');
       const peso = parseFloat(document.getElementById('ad_peso')?.value) || (dadosAluno.composicao && dadosAluno.composicao.peso) || 70;
       const sexo = dadosAluno.identificacao.sexo || document.getElementById('sexo')?.value || 'M';
 
@@ -5890,7 +5926,7 @@
 
     function calcularForcaMMII() {
       const ex = document.getElementById('ad_mmii_exercicio')?.value || 'extensora';
-      const formula = document.getElementById('ad_mmii_formula')?.value || (ex === 'extensora' ? 'brzycki' : (ex === 'leg_press' ? 'lander' : 'epley'));
+      const formula = document.getElementById('ad_mmii_formula')?.value || (ex === 'agachamento' || ex === 'terra' ? 'epley' : 'oconnor');
       const cargaInput = document.getElementById('ad_mmii_carga')?.value;
       const repsInput = document.getElementById('ad_mmii_reps')?.value;
 
@@ -8352,6 +8388,7 @@
     var chartDestaqueInstance = null;
     var metricaDestaqueAtualId = null;
     var metricasAtuaisComparativo = [];
+    var cardsAtuaisComparativo = [];
     var labelsAtuaisComparativo = [];
     var evalsAtuaisComparativo = [];
 
@@ -8912,14 +8949,205 @@
       });
     }
 
+    // Plugin nativo do Barbosa Team para renderizacao direta e inteligente de rotulos de dados
+    const pluginRotulosDados = {
+      id: 'pluginRotulosDados',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.font = 'bold 10px "Segoe UI", Tahoma, Geneva, Verdana, sans-serif';
+
+        const hasBar = chart.data.datasets.some(d => d.type === 'bar' || (!d.type && chart.config.type === 'bar'));
+        const hasLine = chart.data.datasets.some(d => d.type === 'line' || (!d.type && chart.config.type === 'line'));
+        const isDualAxis = !!(chart.options.scales && chart.options.scales.y1);
+        const isDualBarLine = isDualAxis && hasBar && hasLine;
+
+        // Coleta todos os rotulos a serem renderizados
+        const items = [];
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          if (dataset.rotulo === false || dataset.datalabels === false) return;
+          const meta = chart.getDatasetMeta(datasetIndex);
+          if (!meta || meta.hidden) return;
+
+          meta.data.forEach((element, index) => {
+            const val = dataset.data[index];
+            if (val === null || val === undefined || isNaN(val)) return;
+
+            let texto = '';
+            if (typeof dataset.formatarRotulo === 'function') {
+              texto = dataset.formatarRotulo(val, index);
+            } else {
+              texto = Number.isInteger(val) ? String(val) : Number(val).toFixed(1);
+            }
+            if (!texto) return;
+
+            const isStacked = dataset.stack === 'massa';
+            const isBar = (dataset.type === 'bar') || (element.constructor && element.constructor.name === 'BarElement') || (chart.config.type === 'bar' && !dataset.type);
+
+            let x = element.x;
+            let y = element.y - 6;
+            let align = 'center';
+            let baseline = 'bottom';
+            let color = dataset.rotuloCor || dataset.borderColor || '#1e293b';
+            let isInsideBar = false;
+
+            if (isStacked) {
+              const segH = Math.abs(element.base - element.y);
+              if (segH >= 13) {
+                y = (element.base + element.y) / 2;
+                baseline = 'middle';
+                color = dataset.rotuloCor || '#ffffff';
+                isInsideBar = true;
+              } else {
+                return; // Segmento muito pequeno, omite para nao poluir
+              }
+            } else if (isDualBarLine) {
+              // Em graficos de eixo duplo mistos (Cardio Dual: Vpico + VO2; Forca Dual: 1RM + Relativa; RCQ)
+              const isPerimetriaRCQ = chart.data.datasets.length === 3 && chart.data.datasets.some(d => d.label && d.label.includes('Cintura'));
+              if (isPerimetriaRCQ) {
+                // Perimetria & RCQ: Cintura (bar esq), Quadril (bar dir), RCQ (linha centro)
+                if (datasetIndex === 2) {
+                  // Linha RCQ: posiciona acima do topo maximo da categoria
+                  const meta0 = chart.getDatasetMeta(0);
+                  const meta1 = chart.getDatasetMeta(1);
+                  const y0 = (meta0 && meta0.data[index]) ? meta0.data[index].y : element.y;
+                  const y1 = (meta1 && meta1.data[index]) ? meta1.data[index].y : element.y;
+                  const minY = Math.min(element.y, y0, y1);
+                  y = minY - 12;
+                  baseline = 'bottom';
+                } else {
+                  // Barras Cintura e Quadril: acima de suas respectivas barras
+                  y = element.y - 5;
+                  baseline = 'bottom';
+                }
+              } else {
+                // Cardio Dual ou Forca Dual: Bar no eixo Y (esquerda), Linha no eixo Y1 (direita)
+                if (isBar) {
+                  x = element.x - 26; // Desloca para a esquerda (lado do eixo Y)
+                  y = element.y - 7;
+                  baseline = 'bottom';
+                } else {
+                  x = element.x + 26; // Desloca para a direita (lado do eixo Y1)
+                  y = element.y - 7;
+                  baseline = 'bottom';
+                }
+              }
+            } else if (isBar) {
+              y = element.y - 5;
+              baseline = 'bottom';
+            } else {
+              // Linha simples
+              y = element.y - 7;
+              baseline = 'bottom';
+            }
+
+            items.push({
+              texto,
+              x,
+              y,
+              align,
+              baseline,
+              color,
+              isInsideBar,
+              element,
+              datasetIndex,
+              index
+            });
+          });
+        });
+
+        // Calculo de Bounding Box para Deteccao e Resolucao de Colisao
+        function getBox(it) {
+          const w = ctx.measureText(it.texto).width;
+          const h = 11;
+          let x1 = it.x - w / 2;
+          let x2 = it.x + w / 2;
+          if (it.align === 'left') { x1 = it.x; x2 = it.x + w; }
+          else if (it.align === 'right') { x1 = it.x - w; x2 = it.x; }
+
+          let y1 = it.y - h;
+          let y2 = it.y;
+          if (it.baseline === 'middle') { y1 = it.y - h / 2; y2 = it.y + h / 2; }
+          else if (it.baseline === 'top') { y1 = it.y; y2 = it.y + h; }
+
+          return { x1, y1, x2, y2, w, h };
+        }
+
+        function boxesOverlap(b1, b2, pad = 3) {
+          return !(b1.x2 + pad < b2.x1 || b1.x1 - pad > b2.x2 || b1.y2 + pad < b2.y1 || b1.y1 - pad > b2.y2);
+        }
+
+        // Resolucao de colisoes residuais
+        for (let i = 0; i < items.length; i++) {
+          for (let j = i + 1; j < items.length; j++) {
+            const itA = items[i];
+            const itB = items[j];
+            if (itA.isInsideBar && itB.isInsideBar) continue;
+
+            let bA = getBox(itA);
+            let bB = getBox(itB);
+
+            if (boxesOverlap(bA, bB, 3)) {
+              // Se estao colidindo verticalmente
+              if (Math.abs(itA.x - itB.x) < 25) {
+                if (itA.y <= itB.y) {
+                  itA.y = bB.y1 - 4;
+                } else {
+                  itB.y = bA.y1 - 4;
+                }
+              } else {
+                // Colisao horizontal: afasta em X
+                if (itA.x <= itB.x) {
+                  itA.x -= 8;
+                  itB.x += 8;
+                } else {
+                  itA.x += 8;
+                  itB.x -= 8;
+                }
+              }
+            }
+          }
+        }
+
+        // Renderizacao com Halo Protetor Vetorial
+        items.forEach(it => {
+          ctx.textAlign = it.align;
+          ctx.textBaseline = it.baseline;
+
+          if (it.isInsideBar) {
+            ctx.fillStyle = it.color;
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+            ctx.shadowBlur = 3;
+            ctx.fillText(it.texto, it.x, it.y);
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = 'transparent';
+          } else {
+            // Halo branco protetor para garantir leitura absoluta sobre grades ou linhas
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.strokeText(it.texto, it.x, it.y);
+            ctx.fillStyle = it.color;
+            ctx.fillText(it.texto, it.x, it.y);
+          }
+        });
+
+        ctx.restore();
+      }
+    };
+
     function criarGraficoMisto(canvasId, labels, valores, unidade, nomeMetrica) {
       const canvas = document.getElementById(canvasId);
       if (!canvas) return null;
       const ctx = canvas.getContext('2d');
       if (!ctx) return null;
 
+      const ehDuasCasas = nomeMetrica && (nomeMetrica.includes('RCQ') || nomeMetrica.includes('Vpico') || nomeMetrica.includes('Velocidade de Pico') || nomeMetrica.includes('Relativa'));
+
       const chart = new Chart(ctx, {
         type: 'bar',
+        plugins: [pluginRotulosDados],
         data: {
           labels: labels,
           datasets: [
@@ -8934,7 +9162,8 @@
               maxBarThickness: 46,
               barPercentage: labels.length === 1 ? 0.35 : 0.55,
               categoryPercentage: 0.7,
-              order: 2
+              order: 2,
+              rotulo: false
             },
             {
               type: 'line',
@@ -8952,7 +9181,12 @@
               pointHoverRadius: 7,
               pointHoverBackgroundColor: '#1F4E78',
               pointHoverBorderColor: '#ffffff',
-              order: 1
+              order: 1,
+              rotuloCor: '#1F4E78',
+              formatarRotulo: function(val) {
+                const valFmt = ehDuasCasas ? Number(val).toFixed(2) : (Number.isInteger(val) ? String(val) : Number(val).toFixed(1));
+                return valFmt + (unidade ? ' ' + unidade : '');
+              }
             }
           ]
         },
@@ -8991,8 +9225,7 @@
                   const val = context.parsed.y;
                   if (val === null || val === undefined) return '';
                   const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
-                  const ehDuasCasas = nomeMetrica && (nomeMetrica.includes('RCQ') || nomeMetrica.includes('Vpico') || nomeMetrica.includes('Velocidade de Pico'));
-                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : (Number.isInteger(val) ? String(val) : Number(val).toFixed(1));
                   return prefix + valFmt + (unidade ? ' ' + unidade : '');
                 }
               }
@@ -9007,8 +9240,8 @@
               }
             },
             y: {
-              beginAtZero: false,
-              grace: '10%',
+              beginAtZero: true,
+              grace: '15%',
               grid: {
                 color: 'rgba(226, 232, 240, 0.8)'
               },
@@ -9016,8 +9249,7 @@
                 font: { size: 10 },
                 color: '#64748b',
                 callback: function(val) {
-                  const ehDuasCasas = nomeMetrica && (nomeMetrica.includes('RCQ') || nomeMetrica.includes('Vpico') || nomeMetrica.includes('Velocidade de Pico'));
-                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
+                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : (Number.isInteger(val) ? String(val) : Number(val).toFixed(1));
                   return valFmt + (unidade ? ' ' + unidade : '');
                 }
               }
@@ -9030,100 +9262,65 @@
       return chart;
     }
 
-    function renderizarCardDestaque(metrica, labels, evalsSlice) {
-      if (!metrica) return;
-      const cardEl = document.getElementById('card-grafico-destaque');
-      if (!cardEl) return;
+    // 1. Composição Corporal Consolidada: Barras empilhadas (Massa Magra + Gorda) + Linha Peso Total
+    function criarGraficoComposicaoConsolidada(canvasId, labels, valsPeso, valsMagra, valsGorda) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
 
-      const tituloEl = document.getElementById('destaque-titulo');
-      const deltaEl = document.getElementById('destaque-delta');
-      const statusEl = document.getElementById('destaque-status');
-      const canvasEl = document.getElementById('canvas-destaque');
-      if (!canvasEl) return;
-
-      if (tituloEl) tituloEl.textContent = metrica.nome;
-
-      const valores = evalsSlice.map(ev => metrica.extrair(ev));
-      const valoresValidos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
-
-      // Delta
-      if (evalsSlice.length > 1 && valoresValidos.length > 1) {
-        const vPrim = valoresValidos[0];
-        const vUlt = valoresValidos[valoresValidos.length - 1];
-        const diff = vUlt - vPrim;
-        const sinal = diff > 0 ? '+' : '';
-        const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
-        const diffFormatada = ehDuasCasas ? diff.toFixed(2) : (Number.isInteger(diff) ? diff : diff.toFixed(1));
-        if (deltaEl) {
-          deltaEl.textContent = 'Δ ' + sinal + diffFormatada + (metrica.unidade ? ' ' + metrica.unidade : '');
-          deltaEl.style.display = 'inline-block';
-        }
-      } else if (deltaEl) {
-        deltaEl.textContent = 'Medição Inicial';
-        deltaEl.style.display = 'inline-block';
-      }
-
-      // Status
-      const ultimoEv = evalsSlice[evalsSlice.length - 1];
-      const vUltimo = metrica.extrair(ultimoEv);
-      const statusTexto = metrica.classificar(vUltimo, ultimoEv);
-      if (statusEl) {
-        if (statusTexto && statusTexto !== '--') {
-          statusEl.textContent = statusTexto;
-          statusEl.style.display = 'inline-block';
-        } else {
-          statusEl.style.display = 'none';
-        }
-      }
-
-      // Destrói instância anterior do destaque se houver
-      if (chartDestaqueInstance) {
-        try {
-          chartDestaqueInstance.destroy();
-        } catch (e) {
-          console.warn('Erro ao destruir gráfico destaque:', e);
-        }
-        chartDestaqueInstance = null;
-      }
-
-      const ctx = canvasEl.getContext('2d');
-      if (!ctx) return;
-
-      chartDestaqueInstance = new Chart(ctx, {
-        type: 'bar',
+      const chart = new Chart(ctx, {
+        plugins: [pluginRotulosDados],
         data: {
           labels: labels,
           datasets: [
             {
               type: 'bar',
-              label: 'Medição Pontual',
-              data: valores,
-              backgroundColor: 'rgba(31, 78, 120, 0.75)',
-              borderColor: '#1F4E78',
+              label: 'Massa Magra (kg)',
+              data: valsMagra,
+              backgroundColor: 'rgba(16, 185, 129, 0.75)',
+              borderColor: '#059669',
               borderWidth: 1.5,
               borderRadius: 4,
-              maxBarThickness: 56,
-              barPercentage: labels.length === 1 ? 0.35 : 0.55,
-              categoryPercentage: 0.7,
-              order: 2
+              stack: 'massa',
+              maxBarThickness: 46,
+              order: 3,
+              rotuloCor: '#ffffff',
+              formatarRotulo: v => Number(v).toFixed(1) + ' kg'
+            },
+            {
+              type: 'bar',
+              label: 'Massa Gorda (kg)',
+              data: valsGorda,
+              backgroundColor: 'rgba(245, 158, 11, 0.75)',
+              borderColor: '#d97706',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              stack: 'massa',
+              maxBarThickness: 46,
+              order: 2,
+              rotuloCor: '#ffffff',
+              formatarRotulo: v => Number(v).toFixed(1) + ' kg'
             },
             {
               type: 'line',
-              label: 'Curva de Evolução',
-              data: valores,
-              borderColor: '#0b1929',
+              label: 'Peso Total (kg)',
+              data: valsPeso,
+              borderColor: '#1F4E78',
               backgroundColor: '#ffffff',
-              borderWidth: 3,
+              borderWidth: 2.5,
               tension: 0.25,
               fill: false,
               pointBackgroundColor: '#ffffff',
               pointBorderColor: '#1F4E78',
-              pointBorderWidth: 2.5,
-              pointRadius: 6,
-              pointHoverRadius: 8,
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
               pointHoverBackgroundColor: '#1F4E78',
               pointHoverBorderColor: '#ffffff',
-              order: 1
+              order: 1,
+              rotuloCor: '#1F4E78',
+              formatarRotulo: v => Number(v).toFixed(1) + ' kg'
             }
           ]
         },
@@ -9140,31 +9337,158 @@
               position: 'top',
               align: 'end',
               labels: {
-                boxWidth: 14,
-                boxHeight: 14,
+                boxWidth: 11,
+                boxHeight: 11,
                 usePointStyle: true,
-                font: {
-                  size: 12,
-                  weight: '600',
-                  family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
-                },
-                color: '#334155'
+                font: { size: 10, weight: '600', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+                color: '#475569'
               }
             },
             tooltip: {
               backgroundColor: '#0f172a',
-              titleFont: { size: 12, weight: 'bold' },
-              bodyFont: { size: 12 },
-              padding: 10,
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
               cornerRadius: 6,
               callbacks: {
                 label: function(context) {
                   const val = context.parsed.y;
                   if (val === null || val === undefined) return '';
                   const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
-                  const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
-                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
-                  return prefix + valFmt + (metrica.unidade ? ' ' + metrica.unidade : '');
+                  return prefix + Number(val).toFixed(1) + ' kg';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '600' }, color: '#475569' }
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true,
+              grace: '15%',
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: {
+                font: { size: 10 },
+                color: '#1F4E78',
+                callback: v => v + ' kg'
+              },
+              title: {
+                display: true,
+                text: 'Massa (kg)',
+                font: { size: 10, weight: 'bold' },
+                color: '#1F4E78'
+              }
+            }
+          }
+        }
+      });
+
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    // 2. Perimetria & RCQ (Eixo Duplo): Cintura & Quadril (cm, Y1) + Linha RCQ (Y2, 2 decimais)
+    function criarGraficoPerimetriaRCQ(canvasId, labels, valsCintura, valsQuadril, valsRCQ) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const chart = new Chart(ctx, {
+        plugins: [pluginRotulosDados],
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Cintura (cm)',
+              data: valsCintura,
+              yAxisID: 'y',
+              backgroundColor: 'rgba(31, 78, 120, 0.72)',
+              borderColor: '#1F4E78',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 38,
+              order: 2,
+              rotuloCor: '#1F4E78',
+              formatarRotulo: v => Number(v).toFixed(1) + ' cm'
+            },
+            {
+              type: 'bar',
+              label: 'Quadril (cm)',
+              data: valsQuadril,
+              yAxisID: 'y',
+              backgroundColor: 'rgba(99, 102, 241, 0.72)',
+              borderColor: '#4f46e5',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 38,
+              order: 2,
+              rotuloCor: '#4f46e5',
+              formatarRotulo: v => Number(v).toFixed(1) + ' cm'
+            },
+            {
+              type: 'line',
+              label: 'RCQ',
+              data: valsRCQ,
+              yAxisID: 'y1',
+              borderColor: '#e11d48',
+              backgroundColor: '#ffffff',
+              borderWidth: 2.5,
+              tension: 0.25,
+              fill: false,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#e11d48',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointHoverBackgroundColor: '#e11d48',
+              pointHoverBorderColor: '#ffffff',
+              order: 1,
+              rotuloCor: '#e11d48',
+              formatarRotulo: v => Number(v).toFixed(2)
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 11,
+                boxHeight: 11,
+                usePointStyle: true,
+                font: { size: 10, weight: '600', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  if (context.dataset.yAxisID === 'y1') {
+                    return prefix + Number(val).toFixed(2);
+                  }
+                  return prefix + Number(val).toFixed(1) + ' cm';
                 }
               }
             }
@@ -9172,39 +9496,1057 @@
           scales: {
             x: {
               grid: { display: false },
-              ticks: {
-                font: { size: 12, weight: '600' },
-                color: '#334155'
-              }
+              ticks: { font: { size: 11, weight: '600' }, color: '#475569' }
             },
             y: {
-              beginAtZero: false,
-              grace: '10%',
-              grid: {
-                color: 'rgba(226, 232, 240, 0.8)'
-              },
+              position: 'left',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
               ticks: {
-                font: { size: 11 },
-                color: '#64748b',
-                callback: function(val) {
-                  const ehDuasCasas = metrica && (metrica.id === 'ad_rcq' || metrica.id === 'ad_esteira_vpico' || metrica.nome.includes('RCQ') || metrica.nome.includes('Vpico') || metrica.nome.includes('Velocidade de Pico'));
-                  const valFmt = ehDuasCasas ? Number(val).toFixed(2) : val;
-                  return valFmt + (metrica.unidade ? ' ' + metrica.unidade : '');
-                }
+                font: { size: 10 },
+                color: '#1F4E78',
+                callback: v => v + ' cm'
+              },
+              title: {
+                display: true,
+                text: 'Perimetria (cm)',
+                font: { size: 10, weight: 'bold' },
+                color: '#1F4E78'
+              }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { drawOnChartArea: false },
+              ticks: {
+                font: { size: 10 },
+                color: '#e11d48',
+                callback: v => Number(v).toFixed(2)
+              },
+              title: {
+                display: true,
+                text: 'RCQ',
+                font: { size: 10, weight: 'bold' },
+                color: '#e11d48'
               }
             }
           }
         }
       });
 
-      chartInstancesComparativos.push(chartDestaqueInstance);
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    // 3. Pressão Arterial Completa: PA Sistólica + PA Diastólica (mmHg)
+    function criarGraficoPressaoArterial(canvasId, labels, valsPAS, valsPAD) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const chart = new Chart(ctx, {
+        type: 'bar',
+        plugins: [pluginRotulosDados],
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'PA Sistólica (mmHg)',
+              data: valsPAS,
+              backgroundColor: 'rgba(225, 29, 72, 0.72)',
+              borderColor: '#be123c',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 38,
+              order: 2,
+              rotuloCor: '#be123c',
+              formatarRotulo: v => Math.round(v) + ' mmHg'
+            },
+            {
+              type: 'bar',
+              label: 'PA Diastólica (mmHg)',
+              data: valsPAD,
+              backgroundColor: 'rgba(14, 165, 233, 0.72)',
+              borderColor: '#0284c7',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 38,
+              order: 2,
+              rotuloCor: '#0284c7',
+              formatarRotulo: v => Math.round(v) + ' mmHg'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 11,
+                boxHeight: 11,
+                usePointStyle: true,
+                font: { size: 10, weight: '600', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  return prefix + val + ' mmHg';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '600' }, color: '#475569' }
+            },
+            y: {
+              beginAtZero: true,
+              grace: '15%',
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: {
+                font: { size: 10 },
+                color: '#be123c',
+                callback: v => v + ' mmHg'
+              },
+              title: {
+                display: true,
+                text: 'mmHg',
+                font: { size: 10, weight: 'bold' },
+                color: '#be123c'
+              }
+            }
+          }
+        }
+      });
+
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    // 4. Capacidade Cardiorrespiratória (Eixo Duplo): Vpico (km/h, Y1, 2 casas) + VO2máx (ml/kg/min, Y2, 1 casa)
+    function criarGraficoCardioDual(canvasId, labels, valsVpico, valsVO2) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const chart = new Chart(ctx, {
+        plugins: [pluginRotulosDados],
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: 'Vpico (km/h)',
+              data: valsVpico,
+              yAxisID: 'y',
+              backgroundColor: 'rgba(31, 78, 120, 0.72)',
+              borderColor: '#1F4E78',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 46,
+              order: 2,
+              rotuloCor: '#1F4E78',
+              formatarRotulo: v => Number(v).toFixed(2) + ' km/h'
+            },
+            {
+              type: 'line',
+              label: 'VO2máx (ml/kg/min)',
+              data: valsVO2,
+              yAxisID: 'y1',
+              borderColor: '#059669',
+              backgroundColor: '#ffffff',
+              borderWidth: 2.5,
+              tension: 0.25,
+              fill: false,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#059669',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointHoverBackgroundColor: '#059669',
+              pointHoverBorderColor: '#ffffff',
+              order: 1,
+              rotuloCor: '#059669',
+              formatarRotulo: v => Number(v).toFixed(1) + ' ml'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 11,
+                boxHeight: 11,
+                usePointStyle: true,
+                font: { size: 10, weight: '600', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  if (context.dataset.yAxisID === 'y') {
+                    return prefix + Number(val).toFixed(2) + ' km/h';
+                  }
+                  return prefix + Number(val).toFixed(1) + ' ml/kg/min';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '600' }, color: '#475569' }
+            },
+            y: {
+              position: 'left',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: {
+                font: { size: 10 },
+                color: '#1F4E78',
+                callback: v => Number(v).toFixed(2) + ' km/h'
+              },
+              title: {
+                display: true,
+                text: 'Vpico (km/h)',
+                font: { size: 10, weight: 'bold' },
+                color: '#1F4E78'
+              }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { drawOnChartArea: false },
+              ticks: {
+                font: { size: 10 },
+                color: '#059669',
+                callback: v => Number(v).toFixed(1)
+              },
+              title: {
+                display: true,
+                text: 'VO2 (ml/kg/min)',
+                font: { size: 10, weight: 'bold' },
+                color: '#059669'
+              }
+            }
+          }
+        }
+      });
+
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    // 5. Força Muscular (Eixo Duplo): 1RM Estimado (kg, Y1) + Força Relativa (x PC, Y2, 2 casas)
+    function criarGraficoForcaDual(canvasId, labels, vals1RM, valsRel, nomeExercicio) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return null;
+
+      const exNome = nomeExercicio || 'MMII';
+
+      const chart = new Chart(ctx, {
+        plugins: [pluginRotulosDados],
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              type: 'bar',
+              label: `${exNome} (1RM - kg)`,
+              data: vals1RM,
+              yAxisID: 'y',
+              backgroundColor: 'rgba(79, 70, 229, 0.72)',
+              borderColor: '#4338ca',
+              borderWidth: 1.5,
+              borderRadius: 4,
+              maxBarThickness: 46,
+              order: 2,
+              rotuloCor: '#4338ca',
+              formatarRotulo: v => Number(v).toFixed(1) + ' kg'
+            },
+            {
+              type: 'line',
+              label: 'Força Relativa (x PC)',
+              data: valsRel,
+              yAxisID: 'y1',
+              borderColor: '#d97706',
+              backgroundColor: '#ffffff',
+              borderWidth: 2.5,
+              tension: 0.25,
+              fill: false,
+              pointBackgroundColor: '#ffffff',
+              pointBorderColor: '#d97706',
+              pointBorderWidth: 2,
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              pointHoverBackgroundColor: '#d97706',
+              pointHoverBorderColor: '#ffffff',
+              order: 1,
+              rotuloCor: '#d97706',
+              formatarRotulo: v => Number(v).toFixed(2) + 'x'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 11,
+                boxHeight: 11,
+                usePointStyle: true,
+                font: { size: 10, weight: '600', family: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" },
+                color: '#475569'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { size: 11, weight: 'bold' },
+              bodyFont: { size: 11 },
+              padding: 8,
+              cornerRadius: 6,
+              callbacks: {
+                label: function(context) {
+                  const val = context.parsed.y;
+                  if (val === null || val === undefined) return '';
+                  const prefix = context.dataset.label ? context.dataset.label + ': ' : '';
+                  if (context.dataset.yAxisID === 'y') {
+                    return prefix + Number(val).toFixed(1) + ' kg';
+                  }
+                  return prefix + Number(val).toFixed(2) + ' x PC';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '600' }, color: '#475569' }
+            },
+            y: {
+              position: 'left',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: {
+                font: { size: 10 },
+                color: '#4338ca',
+                callback: v => v + ' kg'
+              },
+              title: {
+                display: true,
+                text: '1RM (kg)',
+                font: { size: 10, weight: 'bold' },
+                color: '#4338ca'
+              }
+            },
+            y1: {
+              position: 'right',
+              beginAtZero: true,
+              grace: '15%',
+              grid: { drawOnChartArea: false },
+              ticks: {
+                font: { size: 10 },
+                color: '#d97706',
+                callback: v => Number(v).toFixed(2) + 'x'
+              },
+              title: {
+                display: true,
+                text: 'Força Relativa',
+                font: { size: 10, weight: 'bold' },
+                color: '#d97706'
+              }
+            }
+          }
+        }
+      });
+
+      chartInstancesComparativos.push(chart);
+      return chart;
+    }
+
+    function calcularDeltaFormatado(valores, unidade, ehDuasCasas) {
+      const validos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
+      if (validos.length <= 1) return 'Medição Inicial';
+      const vPrim = validos[0];
+      const vUlt = validos[validos.length - 1];
+      const diff = vUlt - vPrim;
+      const sinal = diff > 0 ? '+' : '';
+      const diffFmt = ehDuasCasas ? diff.toFixed(2) : (Number.isInteger(diff) ? diff : diff.toFixed(1));
+      return 'Δ ' + sinal + diffFmt + (unidade ? ' ' + unidade : '');
+    }
+
+    function construirCardsComparativos(aluno, evalsSlice, labels) {
+      const ehIdoso = (aluno.idade >= 60 || dadosAluno.grupoEtario === 'idoso');
+      const ehAdolescente = (aluno.idade < 18 || dadosAluno.grupoEtario === 'adolescente');
+      const sexo = aluno.sexo || 'M';
+      const cards = [];
+
+      const temDados = arr => arr && arr.some(v => v !== null && v !== undefined && !isNaN(v));
+
+      if (!ehIdoso && !ehAdolescente) {
+        // ==========================================
+        // ADULTO
+        // ==========================================
+
+        // 1. Composição Corporal Consolidada (em kg)
+        const valsPeso = evalsSlice.map(ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null);
+        const valsMagra = evalsSlice.map(ev => ev.composicao?.massaMagra != null ? parseFloat(ev.composicao.massaMagra) : null);
+        const valsGorda = evalsSlice.map(ev => ev.composicao?.massaGorda != null ? parseFloat(ev.composicao.massaGorda) : null);
+
+        if (temDados(valsPeso) || temDados(valsMagra) || temDados(valsGorda)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uPeso = ultimoEv.composicao?.peso != null ? parseFloat(ultimoEv.composicao.peso).toFixed(1) : '--';
+          const uMagra = ultimoEv.composicao?.massaMagra != null ? parseFloat(ultimoEv.composicao.massaMagra).toFixed(1) : '--';
+          const uGorda = ultimoEv.composicao?.massaGorda != null ? parseFloat(ultimoEv.composicao.massaGorda).toFixed(1) : '--';
+
+          const badges = [];
+          if (temDados(valsPeso)) badges.push({ texto: 'Peso: ' + calcularDeltaFormatado(valsPeso, 'kg', false) });
+          if (temDados(valsMagra)) badges.push({ texto: 'Magra: ' + calcularDeltaFormatado(valsMagra, 'kg', false) });
+          if (temDados(valsGorda)) badges.push({ texto: 'Gorda: ' + calcularDeltaFormatado(valsGorda, 'kg', false) });
+
+          cards.push({
+            id: 'card_comp_corporal',
+            nome: 'Composição Corporal Consolidada',
+            categoria: 'Composição Corporal & Antropometria',
+            subtitulo: `(Último: Peso ${uPeso} kg | Magra ${uMagra} kg | Gorda ${uGorda} kg)`,
+            badges: badges,
+            status: 'Fracionamento Corporal (kg)',
+            render: cid => criarGraficoComposicaoConsolidada(cid, labels, valsPeso, valsMagra, valsGorda)
+          });
+        }
+
+        // 2. Perimetria & Relação Cintura-Quadril (Eixo Duplo)
+        const valsCintura = evalsSlice.map(ev => ev.composicao?.cintura != null ? parseFloat(ev.composicao.cintura) : null);
+        const valsQuadril = evalsSlice.map(ev => ev.composicao?.quadril != null ? parseFloat(ev.composicao.quadril) : null);
+        const valsRCQ = evalsSlice.map(ev => {
+          if (ev.composicao?.rcq != null) return parseFloat(Number(ev.composicao.rcq).toFixed(2));
+          if (ev.composicao?.cintura && ev.composicao?.quadril) return parseFloat((ev.composicao.cintura / ev.composicao.quadril).toFixed(2));
+          return null;
+        });
+
+        if (temDados(valsCintura) || temDados(valsQuadril) || temDados(valsRCQ)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uCint = ultimoEv.composicao?.cintura != null ? parseFloat(ultimoEv.composicao.cintura).toFixed(1) : '--';
+          const uQuad = ultimoEv.composicao?.quadril != null ? parseFloat(ultimoEv.composicao.quadril).toFixed(1) : '--';
+          let uRCQVal = null;
+          if (ultimoEv.composicao?.rcq != null) uRCQVal = parseFloat(ultimoEv.composicao.rcq);
+          else if (ultimoEv.composicao?.cintura && ultimoEv.composicao?.quadril) uRCQVal = ultimoEv.composicao.cintura / ultimoEv.composicao.quadril;
+          const uRCQ = uRCQVal != null ? uRCQVal.toFixed(2) : '--';
+
+          const badges = [];
+          if (temDados(valsCintura)) badges.push({ texto: 'Cintura: ' + calcularDeltaFormatado(valsCintura, 'cm', false) });
+          if (temDados(valsRCQ)) badges.push({ texto: 'RCQ: ' + calcularDeltaFormatado(valsRCQ, '', true) });
+
+          let rcqStatus = 'Perimetria de Tronco';
+          if (uRCQVal != null) {
+            rcqStatus = uRCQVal <= (sexo === 'M' ? 0.90 : 0.80) ? 'Baixo Risco' : 'Risco Moderado/Alto';
+          }
+
+          cards.push({
+            id: 'card_perimetria_rcq',
+            nome: 'Perimetria & Relação Cintura-Quadril',
+            categoria: 'Composição Corporal & Antropometria',
+            subtitulo: `(Último: Cintura ${uCint} cm | Quadril ${uQuad} cm | RCQ ${uRCQ})`,
+            badges: badges,
+            status: rcqStatus,
+            render: cid => criarGraficoPerimetriaRCQ(cid, labels, valsCintura, valsQuadril, valsRCQ)
+          });
+        }
+
+        // 3. % de Gordura Corporal (%G)
+        const valsGordura = evalsSlice.map(ev => ev.composicao?.percentualGordura != null ? parseFloat(ev.composicao.percentualGordura) : null);
+        if (temDados(valsGordura)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uGord = ultimoEv.composicao?.percentualGordura != null ? parseFloat(ultimoEv.composicao.percentualGordura).toFixed(1) : '--';
+          const uGordNum = parseFloat(uGord);
+          const statusGord = !isNaN(uGordNum) ? (uGordNum <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média') : '--';
+
+          cards.push({
+            id: 'ad_gordura',
+            nome: '% de Gordura Corporal (%G)',
+            categoria: 'Composição Corporal & Antropometria',
+            subtitulo: `(Último: ${uGord}%)`,
+            badges: [{ texto: calcularDeltaFormatado(valsGordura, '%', false) }],
+            status: statusGord,
+            render: cid => criarGraficoMisto(cid, labels, valsGordura, '%', '% de Gordura Corporal (%G)')
+          });
+        }
+
+        // 4. Índice de Massa Corporal (IMC)
+        const valsIMC = evalsSlice.map(ev => {
+          if (ev.composicao?.imc != null) return parseFloat(ev.composicao.imc);
+          if (ev.composicao?.peso && ev.composicao?.altura) {
+            return parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1));
+          }
+          return null;
+        });
+        if (temDados(valsIMC)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          let uIMCNum = null;
+          if (ultimoEv.composicao?.imc != null) uIMCNum = parseFloat(ultimoEv.composicao.imc);
+          else if (ultimoEv.composicao?.peso && ultimoEv.composicao?.altura) uIMCNum = parseFloat((ultimoEv.composicao.peso / Math.pow(ultimoEv.composicao.altura / 100, 2)).toFixed(1));
+          const uIMCFmt = uIMCNum != null ? uIMCNum.toFixed(1) : '--';
+          const statusIMC = uIMCNum != null ? (uIMCNum < 25.0 ? 'Eutrofia (Normal)' : (uIMCNum < 30.0 ? 'Sobrepeso' : 'Obesidade')) : '--';
+
+          cards.push({
+            id: 'ad_imc',
+            nome: 'Índice de Massa Corporal (IMC)',
+            categoria: 'Composição Corporal & Antropometria',
+            subtitulo: `(Último: ${uIMCFmt} kg/m²)`,
+            badges: [{ texto: calcularDeltaFormatado(valsIMC, 'kg/m²', false) }],
+            status: statusIMC,
+            render: cid => criarGraficoMisto(cid, labels, valsIMC, 'kg/m²', 'Índice de Massa Corporal (IMC)')
+          });
+        }
+
+        // 5. Força Muscular MMII (Eixo Duplo)
+        const nomeMMIIMetrica = (evalsSlice.find(ev => ev.testes?.forcaMMII?.exercicioNome)?.testes.forcaMMII.exercicioNome) || 'Cadeira Extensora';
+        const vals1RM = evalsSlice.map(ev => (ev.testes?.forcaMMII?.rm1 != null ? parseFloat(ev.testes.forcaMMII.rm1) : ((ev.testes?.extensora1RM != null && ev.testes?.extensora1RM !== '') ? parseFloat(ev.testes.extensora1RM) : null)));
+        const valsRel = evalsSlice.map(ev => (ev.testes?.forcaMMII?.relativo != null ? parseFloat(Number(ev.testes.forcaMMII.relativo).toFixed(2)) : ((ev.testes?.extensoraRelativo != null && ev.testes?.extensoraRelativo !== '') ? parseFloat(Number(ev.testes.extensoraRelativo).toFixed(2)) : null)));
+
+        if (temDados(vals1RM) || temDados(valsRel)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const u1RMVal = (ultimoEv.testes?.forcaMMII?.rm1 != null ? parseFloat(ultimoEv.testes.forcaMMII.rm1) : ((ultimoEv.testes?.extensora1RM != null && ultimoEv.testes?.extensora1RM !== '') ? parseFloat(ultimoEv.testes.extensora1RM) : null));
+          const uRelVal = (ultimoEv.testes?.forcaMMII?.relativo != null ? parseFloat(ultimoEv.testes.forcaMMII.relativo) : ((ultimoEv.testes?.extensoraRelativo != null && ultimoEv.testes?.extensoraRelativo !== '') ? parseFloat(ultimoEv.testes.extensoraRelativo) : null));
+          const u1RMFmt = u1RMVal != null ? u1RMVal + ' kg' : '--';
+          const uRelFmt = uRelVal != null ? uRelVal.toFixed(2) + ' x PC' : '--';
+
+          const badges = [];
+          if (temDados(vals1RM)) badges.push({ texto: '1RM: ' + calcularDeltaFormatado(vals1RM, 'kg', false) });
+          if (temDados(valsRel)) badges.push({ texto: 'Rel: ' + calcularDeltaFormatado(valsRel, 'x PC', true) });
+
+          let statusForca = 'Carga Máxima Estimada';
+          if (uRelVal != null) {
+            statusForca = uRelVal >= (sexo === 'M' ? 0.80 : 0.60) ? 'Bom / Superior' : 'Adequado';
+          }
+
+          cards.push({
+            id: 'card_forca_mmii',
+            nome: `${nomeMMIIMetrica} (1RM & Força Relativa)`,
+            categoria: 'Desempenho Funcional & Força',
+            subtitulo: `(Último: 1RM ${u1RMFmt} | Rel. ${uRelFmt})`,
+            badges: badges,
+            status: statusForca,
+            render: cid => criarGraficoForcaDual(cid, labels, vals1RM, valsRel, nomeMMIIMetrica)
+          });
+        }
+
+        // 6. Força Muscular MMSS (Supino/Puxada ou Flexões)
+        const temSupinoOuPuxada = evalsSlice.some(ev => ev.testes?.forcaMMSS && ev.testes.forcaMMSS.exercicio !== 'flexao');
+        const nomeMMSSMetrica = temSupinoOuPuxada ? (((evalsSlice.find(ev => ev.testes?.forcaMMSS?.exercicioNome)?.testes.forcaMMSS.exercicioNome) || 'Membros Superiores')) : 'Flexões de Braço';
+
+        if (temSupinoOuPuxada) {
+          const vals1RM_SS = evalsSlice.map(ev => ev.testes?.forcaMMSS?.rm1 != null ? parseFloat(ev.testes.forcaMMSS.rm1) : null);
+          const valsRel_SS = evalsSlice.map(ev => ev.testes?.forcaMMSS?.relativo != null ? parseFloat(Number(ev.testes.forcaMMSS.relativo).toFixed(2)) : null);
+
+          if (temDados(vals1RM_SS) || temDados(valsRel_SS)) {
+            const ultimoEv = evalsSlice[evalsSlice.length - 1];
+            const u1RM = ultimoEv.testes?.forcaMMSS?.rm1 != null ? ultimoEv.testes.forcaMMSS.rm1 + ' kg' : '--';
+            const uRel = ultimoEv.testes?.forcaMMSS?.relativo != null ? Number(ultimoEv.testes.forcaMMSS.relativo).toFixed(2) + ' x PC' : '--';
+            const badges = [];
+            if (temDados(vals1RM_SS)) badges.push({ texto: '1RM: ' + calcularDeltaFormatado(vals1RM_SS, 'kg', false) });
+            if (temDados(valsRel_SS)) badges.push({ texto: 'Rel: ' + calcularDeltaFormatado(valsRel_SS, 'x PC', true) });
+
+            cards.push({
+              id: 'card_forca_mmss',
+              nome: `${nomeMMSSMetrica} (1RM & Força Relativa)`,
+              categoria: 'Desempenho Funcional & Força',
+              subtitulo: `(Último: 1RM ${u1RM} | Rel. ${uRel})`,
+              badges: badges,
+              status: 'Carga Máxima Estimada',
+              render: cid => criarGraficoForcaDual(cid, labels, vals1RM_SS, valsRel_SS, nomeMMSSMetrica)
+            });
+          }
+        } else {
+          const valsFlex = evalsSlice.map(ev => {
+            if (ev.testes?.forcaMMSS?.exercicio === 'flexao') return parseInt(ev.testes.forcaMMSS.reps, 10);
+            return (ev.testes?.flexoesReps != null && ev.testes?.flexoesReps !== '') ? parseInt(ev.testes.flexoesReps, 10) : null;
+          });
+          if (temDados(valsFlex)) {
+            const ultimoEv = evalsSlice[evalsSlice.length - 1];
+            const uFlex = (ultimoEv.testes?.forcaMMSS?.exercicio === 'flexao' ? ultimoEv.testes.forcaMMSS.reps : ultimoEv.testes?.flexoesReps) || null;
+            const uFlexNum = uFlex != null ? parseInt(uFlex, 10) : null;
+            const statusFlex = uFlexNum != null ? (uFlexNum >= (sexo === 'M' ? 29 : 21) ? 'Excelente / Acima da Média' : (uFlexNum >= 17 ? 'Médio / Adequado' : 'Regular')) : '--';
+
+            cards.push({
+              id: 'ad_flexoes',
+              nome: 'Flexões de Braço (Reps Máximas)',
+              categoria: 'Desempenho Funcional & Força',
+              subtitulo: `(Último: ${uFlexNum != null ? uFlexNum + ' reps' : '--'})`,
+              badges: [{ texto: calcularDeltaFormatado(valsFlex, 'reps', false) }],
+              status: statusFlex,
+              render: cid => criarGraficoMisto(cid, labels, valsFlex, 'reps', 'Flexões de Braço')
+            });
+          }
+        }
+
+        // 7. Capacidade Cardiorrespiratória (Esteira) (Eixo Duplo)
+        const valsVpico = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVelPico != null) ? parseFloat(Number(ev.testes.esteiraVelPico).toFixed(2)) : null);
+        const valsVO2 = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVo2 != null) ? parseFloat(Number(ev.testes.esteiraVo2).toFixed(1)) : null);
+
+        if (temDados(valsVpico) || temDados(valsVO2)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uVpico = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraVelPico != null) ? Number(ultimoEv.testes.esteiraVelPico).toFixed(2) + ' km/h' : '--';
+          const uVO2Val = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraVo2 != null) ? parseFloat(ultimoEv.testes.esteiraVo2) : null;
+          const uVO2Fmt = uVO2Val != null ? uVO2Val.toFixed(1) + ' ml/kg/min' : '--';
+
+          const badges = [];
+          if (temDados(valsVpico)) badges.push({ texto: 'Vpico: ' + calcularDeltaFormatado(valsVpico, 'km/h', true) });
+          if (temDados(valsVO2)) badges.push({ texto: 'VO2: ' + calcularDeltaFormatado(valsVO2, 'ml/kg/min', false) });
+
+          let statusCardio = 'Capacidade Aeróbia';
+          if (uVO2Val != null) {
+            statusCardio = uVO2Val >= (sexo === 'M' ? 44 : 38) ? 'Excelente Aptidão Aeróbia' : 'Bom Condicionamento';
+          }
+
+          cards.push({
+            id: 'card_cardio_esteira',
+            nome: 'Capacidade Cardiorrespiratória (Esteira)',
+            categoria: 'Desempenho Funcional & Força',
+            subtitulo: `(Último: Vpico ${uVpico} | VO2 ${uVO2Fmt})`,
+            badges: badges,
+            status: statusCardio,
+            render: cid => criarGraficoCardioDual(cid, labels, valsVpico, valsVO2)
+          });
+        }
+
+        // 8. Esteira: Recuperação da FC (RFC 1º min)
+        const valsRFC = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraRfc1Min != null) ? parseInt(ev.testes.esteiraRfc1Min, 10) : null);
+        if (temDados(valsRFC)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uRFC = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraRfc1Min != null) ? parseInt(ultimoEv.testes.esteiraRfc1Min, 10) : null;
+          const statusRFC = uRFC != null ? (uRFC >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)') : '--';
+
+          cards.push({
+            id: 'ad_esteira_rfc',
+            nome: 'Esteira: Recuperação da FC (1º min)',
+            categoria: 'Desempenho Funcional & Força',
+            subtitulo: `(Último: ${uRFC != null ? uRFC + ' bpm' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsRFC, 'bpm', false) }],
+            status: statusRFC,
+            render: cid => criarGraficoMisto(cid, labels, valsRFC, 'bpm', 'Recuperação da FC (1º min)')
+          });
+        }
+
+        // 9. Pressão Arterial Completa (Repouso)
+        const valsPAS = evalsSlice.map(ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null);
+        const valsPAD = evalsSlice.map(ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null);
+
+        if (temDados(valsPAS) || temDados(valsPAD)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uPAS = ultimoEv.composicao?.paSistolica != null ? parseFloat(ultimoEv.composicao.paSistolica) : null;
+          const uPAD = ultimoEv.composicao?.paDiastolica != null ? parseFloat(ultimoEv.composicao.paDiastolica) : null;
+          const uPAFmt = (uPAS != null && uPAD != null) ? `${uPAS}x${uPAD} mmHg` : (uPAS != null ? `${uPAS} mmHg` : '--');
+
+          const badges = [];
+          if (temDados(valsPAS)) badges.push({ texto: 'PAS: ' + calcularDeltaFormatado(valsPAS, 'mmHg', false) });
+          if (temDados(valsPAD)) badges.push({ texto: 'PAD: ' + calcularDeltaFormatado(valsPAD, 'mmHg', false) });
+
+          let statusPA = 'Sinais Vitais';
+          if (uPAS != null && uPAD != null) {
+            statusPA = (uPAS <= 120 && uPAD <= 80) ? 'Pressão Ótima' : ((uPAS <= 129 && uPAD <= 84) ? 'Pressão Normal' : 'Alerta PA');
+          }
+
+          cards.push({
+            id: 'card_pressao_arterial',
+            nome: 'Pressão Arterial Completa (Repouso)',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uPAFmt})`,
+            badges: badges,
+            status: statusPA,
+            render: cid => criarGraficoPressaoArterial(cid, labels, valsPAS, valsPAD)
+          });
+        }
+
+        // 10. Frequência Cardíaca de Repouso (FC)
+        const valsFC = evalsSlice.map(ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null);
+        if (temDados(valsFC)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uFC = ultimoEv.composicao?.fcRepouso != null ? parseFloat(ultimoEv.composicao.fcRepouso) : null;
+          const statusFC = uFC != null ? ((uFC >= 60 && uFC <= 85) ? 'Eucardia Normal' : (uFC < 60 ? 'Bradicardia (Atleta)' : 'Basal Elevada')) : '--';
+
+          cards.push({
+            id: 'ad_fc',
+            nome: 'Frequência Cardíaca de Repouso',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uFC != null ? uFC + ' bpm' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsFC, 'bpm', false) }],
+            status: statusFC,
+            render: cid => criarGraficoMisto(cid, labels, valsFC, 'bpm', 'FC de Repouso')
+          });
+        }
+
+      } else if (ehIdoso) {
+        // ==========================================
+        // IDOSO
+        // ==========================================
+
+        // Pressão Arterial Completa
+        const valsPAS = evalsSlice.map(ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null);
+        const valsPAD = evalsSlice.map(ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null);
+        if (temDados(valsPAS) || temDados(valsPAD)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uPAS = ultimoEv.composicao?.paSistolica != null ? parseFloat(ultimoEv.composicao.paSistolica) : null;
+          const uPAD = ultimoEv.composicao?.paDiastolica != null ? parseFloat(ultimoEv.composicao.paDiastolica) : null;
+          const uPAFmt = (uPAS != null && uPAD != null) ? `${uPAS}x${uPAD} mmHg` : '--';
+          const badges = [];
+          if (temDados(valsPAS)) badges.push({ texto: 'PAS: ' + calcularDeltaFormatado(valsPAS, 'mmHg', false) });
+          if (temDados(valsPAD)) badges.push({ texto: 'PAD: ' + calcularDeltaFormatado(valsPAD, 'mmHg', false) });
+          let statusPA = 'Sinais Vitais';
+          if (uPAS != null) statusPA = uPAS <= 120 ? 'Pressão Ótima' : (uPAS <= 129 ? 'Pressão Normal' : (uPAS <= 139 ? 'Pré-Hipertensão' : 'Alerta Hipertensão'));
+
+          cards.push({
+            id: 'card_pressao_arterial',
+            nome: 'Pressão Arterial Completa',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uPAFmt})`,
+            badges: badges,
+            status: statusPA,
+            render: cid => criarGraficoPressaoArterial(cid, labels, valsPAS, valsPAD)
+          });
+        }
+
+        // FC Repouso
+        const valsFC = evalsSlice.map(ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null);
+        if (temDados(valsFC)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uFC = ultimoEv.composicao?.fcRepouso != null ? parseFloat(ultimoEv.composicao.fcRepouso) : null;
+          cards.push({
+            id: 'ido_fc',
+            nome: 'Frequência Cardíaca de Repouso',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uFC != null ? uFC + ' bpm' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsFC, 'bpm', false) }],
+            status: uFC != null ? ((uFC >= 60 && uFC <= 85) ? 'Eucardia Normal' : 'Atenção FC') : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsFC, 'bpm', 'FC de Repouso')
+          });
+        }
+
+        // VO2 George
+        const valsCardio = evalsSlice.map(ev => (ev.testes?.fezCardio && ev.testes?.cardioVo2 != null) ? parseFloat(ev.testes.cardioVo2) : null);
+        if (temDados(valsCardio)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uVO2 = ultimoEv.testes?.cardioVo2 != null ? parseFloat(ultimoEv.testes.cardioVo2).toFixed(1) + ' ml/kg/min' : '--';
+          cards.push({
+            id: 'ido_cardio',
+            nome: 'Capacidade Aeróbia (VO2 George)',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uVO2})`,
+            badges: [{ texto: calcularDeltaFormatado(valsCardio, 'ml/kg/min', false) }],
+            status: 'Aptidão Funcional',
+            render: cid => criarGraficoMisto(cid, labels, valsCardio, 'ml/kg/min', 'VO2 George')
+          });
+        }
+
+        // Panturrilha
+        const valsPant = evalsSlice.map(ev => ev.composicao?.panturrilha != null ? parseFloat(ev.composicao.panturrilha) : null);
+        if (temDados(valsPant)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uPant = ultimoEv.composicao?.panturrilha != null ? parseFloat(ultimoEv.composicao.panturrilha) : null;
+          cards.push({
+            id: 'ido_panturrilha',
+            nome: 'Circunferência da Panturrilha',
+            categoria: 'Composição & Massa Muscular',
+            subtitulo: `(Último: ${uPant != null ? uPant.toFixed(1) + ' cm' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsPant, 'cm', false) }],
+            status: uPant != null ? (uPant >= 31.0 ? 'Massa Preservada' : 'Alerta Sarcopenia') : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsPant, 'cm', 'Panturrilha')
+          });
+        }
+
+        // Massa Corporal (Peso)
+        const valsPeso = evalsSlice.map(ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null);
+        if (temDados(valsPeso)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uP = ultimoEv.composicao?.peso != null ? parseFloat(ultimoEv.composicao.peso).toFixed(1) : '--';
+          cards.push({
+            id: 'ido_peso',
+            nome: 'Massa Corporal (Peso)',
+            categoria: 'Composição & Massa Muscular',
+            subtitulo: `(Último: ${uP} kg)`,
+            badges: [{ texto: calcularDeltaFormatado(valsPeso, 'kg', false) }],
+            status: 'Peso Monitorado',
+            render: cid => criarGraficoMisto(cid, labels, valsPeso, 'kg', 'Massa Corporal (Peso)')
+          });
+        }
+
+        // IMC
+        const valsIMC = evalsSlice.map(ev => {
+          if (ev.composicao?.imc != null) return parseFloat(ev.composicao.imc);
+          if (ev.composicao?.peso && ev.composicao?.altura) return parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1));
+          return null;
+        });
+        if (temDados(valsIMC)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          let uIMC = null;
+          if (ultimoEv.composicao?.imc != null) uIMC = parseFloat(ultimoEv.composicao.imc);
+          else if (ultimoEv.composicao?.peso && ultimoEv.composicao?.altura) uIMC = parseFloat((ultimoEv.composicao.peso / Math.pow(ultimoEv.composicao.altura / 100, 2)).toFixed(1));
+          cards.push({
+            id: 'ido_imc',
+            nome: 'Índice de Massa Corporal (IMC)',
+            categoria: 'Composição & Massa Muscular',
+            subtitulo: `(Último: ${uIMC != null ? uIMC.toFixed(1) + ' kg/m²' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsIMC, 'kg/m²', false) }],
+            status: uIMC != null ? ((uIMC >= 22.0 && uIMC <= 27.0) ? 'Faixa Protetora Geriátrica' : (uIMC < 22.0 ? 'Baixo Peso' : 'Sobrepeso')) : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsIMC, 'kg/m²', 'IMC Geriátrico')
+          });
+        }
+
+        // FPM
+        const valsFPM = evalsSlice.map(ev => {
+          if (ev.testes?.fpmMelhor != null) return parseFloat(ev.testes.fpmMelhor);
+          if (ev.testes?.fpmDireita != null) return parseFloat(ev.testes.fpmDireita);
+          return null;
+        });
+        if (temDados(valsFPM)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uFPM = (ultimoEv.testes?.fpmMelhor != null ? parseFloat(ultimoEv.testes.fpmMelhor) : (ultimoEv.testes?.fpmDireita != null ? parseFloat(ultimoEv.testes.fpmDireita) : null));
+          const corte = sexo === 'M' ? 27.0 : 16.0;
+          cards.push({
+            id: 'ido_fpm',
+            nome: 'Força de Preensão Manual (FPM)',
+            categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+            subtitulo: `(Último: ${uFPM != null ? uFPM.toFixed(1) + ' kgf' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsFPM, 'kgf', false) }],
+            status: uFPM != null ? (uFPM >= corte ? 'Força Preservada' : 'Alerta Dinapenia') : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsFPM, 'kgf', 'FPM')
+          });
+        }
+
+        // FTSST
+        const valsFTSST = evalsSlice.map(ev => (ev.testes?.ftsstTempo != null && !isNaN(parseFloat(ev.testes.ftsstTempo))) ? parseFloat(ev.testes.ftsstTempo) : null);
+        if (temDados(valsFTSST)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uFTSST = (ultimoEv.testes?.ftsstTempo != null && !isNaN(parseFloat(ultimoEv.testes.ftsstTempo))) ? parseFloat(ultimoEv.testes.ftsstTempo) : null;
+          cards.push({
+            id: 'ido_ftsst',
+            nome: 'Força de MMII (FTSST 5x Sentar)',
+            categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+            subtitulo: `(Último: ${uFTSST != null ? uFTSST.toFixed(1) + ' s' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsFTSST, 's', false) }],
+            status: uFTSST != null ? (uFTSST <= 11.1 ? 'Excelente Força' : (uFTSST < 15.0 ? 'Adequado' : 'Risco de Queda')) : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsFTSST, 's', 'FTSST 5x Sentar')
+          });
+        }
+
+        // TUG
+        const valsTUG = evalsSlice.map(ev => (ev.testes?.tugTempo != null && !isNaN(parseFloat(ev.testes.tugTempo))) ? parseFloat(ev.testes.tugTempo) : null);
+        if (temDados(valsTUG)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uTUG = (ultimoEv.testes?.tugTempo != null && !isNaN(parseFloat(ultimoEv.testes.tugTempo))) ? parseFloat(ultimoEv.testes.tugTempo) : null;
+          cards.push({
+            id: 'ido_tug',
+            nome: 'Risco de Queda (TUG)',
+            categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+            subtitulo: `(Último: ${uTUG != null ? uTUG.toFixed(1) + ' s' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsTUG, 's', false) }],
+            status: uTUG != null ? (uTUG < 10.0 ? 'Livremente Independente' : (uTUG < 20.0 ? 'Mobilidade Independente' : 'Risco Aumentado')) : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsTUG, 's', 'TUG')
+          });
+        }
+
+        // Equilíbrio Unipodal
+        const valsEq = evalsSlice.map(ev => {
+          const d = parseFloat(ev.testes?.eqDireita) || 0;
+          const e = parseFloat(ev.testes?.eqEsquerda) || 0;
+          const m = Math.max(d, e);
+          return m > 0 ? m : null;
+        });
+        if (temDados(valsEq)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const d = parseFloat(ultimoEv.testes?.eqDireita) || 0;
+          const e = parseFloat(ultimoEv.testes?.eqEsquerda) || 0;
+          const uEq = Math.max(d, e) > 0 ? Math.max(d, e) : null;
+          cards.push({
+            id: 'ido_equilibrio',
+            nome: 'Equilíbrio Unipodal (Melhor)',
+            categoria: 'Força Funcional, Mobilidade & Equilíbrio',
+            subtitulo: `(Último: ${uEq != null ? uEq.toFixed(1) + ' s' : '--'})`,
+            badges: [{ texto: calcularDeltaFormatado(valsEq, 's', false) }],
+            status: uEq != null ? (uEq >= 10.0 ? 'Equilíbrio Preservado' : 'Instabilidade Postural') : '--',
+            render: cid => criarGraficoMisto(cid, labels, valsEq, 's', 'Equilíbrio Unipodal')
+          });
+        }
+
+      } else {
+        // ==========================================
+        // ADOLESCENTE (PEDIÁTRICO)
+        // ==========================================
+
+        // Pressão Arterial Completa
+        const valsPAS = evalsSlice.map(ev => ev.composicao?.paSistolica != null ? parseFloat(ev.composicao.paSistolica) : null);
+        const valsPAD = evalsSlice.map(ev => ev.composicao?.paDiastolica != null ? parseFloat(ev.composicao.paDiastolica) : null);
+        if (temDados(valsPAS) || temDados(valsPAD)) {
+          const ultimoEv = evalsSlice[evalsSlice.length - 1];
+          const uPAS = ultimoEv.composicao?.paSistolica != null ? parseFloat(ultimoEv.composicao.paSistolica) : null;
+          const uPAD = ultimoEv.composicao?.paDiastolica != null ? parseFloat(ultimoEv.composicao.paDiastolica) : null;
+          const uPAFmt = (uPAS != null && uPAD != null) ? `${uPAS}x${uPAD} mmHg` : '--';
+          const badges = [];
+          if (temDados(valsPAS)) badges.push({ texto: 'PAS: ' + calcularDeltaFormatado(valsPAS, 'mmHg', false) });
+          if (temDados(valsPAD)) badges.push({ texto: 'PAD: ' + calcularDeltaFormatado(valsPAD, 'mmHg', false) });
+          cards.push({
+            id: 'card_pressao_arterial',
+            nome: 'Pressão Arterial Completa',
+            categoria: 'Sinais Vitais & Cardiovasculares',
+            subtitulo: `(Último: ${uPAFmt})`,
+            badges: badges,
+            status: (uPAS <= 120 && uPAD <= 80) ? 'Normotenso' : 'Atenção PA',
+            render: cid => criarGraficoPressaoArterial(cid, labels, valsPAS, valsPAD)
+          });
+        }
+
+        // Outras métricas do PROESP-BR
+        const metricasPed = [
+          { id: 'ped_altura', nome: 'Estatura / Altura', categoria: 'Crescimento & Composição Corporal', unidade: 'cm', extrair: ev => ev.composicao?.altura != null ? parseFloat(ev.composicao.altura) : null, classificar: () => 'Estatura aferida' },
+          { id: 'ped_peso', nome: 'Massa Corporal (Peso)', categoria: 'Crescimento & Composição Corporal', unidade: 'kg', extrair: ev => ev.composicao?.peso != null ? parseFloat(ev.composicao.peso) : null, classificar: () => 'Massa corporal' },
+          { id: 'ped_imc', nome: 'Índice de Massa Corporal (IMC)', categoria: 'Crescimento & Composição Corporal', unidade: 'kg/m²', extrair: ev => ev.composicao?.imc != null ? parseFloat(ev.composicao.imc) : (ev.composicao?.peso && ev.composicao?.altura ? parseFloat((ev.composicao.peso / Math.pow(ev.composicao.altura / 100, 2)).toFixed(1)) : null), classificar: v => v < 18.5 ? 'Baixo Peso' : (v < 25.0 ? 'Eutrofia' : 'Sobrepeso') },
+          { id: 'ped_gordura', nome: '% de Gordura Corporal (%G)', categoria: 'Crescimento & Composição Corporal', unidade: '%', extrair: ev => ev.composicao?.percentualGordura != null ? parseFloat(ev.composicao.percentualGordura) : null, classificar: v => v <= (sexo === 'M' ? 20 : 25) ? 'Faixa Saudável' : 'Acima da Média' },
+          { id: 'ped_flex', nome: 'Flexibilidade (Banco de Wells)', categoria: 'Desempenho Motor (PROESP-BR)', unidade: 'cm', extrair: ev => ev.testes?.flexCm != null ? parseFloat(ev.testes.flexCm) : null, classificar: () => 'Wells cm' },
+          { id: 'ped_salto', nome: 'Salto Horizontal (Potência MMII)', categoria: 'Desempenho Motor (PROESP-BR)', unidade: 'cm', extrair: ev => ev.testes?.saltoCm != null ? parseFloat(ev.testes.saltoCm) : null, classificar: () => 'Potência MMII' },
+          { id: 'ped_abd', nome: 'Resistência Abdominal (1 min)', categoria: 'Desempenho Motor (PROESP-BR)', unidade: 'reps', extrair: ev => ev.testes?.abdReps != null ? parseInt(ev.testes.abdReps, 10) : null, classificar: () => 'Abdominais' },
+          { id: 'ped_agilidade', nome: 'Agilidade (Quadrado 4x4m)', categoria: 'Desempenho Motor (PROESP-BR)', unidade: 's', extrair: ev => ev.testes?.agilidadeTempo != null ? parseFloat(ev.testes.agilidadeTempo) : null, classificar: () => 'Agilidade' },
+          { id: 'ped_fc', nome: 'Frequência Cardíaca de Repouso', categoria: 'Sinais Vitais & Cardiovasculares', unidade: 'bpm', extrair: ev => ev.composicao?.fcRepouso != null ? parseFloat(ev.composicao.fcRepouso) : null, classificar: v => v <= 85 ? 'Eucardia' : 'Basal Elevada' }
+        ];
+
+        metricasPed.forEach(m => {
+          const vals = evalsSlice.map(ev => m.extrair(ev));
+          if (temDados(vals)) {
+            const ultimoEv = evalsSlice[evalsSlice.length - 1];
+            const uVal = m.extrair(ultimoEv);
+            const uValFmt = uVal != null ? uVal + (m.unidade ? ' ' + m.unidade : '') : '--';
+            cards.push({
+              id: m.id,
+              nome: m.nome,
+              categoria: m.categoria,
+              subtitulo: `(Último: ${uValFmt})`,
+              badges: [{ texto: calcularDeltaFormatado(vals, m.unidade, false) }],
+              status: m.classificar(uVal, ultimoEv),
+              render: cid => criarGraficoMisto(cid, labels, vals, m.unidade, m.nome)
+            });
+          }
+        });
+      }
+
+      return cards;
+    }
+
+    function renderizarCardDestaquePorCard(card) {
+      if (!card) return;
+      const cardEl = document.getElementById('card-grafico-destaque');
+      if (!cardEl) return;
+
+      const tituloEl = document.getElementById('destaque-titulo');
+      const deltaEl = document.getElementById('destaque-delta');
+      const statusEl = document.getElementById('destaque-status');
+      const canvasEl = document.getElementById('canvas-destaque');
+      if (!canvasEl) return;
+
+      if (tituloEl) tituloEl.textContent = card.nome;
+
+      if (deltaEl) {
+        if (card.badges && card.badges.length > 0) {
+          deltaEl.innerHTML = card.badges.map(b => b.texto).join(' &bull; ');
+          deltaEl.style.display = 'inline-block';
+        } else {
+          deltaEl.textContent = 'Medição Inicial';
+          deltaEl.style.display = 'inline-block';
+        }
+      }
+
+      if (statusEl) {
+        if (card.status && card.status !== '--') {
+          statusEl.textContent = card.status;
+          statusEl.style.display = 'inline-block';
+        } else {
+          statusEl.style.display = 'none';
+        }
+      }
+
+      if (chartDestaqueInstance) {
+        try {
+          const idx = chartInstancesComparativos.indexOf(chartDestaqueInstance);
+          if (idx >= 0) chartInstancesComparativos.splice(idx, 1);
+          chartDestaqueInstance.destroy();
+        } catch (e) {
+          console.warn('Erro ao destruir gráfico destaque:', e);
+        }
+        chartDestaqueInstance = null;
+      }
+
+      chartDestaqueInstance = card.render('canvas-destaque');
+    }
+
+    function renderizarCardDestaque(cardOrMetrica, labels, evalsSlice) {
+      if (!cardOrMetrica) return;
+      if (typeof cardOrMetrica.render === 'function') {
+        renderizarCardDestaquePorCard(cardOrMetrica);
+        return;
+      }
+      const card = cardsAtuaisComparativo.find(c => c.id === cardOrMetrica.id);
+      if (card) {
+        renderizarCardDestaquePorCard(card);
+      }
     }
 
     function aoTrocarMetricaDestaque(id) {
       metricaDestaqueAtualId = id;
-      const metrica = metricasAtuaisComparativo.find(m => m.id === id);
-      if (metrica) {
-        renderizarCardDestaque(metrica, labelsAtuaisComparativo, evalsAtuaisComparativo);
+      const card = cardsAtuaisComparativo.find(c => c.id === id);
+      if (card) {
+        renderizarCardDestaquePorCard(card);
       }
     }
 
@@ -9241,8 +10583,12 @@
         return 'Avaliação ' + numAv + ' - ' + formatarDataDDMM(ev.data);
       });
 
-      const metricas = obterDefinicoesMetricas(aluno, evalsSlice);
-      if (metricas.length === 0) {
+      labelsAtuaisComparativo = labels;
+      evalsAtuaisComparativo = evalsSlice;
+
+      cardsAtuaisComparativo = construirCardsComparativos(aluno, evalsSlice, labels);
+
+      if (cardsAtuaisComparativo.length === 0) {
         container.innerHTML = `
           <div style="text-align: center; padding: 30px; color: #64748b; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; font-weight: 500;">
             Nenhum dado mensurado disponível para geração dos gráficos comparativos.
@@ -9251,24 +10597,20 @@
         return;
       }
 
-      metricasAtuaisComparativo = metricas;
-      labelsAtuaisComparativo = labels;
-      evalsAtuaisComparativo = evalsSlice;
-
-      if (!metricaDestaqueAtualId || !metricas.some(m => m.id === metricaDestaqueAtualId)) {
-        const defPref = metricas.find(m => m.id.includes('gordura')) ||
-                        metricas.find(m => m.id.includes('peso')) ||
-                        metricas.find(m => m.id.includes('pas')) ||
-                        metricas[0];
+      if (!metricaDestaqueAtualId || !cardsAtuaisComparativo.some(c => c.id === metricaDestaqueAtualId)) {
+        const defPref = cardsAtuaisComparativo.find(c => c.id.includes('comp_corporal')) ||
+                        cardsAtuaisComparativo.find(c => c.id.includes('gordura')) ||
+                        cardsAtuaisComparativo.find(c => c.id.includes('peso')) ||
+                        cardsAtuaisComparativo[0];
         metricaDestaqueAtualId = defPref.id;
       }
 
-      const metricaDestaque = metricas.find(m => m.id === metricaDestaqueAtualId) || metricas[0];
+      const cardDestaque = cardsAtuaisComparativo.find(c => c.id === metricaDestaqueAtualId) || cardsAtuaisComparativo[0];
 
       const categoriasMap = {};
-      metricas.forEach(m => {
-        if (!categoriasMap[m.categoria]) categoriasMap[m.categoria] = [];
-        categoriasMap[m.categoria].push(m);
+      cardsAtuaisComparativo.forEach(c => {
+        if (!categoriasMap[c.categoria]) categoriasMap[c.categoria] = [];
+        categoriasMap[c.categoria].push(c);
       });
 
       let html = '';
@@ -9277,13 +10619,13 @@
       html += `
         <div class="no-print" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; box-shadow: 0 2px 6px rgba(31, 78, 120, 0.05);">
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <span style="font-size: 12px; font-weight: 700; color: #1F4E78; text-transform: uppercase;">Métrica em Destaque:</span>
+            <span style="font-size: 12px; font-weight: 700; color: #1F4E78; text-transform: uppercase;">Gráfico em Destaque:</span>
             <select id="seletor-metrica-destaque" onchange="aoTrocarMetricaDestaque(this.value)" style="padding: 6px 12px; font-size: 12px; font-weight: 600; border: 1px solid #1F4E78; border-radius: 6px; background: #f8fafc; color: #0f172a; cursor: pointer;">
-              ${metricas.map(m => `<option value="${m.id}" ${m.id === metricaDestaque.id ? 'selected' : ''}>${m.nome} (${m.categoria})</option>`).join('')}
+              ${cardsAtuaisComparativo.map(c => `<option value="${c.id}" ${c.id === cardDestaque.id ? 'selected' : ''}>${c.nome} (${c.categoria})</option>`).join('')}
             </select>
           </div>
           <span style="font-size: 11px; color: #64748b; font-weight: 600;">
-            Comparando ${evalsSlice.length} avaliação(ões) em gráfico misto (barras + linha)
+            Comparando ${evalsSlice.length} avaliação(ões) em gráficos consolidados
           </span>
         </div>
       `;
@@ -9312,44 +10654,29 @@
         html += `<div class="chart-section-title">${catNome}</div>`;
         html += `<div class="charts-grid-container">`;
 
-        categoriasMap[catNome].forEach(m => {
-          const valores = evalsSlice.map(ev => m.extrair(ev));
-          const valoresValidos = valores.filter(v => v !== null && v !== undefined && !isNaN(v));
+        categoriasMap[catNome].forEach(c => {
+          const badgesHtml = (c.badges && c.badges.length > 0)
+            ? c.badges.map(b => `<span class="chart-delta-badge">${b.texto}</span>`).join(' ')
+            : `<span class="chart-delta-badge">Medição Inicial</span>`;
 
-          let deltaBadge = '';
-          const ehDuasCasas = m && (m.id === 'ad_rcq' || m.id === 'ad_esteira_vpico' || m.nome.includes('RCQ') || m.nome.includes('Vpico') || m.nome.includes('Velocidade de Pico'));
-          if (evalsSlice.length > 1 && valoresValidos.length > 1) {
-            const vPrim = valoresValidos[0];
-            const vUlt = valoresValidos[valoresValidos.length - 1];
-            const diff = vUlt - vPrim;
-            const sinal = diff > 0 ? '+' : '';
-            const diffFormatada = ehDuasCasas ? diff.toFixed(2) : (Number.isInteger(diff) ? diff : diff.toFixed(1));
-            deltaBadge = 'Δ ' + sinal + diffFormatada + (m.unidade ? ' ' + m.unidade : '');
-          } else {
-            deltaBadge = 'Medição Inicial';
-          }
-
-          const ultimoEv = evalsSlice[evalsSlice.length - 1];
-          const vUltimo = m.extrair(ultimoEv);
-          const vUltimoFmt = (vUltimo != null) ? (ehDuasCasas ? Number(vUltimo).toFixed(2) : vUltimo) : null;
-          const statusTexto = m.classificar(vUltimo, ultimoEv);
+          const statusHtml = (c.status && c.status !== '--')
+            ? `<span class="chart-status-badge">${c.status}</span>`
+            : '';
 
           html += `
             <div class="chart-mixed-card">
               <div class="chart-mixed-header">
                 <div>
-                  <span class="chart-mixed-title">${m.nome}</span>
-                  <span style="font-size: 11px; color: #64748b; margin-left: 6px; font-weight: 500;">
-                    (Último: <strong style="color: #1F4E78;">${vUltimoFmt != null ? vUltimoFmt + (m.unidade ? ' ' + m.unidade : '') : '--'}</strong>)
-                  </span>
+                  <span class="chart-mixed-title">${c.nome}</span>
+                  ${c.subtitulo ? `<span style="font-size: 11px; color: #64748b; margin-left: 6px; font-weight: 500;">${c.subtitulo}</span>` : ''}
                 </div>
                 <div class="chart-mixed-meta">
-                  ${deltaBadge ? `<span class="chart-delta-badge">${deltaBadge}</span>` : ''}
-                  ${statusTexto && statusTexto !== '--' ? `<span class="chart-status-badge">${statusTexto}</span>` : ''}
+                  ${badgesHtml}
+                  ${statusHtml}
                 </div>
               </div>
               <div class="chart-canvas-box">
-                <canvas id="canvas-chart-${m.id}"></canvas>
+                <canvas id="canvas-chart-${c.id}"></canvas>
               </div>
             </div>
           `;
@@ -9361,12 +10688,11 @@
       container.innerHTML = html;
 
       // Renderiza Gráfico em Destaque
-      renderizarCardDestaque(metricaDestaque, labels, evalsSlice);
+      renderizarCardDestaquePorCard(cardDestaque);
 
       // Renderiza cada gráfico da grade
-      metricas.forEach(m => {
-        const valores = evalsSlice.map(ev => m.extrair(ev));
-        criarGraficoMisto('canvas-chart-' + m.id, labels, valores, m.unidade, m.nome);
+      cardsAtuaisComparativo.forEach(c => {
+        c.render('canvas-chart-' + c.id);
       });
     }
 
