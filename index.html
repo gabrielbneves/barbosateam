@@ -2,8 +2,14 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Barbosa Team">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1F4E78">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%23143552'/%3E%3Ccircle cx='256' cy='256' r='180' fill='%231F4E78' stroke='%2338bdf8' stroke-width='16'/%3E%3Cpath d='M170 340V172h68c34 0 54 18 54 44 0 18-10 32-26 38v2c22 6 36 22 36 44 0 28-22 40-58 40zm42-96h24c14 0 22-8 22-18 0-11-8-18-22-18h-24zm0 66h28c16 0 26-8 26-20 0-12-10-20-26-20h-28z' fill='%23ffffff'/%3E%3C/svg%3E">
   <title>Barbosa Team - Sistema Integrado de Avaliação Física</title>
   <script src="chart.min.js"></script>
   <script>
@@ -13,11 +19,16 @@
   </script>
   <style>
     /* Estilos Gerais Limpos e Diretos - Barbosa Team */
+    html {
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
     body {
       background-color: #f0f4f8;
@@ -141,15 +152,30 @@
     input[type="number"],
     input[type="date"],
     input[type="tel"],
+    input[type="password"],
     select,
     textarea {
       padding: 10px 12px;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border-radius: 8px;
       font-size: 14px;
       background-color: #fff;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%231F4E78' d='M1.41 0L6 4.58L10.59 0L12 1.41l-6 6-6-6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 10px 7px;
+      padding-right: 32px !important;
+    }
+    input[type="date"] {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
     }
     input:focus, select:focus, textarea:focus {
       border-color: #1F4E78;
@@ -248,6 +274,16 @@
       border-radius: 5px;
       font-size: 11px;
       font-weight: 700;
+    }
+
+    /* Sincronizacao em Nuvem */
+    @keyframes pulseSync {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .sync-pulsing {
+      animation: pulseSync 1.2s infinite ease-in-out;
     }
 
     /* Destaques de Evolução no Comparativo */
@@ -615,29 +651,121 @@
     }
 
     /* ==========================================
-       OTIMIZAÇÕES ESPECÍFICAS PARA iOS / SAFARI WEBKIT
+       OTIMIZAÇÕES ESPECÍFICAS PARA iOS / SAFARI WEBKIT & APPLE HIG
        ========================================== */
-    button, .btn, .step-item, .login-toggle-btn, select, input[type="button"], input[type="submit"], input[type="checkbox"], input[type="radio"] {
+    button, .btn, .step-item, .login-toggle-btn, .treadmill-btn, .treadmill-mode-btn, select, input[type="button"], input[type="submit"], input[type="checkbox"], input[type="radio"] {
       touch-action: manipulation;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    .table-responsive, [style*="overflow-y: auto"], [style*="overflow-x: auto"] {
+    /* Suporte de Rolagem com Inércia Suave no iOS Safari */
+    .table-responsive,
+    .treadmill-table-wrapper,
+    [style*="overflow-y: auto"],
+    [style*="overflow-x: auto"] {
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior-x: contain;
     }
 
+    /* Modais com Respeito a Safe Areas e Dynamic Viewport Height (dvh) */
     #modal-referencias, #modal-gerenciar-alunos, #modal-trocar-senha {
       padding-top: max(20px, env(safe-area-inset-top)) !important;
       padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
       padding-left: max(20px, env(safe-area-inset-left)) !important;
       padding-right: max(20px, env(safe-area-inset-right)) !important;
+      min-height: 100vh;
+      min-height: 100dvh;
     }
 
-    /* Prevenção de auto-zoom no Safari iOS: aplica 16px exclusivamente em telas touch/mobile */
+    /* Ergonomia e Prevenção de Auto-Zoom no Safari iOS em Dispositivos Touch/Mobile */
     @media (max-width: 768px), (pointer: coarse) {
+      body {
+        padding: 10px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        padding-right: max(10px, env(safe-area-inset-right));
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
+        padding-left: max(10px, env(safe-area-inset-left));
+      }
+
+      .container {
+        padding: 16px 12px !important;
+        border-radius: 10px;
+      }
+
+      header {
+        padding: 18px 12px !important;
+        margin-bottom: 16px !important;
+      }
+
+      /* Altura de toque mínima de 44px recomendada pela Apple HIG e prevenção de auto-zoom (font-size >= 16px) */
       input:not([type="checkbox"]):not([type="radio"]),
       select,
       textarea {
         font-size: 16px !important;
+        min-height: 44px;
+      }
+
+      .btn, .treadmill-btn {
+        min-height: 44px;
+        padding: 10px 16px;
+      }
+
+      /* Navegação dos passos adaptável para telas de iPhone */
+      .steps-nav {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 6px;
+        gap: 6px;
+      }
+      .steps-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .step-item {
+        flex: 0 0 auto;
+        min-width: 140px;
+        font-size: 11px;
+        padding: 10px 12px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      /* Otimização da barra de ações inferior para caber os botões sem colisão */
+      .actions-bar {
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .actions-bar .btn {
+        flex: 1 1 calc(50% - 10px);
+        min-width: 130px;
+        text-align: center;
+        justify-content: center;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      /* Área de toque expandida nos itens PAR-Q */
+      .parq-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 12px;
+      }
+      .parq-options {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .parq-options label {
+        min-height: 40px;
+        padding: 6px 14px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
       }
     }
 
@@ -1138,6 +1266,13 @@
         <p style="font-size: 13px; color: #cbd5e1; margin: 0; font-weight: 500; letter-spacing: 0.4px;">Sistema Integrado de Avaliação Física &amp; Prescrição de Treinamento</p>
       </div>
       <div style="margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;" class="no-print">
+        <div id="cloud-sync-container" style="display: inline-flex; align-items: center; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; padding: 4px 10px; gap: 8px;">
+          <span id="cloud-sync-indicator" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; box-shadow: 0 0 6px #22c55e;"></span>
+          <span id="cloud-sync-status" style="font-size: 11px; color: #f8fafc; font-weight: 600;">Nuvem Conectada</span>
+          <button type="button" id="btn-cloud-sync" onclick="acionarSincronizacaoManual()" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: #ffffff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;" title="Sincronizar dados com o Google Planilhas">
+            Sincronizar
+          </button>
+        </div>
         <button type="button" onclick="abrirModalReferencias()" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.35); color: #ffffff; font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); transition: all 0.2s;">
           Base Científica &amp; Diretrizes Normativas
         </button>
@@ -3414,6 +3549,7 @@
         definirSessaoAutenticada(lembrar);
         aplicarEstadoAutenticacao(true);
         if (erroEl) erroEl.style.display = 'none';
+        puxarDadosNuvem(true);
       } else {
         if (erroMsg) erroMsg.textContent = 'Usuário ou senha incorretos.';
         if (erroEl) erroEl.style.display = 'block';
@@ -3448,6 +3584,59 @@
       }
     }
 
+    function bloquearScrollFundoIOS(bloquear) {
+      const scrollKey = 'iosScrollY';
+      if (bloquear) {
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+        document.body.dataset[scrollKey] = String(scrollY);
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+      } else {
+        const scrollY = document.body.dataset[scrollKey];
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        if (typeof scrollY !== 'undefined') {
+          window.scrollTo(0, parseInt(scrollY, 10));
+          delete document.body.dataset[scrollKey];
+        }
+      }
+    }
+
+    function otimizarInputsParaIOS() {
+      const campos = document.querySelectorAll('input, select, textarea');
+      campos.forEach(campo => {
+        if (campo.tagName.toLowerCase() === 'input') {
+          const type = campo.type.toLowerCase();
+          const id = (campo.id || '').toLowerCase();
+          const step = campo.getAttribute('step');
+
+          if (type === 'number') {
+            if (step === '1' || id === 'idade' || id.includes('rep') || id.includes('fc') || id.includes('pa_') || id.includes('pas') || id.includes('pad') || id.includes('borg')) {
+              campo.setAttribute('inputmode', 'numeric');
+            } else {
+              campo.setAttribute('inputmode', 'decimal');
+            }
+          }
+
+          if (id !== 'login-usuario' && id !== 'trocar-usuario-atual') {
+            if (!campo.hasAttribute('autocomplete')) {
+              campo.setAttribute('autocomplete', 'off');
+            }
+            if (!campo.hasAttribute('autocorrect')) {
+              campo.setAttribute('autocorrect', 'off');
+            }
+            if (!campo.hasAttribute('spellcheck')) {
+              campo.setAttribute('spellcheck', 'false');
+            }
+          }
+        }
+      });
+    }
+
     function abrirModalTrocarSenha() {
       const modal = document.getElementById('modal-trocar-senha');
       const creds = obterCredenciaisArmazenadas();
@@ -3466,12 +3655,14 @@
       if (sucEl) sucEl.style.display = 'none';
 
       if (modal) modal.style.display = 'flex';
+      bloquearScrollFundoIOS(true);
       setTimeout(() => { if (atualEl) atualEl.focus(); }, 100);
     }
 
     function fecharModalTrocarSenha() {
       const modal = document.getElementById('modal-trocar-senha');
       if (modal) modal.style.display = 'none';
+      bloquearScrollFundoIOS(false);
     }
 
     async function salvarNovaSenha(e) {
@@ -3549,6 +3740,7 @@
       sexo: 'M',
       telefone: '(11) 98877-6655',
       objetivo: 'Hipertrofia Muscular & Condicionamento',
+      grupoEtario: 'adulto',
       anamnese: {
         doencas: 'Nenhuma',
         medicamentos: 'Nenhum',
@@ -3630,35 +3822,35 @@
     };
 
     const demoAdultaMariana = {
-      id: 'demo-mariana-costa',
-      nome: 'Mariana Ribeiro Costa',
+      id: 'demo-mariana-souza',
+      nome: 'Mariana Souza Lima',
       idade: 28,
       sexo: 'F',
       telefone: '(11) 97766-5544',
-      objetivo: 'Emagrecimento & Condicionamento Geral',
+      objetivo: 'Emagrecimento & Definição Muscular',
+      grupoEtario: 'adulto',
       anamnese: {
         doencas: 'Nenhuma',
         medicamentos: 'Anticoncepcional oral',
-        lesoes: 'Dor lombar postural eventual',
-        praticaAtual: 'Iniciante / Sedentária há 8 meses'
+        lesoes: 'Nenhuma',
+        praticaAtual: 'Iniciante (sedentária nos últimos 8 meses)'
       },
       avaliacoes: [
         {
           id: 'av_mariana_1',
-          data: '2026-09-10',
+          data: '2026-08-01',
           composicao: {
-            data: '2026-09-10',
+            data: '2026-08-01',
             paSistolica: 116,
             paDiastolica: 74,
             fcRepouso: 72,
             peso: 64.0,
             altura: 165,
-            cintura: 73.0,
+            cintura: 74.0,
             quadril: 98.0,
-            rcq: 0.74,
-            imc: 23.5,
+            rcq: 0.76,
             metodoGordura: 'dobras',
-            dobras: { triceps: 19, suprailiaca: 18, coxa: 24 },
+            dobras: { triceps: 18, suprailiaca: 20, coxa: 24 },
             percentualGordura: 23.4,
             massaGorda: 15.0,
             massaMagra: 49.0
@@ -3689,6 +3881,7 @@
       sexo: 'M',
       telefone: '(11) 96655-4433',
       objetivo: 'Desenvolvimento Motor & Futsal Escolar',
+      grupoEtario: 'adolescente',
       anamnese: {
         doencas: 'Nenhuma',
         medicamentos: 'Nenhum',
@@ -3766,6 +3959,7 @@
       sexo: 'F',
       telefone: '(11) 98765-4321',
       objetivo: 'Prevenção de Quedas e Fortalecimento Funcional',
+      grupoEtario: 'idoso',
       anamnese: {
         doencas: 'Hipertensão controlada e osteopenia no fêmur',
         medicamentos: 'Losartana 50mg, Cálcio + Vitamina D',
@@ -3875,9 +4069,20 @@
         }
 
         const dIdx = parsed.alunos.findIndex(a => a.id === 'demo-dona-dirce');
-        if (dIdx >= 0 && !parsed.alunos[dIdx].avaliacoes[0]?.testes?.cardioVo2) {
+        if (dIdx >= 0 && (!parsed.alunos[dIdx].grupoEtario || !parsed.alunos[dIdx].avaliacoes[1] || !parsed.alunos[dIdx].avaliacoes[0]?.testes?.cardioVo2)) {
           parsed.alunos[dIdx] = demoDonaDirce;
         }
+
+        const lIdx = parsed.alunos.findIndex(a => a.id === 'demo-lucas-santos');
+        if (lIdx >= 0 && (!parsed.alunos[lIdx].grupoEtario || !parsed.alunos[lIdx].avaliacoes[1])) {
+          parsed.alunos[lIdx] = demoJovemLucas;
+        }
+
+        parsed.alunos.forEach(a => {
+          if (!a.grupoEtario) {
+            a.grupoEtario = (a.idade >= 60 ? 'idoso' : (a.idade < 18 ? 'adolescente' : 'adulto'));
+          }
+        });
 
         localStorage.setItem(DB_KEY, JSON.stringify(parsed));
         return parsed;
@@ -3889,6 +4094,434 @@
     function salvarBanco(db) {
       localStorage.setItem(DB_KEY, JSON.stringify(db));
     }
+
+    // ==========================================
+    // SINCRONIZAÇÃO EM NUVEM (GOOGLE SHEETS API)
+    // ==========================================
+    const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbwogkI-fssmEV3c7KTLeb_wghlPpKwsgnv0jLbv6p5k5-_kgnuwL0s6PZqHwefEdTyp/exec';
+    window.GOOGLE_SHEETS_API_URL = GOOGLE_SHEETS_API_URL;
+    const CLOUD_SYNC_TIMESTAMP_KEY = 'anamnese_nuvem_ultimo_sync';
+    window.CLOUD_SYNC_TIMESTAMP_KEY = CLOUD_SYNC_TIMESTAMP_KEY;
+    let sincronizacaoEmAndamento = false;
+
+    function atualizarStatusSincronizacao(estado, mensagem) {
+      const elStatus = document.getElementById('cloud-sync-status');
+      const elIndicator = document.getElementById('cloud-sync-indicator');
+      const btnSync = document.getElementById('btn-cloud-sync');
+      if (!elStatus) return;
+
+      if (mensagem) elStatus.textContent = mensagem;
+
+      if (estado === 'sincronizando') {
+        if (elIndicator) {
+          elIndicator.style.background = '#38bdf8';
+          elIndicator.style.boxShadow = '0 0 6px #38bdf8';
+          elIndicator.classList.add('sync-pulsing');
+        }
+        if (btnSync) {
+          btnSync.disabled = true;
+          btnSync.style.opacity = '0.6';
+          btnSync.style.cursor = 'wait';
+        }
+      } else if (estado === 'sucesso') {
+        if (elIndicator) {
+          elIndicator.style.background = '#22c55e';
+          elIndicator.style.boxShadow = '0 0 6px #22c55e';
+          elIndicator.classList.remove('sync-pulsing');
+        }
+        if (btnSync) {
+          btnSync.disabled = false;
+          btnSync.style.opacity = '1';
+          btnSync.style.cursor = 'pointer';
+        }
+      } else if (estado === 'offline' || estado === 'erro') {
+        if (elIndicator) {
+          elIndicator.style.background = '#f59e0b';
+          elIndicator.style.boxShadow = '0 0 6px #f59e0b';
+          elIndicator.classList.remove('sync-pulsing');
+        }
+        if (btnSync) {
+          btnSync.disabled = false;
+          btnSync.style.opacity = '1';
+          btnSync.style.cursor = 'pointer';
+        }
+      }
+    }
+
+    async function puxarDadosNuvem(silencioso = true) {
+      if (sincronizacaoEmAndamento) return;
+      sincronizacaoEmAndamento = true;
+      atualizarStatusSincronizacao('sincronizando', 'Verificando nuvem...');
+
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
+        const response = await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          throw new Error('Status HTTP ' + response.status);
+        }
+
+        const data = await response.json();
+        if (data && data.status === 'sucesso') {
+          const alunosNuvem = Array.isArray(data.alunos) ? data.alunos : [];
+          const excluidosNuvem = Array.isArray(data.excluidos) ? data.excluidos : [];
+
+          let houveAlteracao = false;
+
+          if (!bancoDados.excluidos) bancoDados.excluidos = [];
+          excluidosNuvem.forEach(idEx => {
+            if (!bancoDados.excluidos.includes(idEx)) {
+              bancoDados.excluidos.push(idEx);
+              houveAlteracao = true;
+            }
+          });
+
+          if (bancoDados.excluidos.length > 0) {
+            const tamAntes = bancoDados.alunos.length;
+            bancoDados.alunos = bancoDados.alunos.filter(a => !bancoDados.excluidos.includes(a.id));
+            if (bancoDados.alunos.length !== tamAntes) houveAlteracao = true;
+          }
+
+          // Mescla alunos da nuvem para o banco local
+          alunosNuvem.forEach(aNuvem => {
+            if (!aNuvem || !aNuvem.id) return;
+            if (bancoDados.excluidos.includes(aNuvem.id)) return;
+
+            const idxLocal = bancoDados.alunos.findIndex(a => 
+              a.id === aNuvem.id || 
+              (a.nome && aNuvem.nome && a.nome.trim().toLowerCase() === aNuvem.nome.trim().toLowerCase())
+            );
+
+            if (idxLocal === -1) {
+              bancoDados.alunos.push(aNuvem);
+              houveAlteracao = true;
+            } else {
+              const aLocal = bancoDados.alunos[idxLocal];
+              const avLocais = Array.isArray(aLocal.avaliacoes) ? aLocal.avaliacoes : [];
+              const avNuvem = Array.isArray(aNuvem.avaliacoes) ? aNuvem.avaliacoes : [];
+
+              avNuvem.forEach(evN => {
+                if (!evN) return;
+                const evLIdx = avLocais.findIndex(evL => 
+                  (evN.id && evL.id === evN.id) || 
+                  (evN.data && evL.data === evN.data)
+                );
+
+                if (evLIdx === -1) {
+                  avLocais.push(evN);
+                  houveAlteracao = true;
+                } else {
+                  avLocais[evLIdx] = {
+                    ...avLocais[evLIdx],
+                    ...evN,
+                    composicao: { ...(avLocais[evLIdx].composicao || {}), ...(evN.composicao || {}) },
+                    testes: { ...(avLocais[evLIdx].testes || {}), ...(evN.testes || {}) }
+                  };
+                }
+              });
+
+              avLocais.sort((a, b) => new Date(a.data) - new Date(b.data));
+              aLocal.avaliacoes = avLocais;
+
+              if (aNuvem.grupoEtario && !aLocal.grupoEtario) aLocal.grupoEtario = aNuvem.grupoEtario;
+              if (aNuvem.objetivo && !aLocal.objetivo) aLocal.objetivo = aNuvem.objetivo;
+              if (aNuvem.telefone && !aLocal.telefone) aLocal.telefone = aNuvem.telefone;
+              if (aNuvem.anamnese && (!aLocal.anamnese || Object.keys(aLocal.anamnese).length === 0)) {
+                aLocal.anamnese = aNuvem.anamnese;
+                houveAlteracao = true;
+              }
+            }
+          });
+
+          // Se a nuvem estava vazia mas temos alunos locais
+          if (alunosNuvem.length === 0 && bancoDados.alunos.length > 0) {
+            sincronizacaoEmAndamento = false;
+            await sincronizarBancoCompletoNuvem(true);
+            return;
+          }
+
+          // Se há alunos locais que não constam na nuvem, envia para a nuvem
+          const temAlunosLocaisNaoNuvem = bancoDados.alunos.some(aLoc => 
+            !alunosNuvem.some(aNuv => aNuv.id === aLoc.id || (aNuv.nome && aLoc.nome && aNuv.nome.trim().toLowerCase() === aLoc.nome.trim().toLowerCase()))
+          );
+
+          if (houveAlteracao) {
+            salvarBanco(bancoDados);
+            atualizarDropdownPacientes();
+            const selEl = document.getElementById('seletor-paciente');
+            const alunoAtual = bancoDados.alunos.find(a => a.id === selEl?.value);
+            if (alunoAtual) {
+              atualizarVisualSeletor(alunoAtual);
+            }
+            const passo4Ativo = document.getElementById('passo-4')?.classList.contains('active');
+            if (passo4Ativo) {
+              renderizarComparativoGeral();
+            }
+          }
+
+          if (temAlunosLocaisNaoNuvem) {
+            sincronizacaoEmAndamento = false;
+            await sincronizarBancoCompletoNuvem(true);
+            return;
+          }
+
+          const agora = new Date();
+          const horaStr = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          localStorage.setItem(CLOUD_SYNC_TIMESTAMP_KEY, agora.toISOString());
+          atualizarStatusSincronizacao('sucesso', `Nuvem sincronizada (${horaStr})`);
+        } else {
+          atualizarStatusSincronizacao('offline', 'Modo offline (salvo local)');
+        }
+      } catch (err) {
+        console.warn('Conexao com a nuvem indisponivel (modo offline ativo):', err);
+        atualizarStatusSincronizacao('offline', 'Modo offline (salvo local)');
+      } finally {
+        sincronizacaoEmAndamento = false;
+      }
+    }
+
+    function extrairLinhasColetadasAvaliacao(aluno, avaliacao) {
+      if (!aluno || !avaliacao) return [];
+      const c = avaliacao.composicao || {};
+      const t = avaliacao.testes || {};
+      const sexo = (aluno.identificacao && aluno.identificacao.sexo) || aluno.sexo || 'F';
+      const idade = (aluno.identificacao && aluno.identificacao.idade) || aluno.idade || 30;
+      const grupoEtario = aluno.grupoEtario || (idade >= 60 ? 'idoso' : (idade < 18 ? 'adolescente' : 'adulto'));
+      const linhas = [];
+
+      function addLinha(categoria, titulo, valor, classificacao) {
+        if (valor !== undefined && valor !== null && valor !== '' && valor !== '--') {
+          linhas.push({
+            categoria: categoria,
+            titulo: titulo,
+            valor: String(valor),
+            classificacao: classificacao || '--'
+          });
+        }
+      }
+
+      // Sinais Vitais & Hemodinâmica (Comum a todas as faixas etárias)
+      if (c.paSistolica && c.paDiastolica) {
+        let paClas = (c.paSistolica <= 120 && c.paDiastolica <= 80) ? 'Pressão Ótima (≤120/80 mmHg)' : ((c.paSistolica <= 129 && c.paDiastolica <= 84) ? 'Pressão Normal' : 'Alerta PA Elevada');
+        addLinha('Sinais Vitais & Hemodinâmica', 'Pressão Arterial de Repouso', `${c.paSistolica}/${c.paDiastolica} mmHg`, paClas);
+      }
+      if (c.fcRepouso) {
+        let fcClas = (c.fcRepouso >= 60 && c.fcRepouso <= 85) ? 'Eucardia Normal (60-85 bpm)' : (c.fcRepouso < 60 ? 'Bradicardia (<60 bpm)' : 'FC Repouso Elevada (>85 bpm)');
+        addLinha('Sinais Vitais & Hemodinâmica', 'Frequência Cardíaca de Repouso', `${c.fcRepouso} bpm`, fcClas);
+      }
+
+      if (grupoEtario === 'idoso') {
+        addLinha('Composição Corporal & Antropometria Geriátrica', 'Massa Corporal (Peso)', c.peso ? `${c.peso} kg` : null, 'Peso monitorado');
+        addLinha('Composição Corporal & Antropometria Geriátrica', 'Estatura / Altura', c.altura ? `${c.altura} cm` : null, '--');
+        if (c.peso && c.altura) {
+          const altM = c.altura / 100;
+          const imc = (c.peso / (altM * altM)).toFixed(1);
+          let imcClas = (imc >= 22.0 && imc <= 27.0) ? 'Eutrófico / Faixa Protetora (22-27 kg/m²)' : (imc < 22.0 ? 'Baixo Peso (<22 kg/m²)' : 'Sobrepeso (>27 kg/m²)');
+          addLinha('Composição Corporal & Antropometria Geriátrica', 'Índice de Massa Corporal (IMC)', `${imc} kg/m²`, imcClas);
+        }
+        if (c.panturrilha) {
+          let pClas = (c.panturrilha >= 31.0) ? 'Massa Muscular Preservada (≥31,0 cm)' : 'Alerta Sarcopenia (<31,0 cm)';
+          addLinha('Composição Corporal & Antropometria Geriátrica', 'Circunferência da Panturrilha (Triagem Sarcopenia)', `${c.panturrilha} cm`, pClas);
+        }
+        if (c.cintura) {
+          const limCin = (sexo === 'M' ? 94.0 : 80.0);
+          addLinha('Composição Corporal & Antropometria Geriátrica', 'Circunferência da Cintura (Risco Metabólico)', `${c.cintura} cm`, c.cintura <= limCin ? `Normal (≤ ${limCin} cm)` : `Risco Aumentado (> ${limCin} cm)`);
+        }
+
+        // Testes Motores & Força Funcional Idoso
+        if (t.fpmMelhor || t.fpmDireita || t.fpmEsquerda) {
+          const valFpm = t.fpmMelhor || Math.max(parseFloat(t.fpmDireita) || 0, parseFloat(t.fpmEsquerda) || 0);
+          const corteFPM = (sexo === 'M') ? 27.0 : 16.0;
+          let fpmClas = (valFpm >= corteFPM) ? `Força Preservada (≥ ${corteFPM.toFixed(0)} kgf)` : `Alerta Dinapenia (< ${corteFPM.toFixed(0)} kgf)`;
+          addLinha('Testes Motores & Força Funcional', 'Força de Preensão Manual (Dinamometria)', `${valFpm} kgf`, fpmClas);
+        }
+        if (t.ftsstTempo) {
+          let fVal = parseFloat(t.ftsstTempo);
+          let fClas = (t.ftsstTempo === 'Incapaz' || t.ftsstTempo === 'incapaz') ? 'Incapaz sem apoio' : (!isNaN(fVal) ? (fVal <= 11.1 ? 'Excelente Força (≤11,1s)' : (fVal <= 13.6 ? 'Boa Força (11,2-13,6s)' : (fVal < 15.0 ? 'Regular / Alerta (13,7-14,9s)' : 'Risco de Quedas Recorrentes (≥15,0s)'))) : '--');
+          addLinha('Testes Motores & Força Funcional', '5x Sentar e Levantar da Cadeira (FTSST)', `${t.ftsstTempo} s`, fClas);
+        }
+        if (t.tugTempo) {
+          let tVal = parseFloat(t.tugTempo);
+          let tClas = !isNaN(tVal) ? (tVal < 10.0 ? 'Livremente Independente (<10s)' : (tVal < 20.0 ? 'Mobilidade Básica Independente (10-19,9s)' : (tVal < 30.0 ? 'Risco Moderado (20-29,9s)' : 'Dependência Severa / Alto Risco (≥30s)'))) : '--';
+          addLinha('Testes Motores & Força Funcional', 'Timed Up and Go (TUG - Agilidade e Marcha)', `${t.tugTempo} s`, tClas);
+        }
+        if (t.eqDireita !== undefined && t.eqDireita !== null && t.eqDireita !== '') {
+          addLinha('Testes Motores & Força Funcional', 'Equilíbrio Unipodal Direito', `${t.eqDireita} s`, parseFloat(t.eqDireita) >= 10 ? 'Equilíbrio Preservado' : 'Abaixo da Norma');
+        }
+        if (t.eqEsquerda !== undefined && t.eqEsquerda !== null && t.eqEsquerda !== '') {
+          addLinha('Testes Motores & Força Funcional', 'Equilíbrio Unipodal Esquerdo', `${t.eqEsquerda} s`, parseFloat(t.eqEsquerda) >= 10 ? 'Equilíbrio Preservado' : 'Abaixo da Norma');
+        }
+        if (t.cardioVo2) {
+          addLinha('Aptidão Cardiorrespiratória', 'VO2máx Submáximo Esteira (George et al.)', `${t.cardioVo2} ml/kg/min`, 'Capacidade Aeróbia Submáxima');
+        }
+      } else if (grupoEtario === 'adolescente') {
+        addLinha('Crescimento & Composição Corporal', 'Estatura / Altura', c.altura ? `${c.altura} cm` : null, 'Crescimento estatural');
+        if (c.envergadura) addLinha('Crescimento & Composição Corporal', 'Envergadura dos Braços', `${c.envergadura} cm`, c.altura ? (c.envergadura >= c.altura ? 'Proporção Longilínea' : 'Proporção Brevilínea') : '--');
+        addLinha('Crescimento & Composição Corporal', 'Massa Corporal (Peso)', c.peso ? `${c.peso} kg` : null, 'Massa corporal total');
+        if (c.imc) {
+          const diag = typeof classificarIMCJovem === 'function' ? classificarIMCJovem(c.imc, idade, sexo) : { texto: '--' };
+          addLinha('Crescimento & Composição Corporal', 'Índice de Massa Corporal (IMC Pediátrico)', `${c.imc} kg/m²`, diag.texto);
+        }
+        if (c.rcest || (c.cintura && c.altura)) {
+          const rcestVal = c.rcest || (c.cintura / c.altura).toFixed(2);
+          addLinha('Crescimento & Composição Corporal', 'Relação Cintura-Estatura (RCEst)', `${rcestVal}`, rcestVal <= 0.50 ? 'Sem Risco Metabólico (≤0.50)' : 'Risco Metabólico Elevado (>0.50)');
+        }
+        if (c.percentualGordura) {
+          addLinha('Crescimento & Composição Corporal', '% Gordura Corporal', `${c.percentualGordura}%`, c.percentualGordura <= (sexo === 'M' ? 20 : 25) ? 'Gordura Corporal Saudável' : 'Atenção / Acima do Padrão');
+        }
+        if (c.massaMagra) {
+          addLinha('Crescimento & Composição Corporal', 'Massa Magra Livre (Músculos/Ossos)', `${c.massaMagra} kg`, 'Massa isenta de gordura');
+        }
+        // Testes Motores Jovem PROESP-BR
+        if (t.flexCm) {
+          addLinha('Testes Motores & Desempenho Físico (PROESP-BR)', 'Flexibilidade Posterior (Sentar e Alcançar)', `${t.flexCm} cm`, t.flexCm >= 22 ? 'Zona Saudável de Aptidão (ZSA)' : 'Zona de Risco à Saúde (ZRS)');
+        }
+        if (t.saltoCm) {
+          addLinha('Testes Motores & Desempenho Físico (PROESP-BR)', 'Força Explosiva MMII (Salto Horizontal)', `${t.saltoCm} cm`, 'Zona Saudável de Aptidão (PROESP-BR)');
+        }
+        if (t.abdReps) {
+          addLinha('Testes Motores & Desempenho Físico (PROESP-BR)', 'Resistência Muscular Core (Abdominal 1 min)', `${t.abdReps} reps`, 'Zona Saudável de Aptidão (PROESP-BR)');
+        }
+        if (t.agilidadeTempo) {
+          addLinha('Testes Motores & Desempenho Físico (PROESP-BR)', 'Agilidade & Coordenação (Quadrado 4x4m)', `${t.agilidadeTempo} s`, t.agilidadeTempo <= 5.4 ? 'Excelente Agilidade' : 'Zona Saudável (Bom)');
+        }
+        if (t.aerobioMetros) {
+          addLinha('Aptidão Cardiorrespiratória', 'Corrida/Caminhada 6 min', `${t.aerobioMetros} m`, 'Capacidade Aeróbia Pediátrica');
+        }
+      } else {
+        // Adulto
+        addLinha('Antropometria & Composição Corporal', 'Massa Corporal (Peso)', c.peso ? `${c.peso} kg` : null, 'Peso corporal total');
+        addLinha('Antropometria & Composição Corporal', 'Índice de Massa Corporal (IMC)', c.imc ? `${c.imc} kg/m²` : null, c.imc < 25.0 ? 'Peso Normal (Eutrofia)' : (c.imc < 30.0 ? 'Sobrepeso' : 'Obesidade'));
+        if (c.cintura) addLinha('Antropometria & Composição Corporal', 'Circunferência da Cintura', `${c.cintura} cm`, c.cintura <= (sexo === 'M' ? 94 : 80) ? 'Risco Normal' : 'Risco Aumentado');
+        if (c.quadril) addLinha('Antropometria & Composição Corporal', 'Circunferência do Quadril', `${c.quadril} cm`, 'Perimetria de quadril');
+        if (c.rcq || (c.cintura && c.quadril)) {
+          const rcqVal = c.rcq || (c.cintura / c.quadril).toFixed(2);
+          addLinha('Antropometria & Composição Corporal', 'Relação Cintura-Quadril (RCQ)', `${rcqVal}`, rcqVal <= (sexo === 'M' ? 0.90 : 0.80) ? 'Baixo Risco Cardiovascular' : 'Risco Moderado/Alto');
+        }
+        if (c.percentualGordura) addLinha('Antropometria & Composição Corporal', '% Gordura Corporal (%G)', `${c.percentualGordura}%`, c.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média');
+        if (c.massaGorda) addLinha('Antropometria & Composição Corporal', 'Massa Gorda Total', `${c.massaGorda} kg`, 'Tecido adiposo total');
+        if (c.massaMagra) addLinha('Antropometria & Composição Corporal', 'Massa Magra Livre de Gordura', `${c.massaMagra} kg`, 'Massa muscular e óssea');
+
+        if (t.flexoesReps) addLinha('Testes de Força Muscular', 'Flexões de Braço', `${t.flexoesReps} reps`, 'Resistência Muscular ACSM');
+        if (t.forcaMMSS && t.forcaMMSS.rm1) {
+          addLinha('Testes de Força Muscular', `${t.forcaMMSS.exercicioNome || 'Força MMSS'} (1RM)`, `${t.forcaMMSS.rm1} kg (${t.forcaMMSS.relativo}x PC)`, t.forcaMMSS.classificacao || '--');
+        }
+        if (t.forcaMMII && t.forcaMMII.rm1) {
+          addLinha('Testes de Força Muscular', `${t.forcaMMII.exercicioNome || 'Força MMII'} (1RM)`, `${t.forcaMMII.rm1} kg (${t.forcaMMII.relativo}x PC)`, t.forcaMMII.classificacao || '--');
+        } else if (t.extensora1RM) {
+          addLinha('Testes de Força Muscular', 'Cadeira Extensora (1RM)', `${t.extensora1RM} kg (${t.extensoraRelativo}x PC)`, '--');
+        }
+
+        if (t.fezEsteira) {
+          if (t.esteiraVelPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Velocidade de Pico (Vpico)', `${Number(t.esteiraVelPico).toFixed(2)} km/h`, 'Velocidade máxima na esteira plana');
+          if (t.esteiraVo2) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'VO2máx Estimado', `${t.esteiraVo2} ml/kg/min`, t.esteiraVo2 >= (sexo === 'M' ? 44 : 38) ? 'Capacidade Aeróbia Excelente' : 'Bom Condicionamento');
+          if (t.esteiraFcPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'FC Pico Atingida', `${t.esteiraFcPico} bpm`, `${Math.round((t.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista`);
+          if (t.esteiraRfc1Min != null) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Recuperação da FC (RFC 1º min)', `-${t.esteiraRfc1Min} bpm`, t.esteiraRfc1Min >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)');
+        }
+      }
+
+      return linhas;
+    }
+    window.extrairLinhasColetadasAvaliacao = extrairLinhasColetadasAvaliacao;
+
+    async function enviarAlunoParaNuvem(aluno, avaliacaoRecente) {
+      if (!aluno) return;
+      atualizarStatusSincronizacao('sincronizando', 'Salvando na nuvem...');
+      try {
+        const avRec = avaliacaoRecente || (aluno.avaliacoes && aluno.avaliacoes.length > 0 ? aluno.avaliacoes[aluno.avaliacoes.length - 1] : null);
+        const linhas = extrairLinhasColetadasAvaliacao(aluno, avRec);
+        if (avRec && !avRec.linhasColetadas) {
+          avRec.linhasColetadas = linhas;
+        }
+        const payload = {
+          acao: 'salvar_aluno',
+          aluno: aluno,
+          avaliacaoRecente: avRec,
+          linhasColetadas: linhas
+        };
+        const response = await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+        if (res && res.status === 'sucesso') {
+          const agora = new Date();
+          const horaStr = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          localStorage.setItem(CLOUD_SYNC_TIMESTAMP_KEY, agora.toISOString());
+          atualizarStatusSincronizacao('sucesso', `Salvo na nuvem (${horaStr})`);
+        } else {
+          atualizarStatusSincronizacao('offline', 'Salvo localmente');
+        }
+      } catch (err) {
+        console.warn('Erro ao salvar aluno na nuvem (salvo localmente):', err);
+        atualizarStatusSincronizacao('offline', 'Salvo localmente (offline)');
+      }
+    }
+
+    async function sincronizarBancoCompletoNuvem(silencioso = false) {
+      if (sincronizacaoEmAndamento) return;
+      sincronizacaoEmAndamento = true;
+      atualizarStatusSincronizacao('sincronizando', 'Sincronizando com a nuvem...');
+      try {
+        const payload = {
+          acao: 'sincronizar_banco',
+          banco: {
+            alunos: bancoDados.alunos || [],
+            excluidos: bancoDados.excluidos || []
+          }
+        };
+        const response = await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const res = await response.json();
+        if (res && res.status === 'sucesso') {
+          const agora = new Date();
+          const horaStr = agora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          localStorage.setItem(CLOUD_SYNC_TIMESTAMP_KEY, agora.toISOString());
+          atualizarStatusSincronizacao('sucesso', `Nuvem sincronizada (${horaStr})`);
+          if (!silencioso) {
+            alert('Banco de dados sincronizado com sucesso com a planilha no Google Planilhas!');
+          }
+        } else {
+          atualizarStatusSincronizacao('offline', 'Salvo localmente');
+          if (!silencioso) {
+            alert('A planilha retornou um aviso ao sincronizar. Seus dados estão preservados no dispositivo.');
+          }
+        }
+      } catch (err) {
+        console.warn('Falha na sincronização completa:', err);
+        atualizarStatusSincronizacao('offline', 'Modo offline (salvo local)');
+        if (!silencioso) {
+          alert('Não foi possível conectar ao Google Planilhas no momento. Verifique sua conexão. Seus dados estão seguros e salvos localmente.');
+        }
+      } finally {
+        sincronizacaoEmAndamento = false;
+      }
+    }
+
+    async function acionarSincronizacaoManual() {
+      atualizarStatusSincronizacao('sincronizando', 'Sincronizando...');
+      await puxarDadosNuvem(false);
+      await sincronizarBancoCompletoNuvem(false);
+    }
+
+    window.puxarDadosNuvem = puxarDadosNuvem;
+    window.enviarAlunoParaNuvem = enviarAlunoParaNuvem;
+    window.sincronizarBancoCompletoNuvem = sincronizarBancoCompletoNuvem;
+    window.acionarSincronizacaoManual = acionarSincronizacaoManual;
+    window.demoAdultoCarlos = demoAdultoCarlos;
+    window.demoAdultaMariana = demoAdultaMariana;
+    window.demoJovemLucas = demoJovemLucas;
+    window.demoDonaDirce = demoDonaDirce;
 
     var bancoDados = carregarBanco();
 
@@ -3928,6 +4561,12 @@
         if (selEl) selEl.value = 'novo';
         aoTrocarPacienteSelecionado();
       }
+
+      // Sincronização automática em segundo plano com a nuvem (Google Sheets)
+      puxarDadosNuvem(true);
+
+      // Otimização de teclados e formulários para iOS
+      otimizarInputsParaIOS();
 
       // Listener para controle automático de impressão do parecer técnico
       const parecerEl = document.getElementById('laudo-parecer');
@@ -4202,6 +4841,7 @@
       }
 
       salvarBanco(bancoDados);
+      sincronizarBancoCompletoNuvem(true);
 
       // Atualiza interface do seletor e da modal
       atualizarDropdownPacientes();
@@ -4250,11 +4890,13 @@
       if (!modal) return;
       renderizarListaModalAlunos();
       modal.style.display = 'flex';
+      bloquearScrollFundoIOS(true);
     }
 
     function fecharModalGerenciarAlunos() {
       const modal = document.getElementById('modal-gerenciar-alunos');
       if (modal) modal.style.display = 'none';
+      bloquearScrollFundoIOS(false);
     }
 
     function selecionarAlunoViaModal(id) {
@@ -4383,6 +5025,7 @@
       });
 
       salvarBanco(bancoDados);
+      sincronizarBancoCompletoNuvem(true);
       atualizarDropdownPacientes();
       renderizarListaModalAlunos();
 
@@ -4399,6 +5042,7 @@
 
     function carregarAlunoNosCampos(aluno) {
       dadosAluno.id = aluno.id;
+      dadosAluno.grupoEtario = aluno.grupoEtario || (aluno.idade >= 60 ? 'idoso' : (aluno.idade < 18 ? 'adolescente' : 'adulto'));
       dadosAluno.identificacao = {
         nome: aluno.nome,
         idade: aluno.idade,
@@ -4589,6 +5233,10 @@
         avaliarAgilidadeJovem();
         calcularAerobioJovem();
       }
+
+      const selEl = document.getElementById('seletor-paciente');
+      if (selEl) selEl.value = aluno.id;
+      atualizarVisualSeletor(aluno);
     }
 
     function identificarPerfilIdade() {
@@ -4671,6 +5319,7 @@
         renderizarComparativoGeral();
       }
 
+      otimizarInputsParaIOS();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -4853,13 +5502,23 @@
     function salvarPasso2Idoso(e) {
       e.preventDefault();
 
+      const peso = parseFloat(document.getElementById('idoso_peso').value) || 0;
+      const altura = parseFloat(document.getElementById('idoso_altura').value) || 0;
+      const altM = altura / 100;
+      const imc = (peso > 0 && altM > 0) ? Number((peso / (altM * altM)).toFixed(1)) : null;
+      const cintura = parseFloat(document.getElementById('idoso_cintura').value) || null;
+      const quadril = parseFloat(document.getElementById('idoso_quadril').value) || null;
+      const rcq = (cintura > 0 && quadril > 0) ? Number((cintura / quadril).toFixed(2)) : null;
+
       dadosAluno.composicao = {
         data: document.getElementById('data_avaliacao').value,
-        peso: parseFloat(document.getElementById('idoso_peso').value),
-        altura: parseFloat(document.getElementById('idoso_altura').value),
-        panturrilha: parseFloat(document.getElementById('idoso_panturrilha').value),
-        cintura: parseFloat(document.getElementById('idoso_cintura').value),
-        quadril: parseFloat(document.getElementById('idoso_quadril').value) || null,
+        peso: peso,
+        altura: altura,
+        imc: imc,
+        panturrilha: parseFloat(document.getElementById('idoso_panturrilha').value) || null,
+        cintura: cintura,
+        quadril: quadril,
+        rcq: rcq,
         paSistolica: parseInt(document.getElementById('idoso_pa_sistolica').value) || 0,
         paDiastolica: parseInt(document.getElementById('idoso_pa_diastolica').value) || 0,
         fcRepouso: parseInt(document.getElementById('idoso_fc_repouso').value) || 0
@@ -5180,16 +5839,21 @@
 
       const fezCardio = document.getElementById('id_check_cardio')?.checked || false;
       const cardioVo2Attr = document.getElementById('id_res_cardio_vo2')?.getAttribute('data-vo2');
+      const cardioVo2Badge = document.getElementById('id_res_cardio_vo2_badge')?.textContent?.trim();
 
       dadosAluno.testes = {
         ftsstTempo: fIncapaz ? 'Incapaz' : (parseFloat(fTempo) || null),
+        ftsstClassificacao: document.getElementById('badge-ftsst')?.textContent?.trim() || null,
         tugTempo: parseFloat(tTempo) || null,
         tugAuxilio: document.getElementById('tug_auxilio')?.value || 'Nenhum',
+        tugClassificacao: document.getElementById('badge-tug')?.textContent?.trim() || null,
         eqDireita: parseFloat(eqD) || null,
         eqEsquerda: parseFloat(eqE) || null,
+        eqClassificacao: document.getElementById('badge-equilibrio')?.textContent?.trim() || null,
         fpmDireita: parseFloat(fpmD) || null,
         fpmEsquerda: parseFloat(fpmE) || null,
         fpmMelhor: parseFloat(fpmMax) || null,
+        fpmClassificacao: document.getElementById('badge-fpm')?.textContent?.trim() || null,
         // Cardiorrespiratório George et al. (2009)
         fezCardio: fezCardio,
         cardioEstagio: fezCardio ? (document.getElementById('id_cardio_estagio')?.value || '1') : null,
@@ -5198,7 +5862,8 @@
         cardioBorg: fezCardio ? (document.getElementById('id_cardio_borg')?.value || null) : null,
         cardioPfa: fezCardio ? (parseFloat(document.getElementById('id_cardio_pfa')?.value) || null) : null,
         cardioPar: fezCardio ? (parseFloat(document.getElementById('id_cardio_par')?.value) || null) : null,
-        cardioVo2: (fezCardio && cardioVo2Attr) ? parseFloat(cardioVo2Attr) : null
+        cardioVo2: (fezCardio && cardioVo2Attr) ? parseFloat(cardioVo2Attr) : null,
+        cardioClassificacao: (fezCardio && cardioVo2Badge) ? cardioVo2Badge : null
       };
 
       gravarAvaliacaoNoHistorico();
@@ -6853,6 +7518,7 @@
           esteiraFcPico: fcPico,
           esteiraBorg: borg,
           esteiraRfc1Min: rfcVal,
+          esteiraClassificacao: document.getElementById('ad_res_esteira_classificacao')?.textContent?.trim() || '',
           esteiraProtocoloLinhas: obterDadosProtocoloEsteira()
         };
       }
@@ -7382,11 +8048,16 @@
 
       dadosAluno.testes = {
         flexCm: flex,
+        flexClassificacao: document.getElementById('ped_badge_flex')?.textContent?.trim() || null,
         saltoCm: salto,
+        saltoClassificacao: document.getElementById('ped_badge_salto')?.textContent?.trim() || null,
         abdReps: abd,
+        abdClassificacao: document.getElementById('ped_badge_abd')?.textContent?.trim() || null,
         agilidadeTempo: agil,
+        agilidadeClassificacao: document.getElementById('ped_badge_agilidade')?.textContent?.trim() || null,
         fezAerobio,
-        aerobioMetros
+        aerobioMetros,
+        aerobioClassificacao: (fezAerobio && document.getElementById('ped_res_aerobio_badge')?.textContent?.trim()) || null
       };
 
       const parecer = document.getElementById('ped_parecer')?.value?.trim();
@@ -7432,6 +8103,8 @@
           sexo: dadosAluno.identificacao.sexo,
           telefone: dadosAluno.identificacao.telefone,
           objetivo: dadosAluno.identificacao.objetivo,
+          grupoEtario: dadosAluno.grupoEtario || (dadosAluno.identificacao.idade >= 60 ? 'idoso' : (dadosAluno.identificacao.idade < 18 ? 'adolescente' : 'adulto')),
+          identificacao: { ...dadosAluno.identificacao },
           anamnese: { ...dadosAluno.anamnese },
           avaliacoes: [novaAvaliacao]
         };
@@ -7439,7 +8112,9 @@
       } else {
         alunoExistente.idade = dadosAluno.identificacao.idade;
         alunoExistente.objetivo = dadosAluno.identificacao.objetivo;
-        alunoExistente.anamnese = { ...dadosAluno.anamnese };
+        alunoExistente.grupoEtario = dadosAluno.grupoEtario || alunoExistente.grupoEtario || (dadosAluno.identificacao.idade >= 60 ? 'idoso' : (dadosAluno.identificacao.idade < 18 ? 'adolescente' : 'adulto'));
+        alunoExistente.identificacao = { ...(alunoExistente.identificacao || {}), ...dadosAluno.identificacao };
+        alunoExistente.anamnese = { ...(alunoExistente.anamnese || {}), ...dadosAluno.anamnese };
 
         const idx = alunoExistente.avaliacoes.findIndex(av => av.data === novaAvaliacao.data);
         if (idx >= 0) {
@@ -7452,11 +8127,15 @@
       }
 
       dadosAluno.id = alunoExistente.id;
+      novaAvaliacao.linhasColetadas = extrairLinhasColetadasAvaliacao(alunoExistente, novaAvaliacao);
       salvarBanco(bancoDados);
       atualizarDropdownPacientes();
       const selEl = document.getElementById('seletor-paciente');
       if (selEl) selEl.value = alunoExistente.id;
       atualizarVisualSeletor(alunoExistente);
+
+      // Disparo automático para nuvem (Google Sheets) com todos os testes
+      enviarAlunoParaNuvem(alunoExistente, novaAvaliacao);
     }
 
     // ==========================================
@@ -7587,8 +8266,8 @@
         }
       }
 
-      const ehIdoso = (aluno.idade >= 60 || dadosAluno.grupoEtario === 'idoso');
-      const ehAdolescente = (aluno.idade < 18 || dadosAluno.grupoEtario === 'adolescente');
+      const ehIdoso = (aluno.grupoEtario === 'idoso' || (aluno.idade && aluno.idade >= 60));
+      const ehAdolescente = (aluno.grupoEtario === 'adolescente' || (aluno.idade && aluno.idade < 18));
 
       if (ehAdolescente) {
         document.getElementById('laudo-titulo').textContent = ehReavaliacao
@@ -8447,8 +9126,8 @@
     }
 
     function obterDefinicoesMetricas(aluno, evalsSlice) {
-      const ehIdoso = (aluno.idade >= 60 || dadosAluno.grupoEtario === 'idoso');
-      const ehAdolescente = (aluno.idade < 18 || dadosAluno.grupoEtario === 'adolescente');
+      const ehIdoso = (aluno.grupoEtario === 'idoso' || (aluno.idade && aluno.idade >= 60));
+      const ehAdolescente = (aluno.grupoEtario === 'adolescente' || (aluno.idade && aluno.idade < 18));
       const sexo = aluno.sexo || 'M';
       const idade = aluno.idade || 30;
 
@@ -9930,8 +10609,8 @@
     }
 
     function construirCardsComparativos(aluno, evalsSlice, labels) {
-      const ehIdoso = (aluno.idade >= 60 || dadosAluno.grupoEtario === 'idoso');
-      const ehAdolescente = (aluno.idade < 18 || dadosAluno.grupoEtario === 'adolescente');
+      const ehIdoso = (aluno.grupoEtario === 'idoso' || (aluno.idade && aluno.idade >= 60));
+      const ehAdolescente = (aluno.grupoEtario === 'adolescente' || (aluno.idade && aluno.idade < 18));
       const sexo = aluno.sexo || 'M';
       const cards = [];
 
@@ -10840,6 +11519,7 @@
 
       const itens = [
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Pressão Arterial de Repouso',
           vBase: base.composicao.paSistolica ? `${base.composicao.paSistolica}/${base.composicao.paDiastolica} mmHg` : '--',
           vTarget: target.composicao.paSistolica ? `${target.composicao.paSistolica}/${target.composicao.paDiastolica} mmHg` : '--',
@@ -10847,6 +11527,7 @@
           status: paStatus
         },
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Frequência Cardíaca de Repouso',
           vBase: base.composicao.fcRepouso ? `${base.composicao.fcRepouso} bpm` : '--',
           vTarget: target.composicao.fcRepouso ? `${target.composicao.fcRepouso} bpm` : '--',
@@ -10854,6 +11535,7 @@
           status: fcStatus
         },
         {
+          categoria: 'Composição Corporal & Antropometria Geriátrica',
           param: 'Massa Corporal (Peso)',
           vBase: `${base.composicao.peso} kg`,
           vTarget: `${target.composicao.peso} kg`,
@@ -10861,6 +11543,7 @@
           status: 'Peso corporal monitorado'
         },
         {
+          categoria: 'Composição Corporal & Antropometria Geriátrica',
           param: 'Índice de Massa Corporal (IMC)',
           vBase: `${imcB} kg/m²`,
           vTarget: `${imcT} kg/m²`,
@@ -10868,13 +11551,15 @@
           status: imcStatus
         },
         {
-          param: 'Circunferência da Panturrilha',
+          categoria: 'Composição Corporal & Antropometria Geriátrica',
+          param: 'Circunferência da Panturrilha (Triagem Sarcopenia)',
           vBase: `${base.composicao.panturrilha} cm`,
           vTarget: `${target.composicao.panturrilha} cm`,
           delta: ehReavaliacao ? (target.composicao.panturrilha - base.composicao.panturrilha >= 0 ? `+${(target.composicao.panturrilha - base.composicao.panturrilha).toFixed(1)}` : (target.composicao.panturrilha - base.composicao.panturrilha).toFixed(1)) + ' cm' : '--',
           status: pantStatus
         },
         {
+          categoria: 'Composição Corporal & Antropometria Geriátrica',
           param: 'Circunferência da Cintura (Risco Metabólico)',
           vBase: `${base.composicao.cintura} cm`,
           vTarget: `${target.composicao.cintura} cm`,
@@ -10882,7 +11567,8 @@
           status: cinturaStatus
         },
         {
-          param: 'Força de Preensão Manual',
+          categoria: 'Testes Motores & Força Funcional',
+          param: 'Força de Preensão Manual (Dinamometria)',
           vBase: !isNaN(fpmB) ? `${fpmB.toFixed(1)} kgf` : '--',
           vTarget: !isNaN(fpmT) ? `${fpmT.toFixed(1)} kgf` : '--',
           delta: (ehReavaliacao && !isNaN(fpmB) && !isNaN(fpmT)) ? `${(fpmT - fpmB >= 0 ? '+' : '')}${(fpmT - fpmB).toFixed(1)} kgf` : '--',
@@ -10890,7 +11576,8 @@
           opcional: true
         },
         {
-          param: '5x Sentar e Levantar (FTSST)',
+          categoria: 'Testes Motores & Força Funcional',
+          param: '5x Sentar e Levantar da Cadeira (FTSST)',
           vBase: (base.testes && base.testes.ftsstTempo) ? `${base.testes.ftsstTempo} s` : '--',
           vTarget: (target.testes && target.testes.ftsstTempo) ? `${target.testes.ftsstTempo} s` : '--',
           delta: (ehReavaliacao && base.testes && target.testes && !isNaN(parseFloat(base.testes.ftsstTempo)) && !isNaN(parseFloat(target.testes.ftsstTempo))) ? `${(parseFloat(target.testes.ftsstTempo) - parseFloat(base.testes.ftsstTempo)).toFixed(1)} s` : '--',
@@ -10898,7 +11585,8 @@
           opcional: true
         },
         {
-          param: 'Timed Up and Go (TUG)',
+          categoria: 'Testes Motores & Força Funcional',
+          param: 'Timed Up and Go (TUG - Agilidade & Marcha)',
           vBase: (base.testes && base.testes.tugTempo) ? `${base.testes.tugTempo} s` : '--',
           vTarget: (target.testes && target.testes.tugTempo) ? `${target.testes.tugTempo} s` : '--',
           delta: (ehReavaliacao && base.testes && target.testes && !isNaN(parseFloat(base.testes.tugTempo)) && !isNaN(parseFloat(target.testes.tugTempo))) ? `${(parseFloat(target.testes.tugTempo) - parseFloat(base.testes.tugTempo)).toFixed(1)} s` : '--',
@@ -10906,6 +11594,7 @@
           opcional: true
         },
         {
+          categoria: 'Testes Motores & Força Funcional',
           param: `Equilíbrio Unipodal Direito (${refFaixa})`,
           vBase: (base.testes && base.testes.eqDireita !== undefined && base.testes.eqDireita !== null && base.testes.eqDireita !== '') ? `${base.testes.eqDireita} s` : '--',
           vTarget: (target.testes && target.testes.eqDireita !== undefined && target.testes.eqDireita !== null && target.testes.eqDireita !== '') ? `${target.testes.eqDireita} s` : '--',
@@ -10914,6 +11603,7 @@
           opcional: true
         },
         {
+          categoria: 'Testes Motores & Força Funcional',
           param: `Equilíbrio Unipodal Esquerdo (${refFaixa})`,
           vBase: (base.testes && base.testes.eqEsquerda !== undefined && base.testes.eqEsquerda !== null && base.testes.eqEsquerda !== '') ? `${base.testes.eqEsquerda} s` : '--',
           vTarget: (target.testes && target.testes.eqEsquerda !== undefined && target.testes.eqEsquerda !== null && target.testes.eqEsquerda !== '') ? `${target.testes.eqEsquerda} s` : '--',
@@ -10922,7 +11612,8 @@
           opcional: true
         },
         {
-          param: 'Aptidão Cardiorrespiratória (VO2máx)',
+          categoria: 'Aptidão Cardiorrespiratória',
+          param: 'Aptidão Cardiorrespiratória (VO2máx Submáximo Esteira)',
           vBase: cardioVo2B !== null ? `${cardioVo2B.toFixed(1)} ml/kg/min` : '--',
           vTarget: cardioVo2T !== null ? `${cardioVo2T.toFixed(1)} ml/kg/min` : '--',
           delta: (ehReavaliacao && cardioVo2B !== null && cardioVo2T !== null) ? `${(cardioVo2T - cardioVo2B >= 0 ? '+' : '')}${(cardioVo2T - cardioVo2B).toFixed(1)} ml/kg/min` : '--',
@@ -10940,21 +11631,43 @@
         }
       });
 
-      tbody.innerHTML = itensVisiveis.map(item => ehReavaliacao ? `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      ` : `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      `).join('');
+      let htmlTabela = '';
+      let categoriaAtual = '';
+
+      itensVisiveis.forEach(item => {
+        if (item.categoria && item.categoria !== categoriaAtual) {
+          categoriaAtual = item.categoria;
+          htmlTabela += `
+            <tr style="background: #e8f1f8; border-top: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">
+              <td colspan="${ehReavaliacao ? 5 : 3}" style="padding: 7px 10px; font-weight: 800; font-size: 11px; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px;">
+                ${categoriaAtual}
+              </td>
+            </tr>
+          `;
+        }
+
+        if (ehReavaliacao) {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        } else {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = htmlTabela;
     }
 
     // Tabela Detalhada - Adultos
@@ -11117,6 +11830,7 @@
 
       const itens = [
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Pressão Arterial (PA Repouso)',
           vBase: cB.paSistolica ? `${cB.paSistolica}/${cB.paDiastolica} mmHg` : '--',
           vTarget: cT.paSistolica ? `${cT.paSistolica}/${cT.paDiastolica} mmHg` : '--',
@@ -11124,6 +11838,7 @@
           status: (cT.paSistolica <= 129 && cT.paDiastolica <= 84) ? 'Pressão Normal' : 'Alerta PA'
         },
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Frequência Cardíaca de Repouso',
           vBase: cB.fcRepouso ? `${cB.fcRepouso} bpm` : '--',
           vTarget: cT.fcRepouso ? `${cT.fcRepouso} bpm` : '--',
@@ -11131,6 +11846,7 @@
           status: (cT.fcRepouso >= 60 && cT.fcRepouso <= 85) ? 'Eucardia (Ideal)' : (cT.fcRepouso < 60 ? 'Bradicardia (Atleta)' : 'Basal Elevada')
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Massa Corporal (Peso)',
           vBase: cB.peso ? `${cB.peso} kg` : '--',
           vTarget: cT.peso ? `${cT.peso} kg` : '--',
@@ -11138,6 +11854,7 @@
           status: 'Peso corporal total'
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Índice de Massa Corporal (IMC)',
           vBase: cB.imc ? `${cB.imc} kg/m²` : '--',
           vTarget: cT.imc ? `${cT.imc} kg/m²` : '--',
@@ -11145,6 +11862,7 @@
           status: cT.imc < 25.0 ? 'Peso Normal (Eutrofia)' : (cT.imc < 30.0 ? 'Sobrepeso' : 'Obesidade')
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Circunferência da Cintura',
           vBase: cB.cintura ? `${cB.cintura} cm` : '--',
           vTarget: cT.cintura ? `${cT.cintura} cm` : '--',
@@ -11152,6 +11870,7 @@
           status: cT.cintura <= (sexo === 'M' ? 94 : 80) ? 'Risco Normal' : 'Risco Aumentado'
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Circunferência do Quadril',
           vBase: cB.quadril ? `${cB.quadril} cm` : '--',
           vTarget: cT.quadril ? `${cT.quadril} cm` : '--',
@@ -11159,6 +11878,7 @@
           status: 'Perimetria de quadril'
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Relação Cintura-Quadril (RCQ)',
           vBase: (rcqB != null) ? `${rcqB.toFixed(2)}` : '--',
           vTarget: (rcqT != null) ? `${rcqT.toFixed(2)}` : '--',
@@ -11166,6 +11886,7 @@
           status: (rcqT != null && rcqT <= (sexo === 'M' ? 0.90 : 0.80)) ? 'Baixo Risco Cardiovascular' : (rcqT != null ? 'Risco Moderado/Alto' : '--')
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: '% de Gordura Corporal (%G)',
           vBase: cB.percentualGordura ? `${cB.percentualGordura}%` : '--',
           vTarget: cT.percentualGordura ? `${cT.percentualGordura}%` : '--',
@@ -11173,6 +11894,7 @@
           status: cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Excelente / Média Saudável' : 'Acima da Média'
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Massa Gorda Total',
           vBase: cB.massaGorda ? `${cB.massaGorda} kg` : '--',
           vTarget: cT.massaGorda ? `${cT.massaGorda} kg` : '--',
@@ -11180,6 +11902,7 @@
           status: ehReavaliacao ? ((cB.massaGorda && cT.massaGorda && cT.massaGorda < cB.massaGorda) ? 'Perda de gordura' : 'Tecido adiposo monitorado') : (cT.percentualGordura <= (sexo === 'M' ? 17.9 : 24.9) ? 'Nível Saudável de Gordura' : 'Adiposidade Acima da Média')
         },
         {
+          categoria: 'Antropometria & Composição Corporal',
           param: 'Massa Magra Livre de Gordura',
           vBase: cB.massaMagra ? `${cB.massaMagra} kg` : '--',
           vTarget: cT.massaMagra ? `${cT.massaMagra} kg` : '--',
@@ -11187,6 +11910,7 @@
           status: ehReavaliacao ? ((cB.massaMagra && cT.massaMagra && cT.massaMagra > cB.massaMagra) ? 'Hipertrofia Muscular' : 'Massa magra monitorada') : 'Massa Livre de Gordura (Músculos/Ossos)'
         },
         {
+          categoria: 'Testes de Força Muscular',
           param: ehFlexaoMMSS ? `${mmssNome} (Repetições Máximas)` : `${mmssNome} (1RM Estimado / Força Relativa)`,
           vBase: mmssVBase,
           vTarget: mmssVTarget,
@@ -11195,6 +11919,7 @@
           opcional: true
         },
         {
+          categoria: 'Testes de Força Muscular',
           param: `${mmiiNome} (1RM Estimado / Força Relativa)`,
           vBase: mmiiVBase,
           vTarget: mmiiVTarget,
@@ -11207,6 +11932,7 @@
       // Se realizou teste de esteira
       if ((tT && tT.fezEsteira) || (tB && tB.fezEsteira)) {
         itens.push({
+          categoria: 'Aptidão Cardiorrespiratória (Esteira)',
           param: 'Esteira: Velocidade de Pico (Vpico)',
           vBase: (tB && tB.fezEsteira) ? `${Number(tB.esteiraVelPico).toFixed(2)} km/h` : '--',
           vTarget: (tT && tT.fezEsteira) ? `${Number(tT.esteiraVelPico).toFixed(2)} km/h` : '--',
@@ -11215,6 +11941,7 @@
         });
 
         itens.push({
+          categoria: 'Aptidão Cardiorrespiratória (Esteira)',
           param: 'Esteira: VO2máx Estimado',
           vBase: (tB && tB.fezEsteira) ? `${tB.esteiraVo2} ml/kg/min` : '--',
           vTarget: (tT && tT.fezEsteira) ? `${tT.esteiraVo2} ml/kg/min` : '--',
@@ -11223,6 +11950,7 @@
         });
 
         itens.push({
+          categoria: 'Aptidão Cardiorrespiratória (Esteira)',
           param: 'Esteira: FC Pico Atingida',
           vBase: (tB && tB.fezEsteira) ? `${tB.esteiraFcPico} bpm` : '--',
           vTarget: (tT && tT.fezEsteira) ? `${tT.esteiraFcPico} bpm` : '--',
@@ -11232,6 +11960,7 @@
 
         if ((tT && tT.esteiraRfc1Min != null) || (tB && tB.esteiraRfc1Min != null)) {
           itens.push({
+            categoria: 'Aptidão Cardiorrespiratória (Esteira)',
             param: 'Esteira: Recuperação da FC (RFC 1º min)',
             vBase: (tB && tB.esteiraRfc1Min != null) ? `-${tB.esteiraRfc1Min} bpm` : '--',
             vTarget: (tT && tT.esteiraRfc1Min != null) ? `-${tT.esteiraRfc1Min} bpm` : '--',
@@ -11251,21 +11980,43 @@
         }
       });
 
-      tbody.innerHTML = itensVisiveis.map(item => ehReavaliacao ? `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      ` : `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      `).join('');
+      let htmlTabela = '';
+      let categoriaAtual = '';
+
+      itensVisiveis.forEach(item => {
+        if (item.categoria && item.categoria !== categoriaAtual) {
+          categoriaAtual = item.categoria;
+          htmlTabela += `
+            <tr style="background: #e8f1f8; border-top: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">
+              <td colspan="${ehReavaliacao ? 5 : 3}" style="padding: 7px 10px; font-weight: 800; font-size: 11px; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px;">
+                ${categoriaAtual}
+              </td>
+            </tr>
+          `;
+        }
+
+        if (ehReavaliacao) {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        } else {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = htmlTabela;
     }
 
     // Tabela Detalhada - Crianças e Adolescentes
@@ -11278,6 +12029,7 @@
 
       const itens = [
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Pressão Arterial (PA de Repouso)',
           vBase: cB.paSistolica ? `${cB.paSistolica}/${cB.paDiastolica} mmHg` : '--',
           vTarget: cT.paSistolica ? `${cT.paSistolica}/${cT.paDiastolica} mmHg` : '--',
@@ -11285,6 +12037,7 @@
           status: (cT.paSistolica < 120 && cT.paDiastolica < 80) ? 'Normotenso (< P90)' : (cT.paSistolica < 130 && cT.paDiastolica < 80 ? 'Pressão Elevada' : 'Alerta Hipertensão')
         },
         {
+          categoria: 'Sinais Vitais & Hemodinâmica',
           param: 'Frequência Cardíaca Basal (FC)',
           vBase: cB.fcRepouso ? `${cB.fcRepouso} bpm` : '--',
           vTarget: cT.fcRepouso ? `${cT.fcRepouso} bpm` : '--',
@@ -11292,6 +12045,7 @@
           status: (cT.fcRepouso >= 60 && cT.fcRepouso <= 100) ? 'Normocárdico' : (cT.fcRepouso < 60 ? 'Bradicardia de Repouso' : 'Taquicardia Basal')
         },
         {
+          categoria: 'Crescimento & Composição Corporal',
           param: 'Estatura / Altura',
           vBase: cB.altura ? `${cB.altura} cm` : '--',
           vTarget: cT.altura ? `${cT.altura} cm` : '--',
@@ -11302,15 +12056,18 @@
 
       if (cT.envergadura || cB.envergadura) {
         itens.push({
+          categoria: 'Crescimento & Composição Corporal',
           param: 'Envergadura dos Braços',
           vBase: cB.envergadura ? `${cB.envergadura} cm` : '--',
           vTarget: cT.envergadura ? `${cT.envergadura} cm` : '--',
           delta: (ehReavaliacao && cB.envergadura && cT.envergadura) ? `${(cT.envergadura - cB.envergadura > 0 ? '+' : '')}${(cT.envergadura - cB.envergadura).toFixed(1)} cm` : '--',
-          status: cT.envergadura && cT.altura ? (cT.envergadura >= cT.altura ? 'Proporção Longilínea' : 'Proporção Brevilínea') : '--'
+          status: cT.envergadura && cT.altura ? (cT.envergadura >= cT.altura ? 'Proporção Longilínea' : 'Proporção Brevilínea') : '--',
+          opcional: true
         });
       }
 
       itens.push({
+        categoria: 'Crescimento & Composição Corporal',
         param: 'Massa Corporal (Peso)',
         vBase: cB.peso ? `${cB.peso} kg` : '--',
         vTarget: cT.peso ? `${cT.peso} kg` : '--',
@@ -11320,6 +12077,7 @@
 
       const diagIMC = classificarIMCJovem(cT.imc, idade, sexo);
       itens.push({
+        categoria: 'Crescimento & Composição Corporal',
         param: 'IMC Pediátrico',
         vBase: cB.imc ? `${cB.imc} kg/m²` : '--',
         vTarget: cT.imc ? `${cT.imc} kg/m²` : '--',
@@ -11328,6 +12086,7 @@
       });
 
       itens.push({
+        categoria: 'Crescimento & Composição Corporal',
         param: 'Relação Cintura-Estatura (RCEst)',
         vBase: cB.rcest ? `${cB.rcest}` : (cB.cintura && cB.altura ? (cB.cintura / cB.altura).toFixed(2) : '--'),
         vTarget: cT.rcest ? `${cT.rcest}` : (cT.cintura && cT.altura ? (cT.cintura / cT.altura).toFixed(2) : '--'),
@@ -11336,6 +12095,7 @@
       });
 
       itens.push({
+        categoria: 'Crescimento & Composição Corporal',
         param: '% Gordura Corporal',
         vBase: cB.percentualGordura ? `${cB.percentualGordura}%` : '--',
         vTarget: cT.percentualGordura ? `${cT.percentualGordura}%` : '--',
@@ -11344,6 +12104,7 @@
       });
 
       itens.push({
+        categoria: 'Crescimento & Composição Corporal',
         param: 'Massa Magra Livre (Músculos/Ossos)',
         vBase: cB.massaMagra ? `${cB.massaMagra} kg` : '--',
         vTarget: cT.massaMagra ? `${cT.massaMagra} kg` : '--',
@@ -11352,6 +12113,7 @@
       });
 
       itens.push({
+        categoria: 'Testes Motores & Desempenho Físico (PROESP-BR)',
         param: 'Flexibilidade Posterior (Sentar e Alcançar)',
         vBase: tB.flexCm ? `${tB.flexCm} cm` : '--',
         vTarget: tT.flexCm ? `${tT.flexCm} cm` : '--',
@@ -11360,6 +12122,7 @@
       });
 
       itens.push({
+        categoria: 'Testes Motores & Desempenho Físico (PROESP-BR)',
         param: 'Força Explosiva MMII (Salto Horizontal)',
         vBase: tB.saltoCm ? `${tB.saltoCm} cm` : '--',
         vTarget: tT.saltoCm ? `${tT.saltoCm} cm` : '--',
@@ -11368,6 +12131,7 @@
       });
 
       itens.push({
+        categoria: 'Testes Motores & Desempenho Físico (PROESP-BR)',
         param: 'Resistência Muscular Core (Abdominal 1 min)',
         vBase: tB.abdReps ? `${tB.abdReps} reps` : '--',
         vTarget: tT.abdReps ? `${tT.abdReps} reps` : '--',
@@ -11376,6 +12140,7 @@
       });
 
       itens.push({
+        categoria: 'Testes Motores & Desempenho Físico (PROESP-BR)',
         param: 'Agilidade & Coordenação (Quadrado 4x4m)',
         vBase: tB.agilidadeTempo ? `${tB.agilidadeTempo} s` : '--',
         vTarget: tT.agilidadeTempo ? `${tT.agilidadeTempo} s` : '--',
@@ -11385,29 +12150,62 @@
 
       if (tT.fezAerobio || tB.fezAerobio) {
         itens.push({
+          categoria: 'Aptidão Cardiorrespiratória',
           param: 'Aptidão Cardiorrespiratória (Corrida 6 min)',
           vBase: tB.aerobioMetros ? `${tB.aerobioMetros} m` : '--',
           vTarget: tT.aerobioMetros ? `${tT.aerobioMetros} m` : '--',
           delta: (ehReavaliacao && tB.aerobioMetros && tT.aerobioMetros) ? `${(tT.aerobioMetros - tB.aerobioMetros > 0 ? '+' : '')}${tT.aerobioMetros - tB.aerobioMetros} m` : '--',
-          status: (tT.aerobioMetros >= (sexo === 'M' ? (idade >= 16 ? 1250 : (idade >= 13 ? 1100 : 950)) : (idade >= 16 ? 1050 : (idade >= 13 ? 980 : 880)))) ? 'Zona Saudável de Aptidão (ZSA)' : 'Zona de Risco à Saúde (ZRS)'
+          status: (tT.aerobioMetros >= (sexo === 'M' ? (idade >= 16 ? 1250 : (idade >= 13 ? 1100 : 950)) : (idade >= 16 ? 1050 : (idade >= 13 ? 980 : 880)))) ? 'Zona Saudável de Aptidão (ZSA)' : 'Zona de Risco à Saúde (ZRS)',
+          opcional: true
         });
       }
 
-      tbody.innerHTML = itens.map(item => ehReavaliacao ? `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      ` : `
-        <tr style="border-bottom: 1px solid #f1f5f9;">
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
-          <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
-        </tr>
-      `).join('');
+      const itensVisiveis = itens.filter(item => {
+        if (!item.opcional) return true;
+        if (ehReavaliacao) {
+          return !(item.vTarget === '--' && item.vBase === '--');
+        } else {
+          return item.vTarget !== '--';
+        }
+      });
+
+      let htmlTabela = '';
+      let categoriaAtual = '';
+
+      itensVisiveis.forEach(item => {
+        if (item.categoria && item.categoria !== categoriaAtual) {
+          categoriaAtual = item.categoria;
+          htmlTabela += `
+            <tr style="background: #e8f1f8; border-top: 2px solid #cbd5e1; border-bottom: 2px solid #cbd5e1;">
+              <td colspan="${ehReavaliacao ? 5 : 3}" style="padding: 7px 10px; font-weight: 800; font-size: 11px; color: #1F4E78; text-transform: uppercase; letter-spacing: 0.5px;">
+                ${categoriaAtual}
+              </td>
+            </tr>
+          `;
+        }
+
+        if (ehReavaliacao) {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; color: #64748b;">${item.vBase}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.delta}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        } else {
+          htmlTabela += `
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; font-weight: 600; color: #1e293b;">${item.param}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-weight: 700; color: #0f172a;">${item.vTarget}</td>
+              <td style="padding: 9px 8px; border: 1px solid #e2e8f0; text-align: center; font-size: 11px;">${item.status}</td>
+            </tr>
+          `;
+        }
+      });
+
+      tbody.innerHTML = htmlTabela;
     }
 
     function iniciarReavaliacao() {
@@ -11541,6 +12339,7 @@
       const modal = document.getElementById('modal-referencias');
       if (!modal) return;
       modal.style.display = 'flex';
+      bloquearScrollFundoIOS(true);
 
       if (aba) {
         alternarAbaReferencias(aba);
@@ -11559,6 +12358,7 @@
     function fecharModalReferencias() {
       const modal = document.getElementById('modal-referencias');
       if (modal) modal.style.display = 'none';
+      bloquearScrollFundoIOS(false);
     }
 
     function alternarAbaReferencias(aba) {
