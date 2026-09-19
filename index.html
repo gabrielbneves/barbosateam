@@ -60,6 +60,50 @@
       border-bottom: none;
     }
 
+    /* Abas de Navegação Principal do Sistema */
+    .main-tabs-nav {
+      display: flex;
+      margin-bottom: 22px;
+      background: #e2e8f0;
+      padding: 6px;
+      border-radius: 10px;
+      gap: 8px;
+    }
+    .main-tab-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #475569;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .main-tab-btn:hover {
+      background: rgba(255, 255, 255, 0.65);
+      color: #1F4E78;
+    }
+    .main-tab-btn.active {
+      background: #1F4E78;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(31, 78, 120, 0.25);
+    }
+    .main-tab-btn.active svg {
+      stroke: #38bdf8;
+    }
+    .main-module-content {
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
     /* Barra de Navegação dos Passos */
     .steps-nav {
       display: flex;
@@ -432,13 +476,30 @@
         max-width: 100% !important;
         width: 100% !important;
       }
-      header, .steps-nav, .actions-bar, #passo-1, #passo-2, #passo-3 {
+      header, .main-tabs-nav, .steps-nav, .actions-bar, #passo-1, #passo-2, #passo-3 {
         display: none !important;
       }
-      #passo-4 {
+      body:not(.imprimindo-treino) #modulo-treino {
+        display: none !important;
+      }
+      body:not(.imprimindo-treino) #passo-4 {
         display: block !important;
         margin: 0 !important;
         padding: 0 !important;
+      }
+      body.imprimindo-treino #modulo-avaliacoes {
+        display: none !important;
+      }
+      body.imprimindo-treino #modulo-treino {
+        display: block !important;
+      }
+      body.imprimindo-treino .treino-no-print {
+        display: none !important;
+      }
+      body.imprimindo-treino #ficha-treino-impressao {
+        display: block !important;
+        padding: 10mm 12mm !important;
+        margin: 0 auto !important;
       }
       #laudo-comparativo-impresso {
         padding: 14mm 16mm !important;
@@ -1199,6 +1260,179 @@
       text-transform: uppercase;
       line-height: 1.2;
     }
+
+    /* ======================================================== */
+    /* ESTILOS: PRESCRIÇÃO E ACOMPANHAMENTO DE TREINO           */
+    /* ======================================================== */
+    .treino-subtabs-nav {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #f1f5f9;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .treino-subtab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      min-height: 44px;
+    }
+    .treino-subtab-btn.active {
+      background: #1F4E78;
+      color: #ffffff;
+      border-color: #1F4E78;
+      box-shadow: 0 2px 6px rgba(31, 78, 120, 0.2);
+    }
+    .treino-aluno-header-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .treino-clinical-alert {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #92400e;
+      margin-top: 12px;
+    }
+    .treino-support-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-left: 4px solid #10b981;
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #166534;
+      margin-top: 12px;
+    }
+    .treino-divisoes-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .treino-div-btn {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #ffffff;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-height: 40px;
+    }
+    .treino-div-btn.active {
+      background: #1F4E78;
+      color: #ffffff;
+      border-color: #1F4E78;
+      box-shadow: 0 2px 6px rgba(31, 78, 120, 0.25);
+    }
+    .treino-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+    }
+    .treino-tabela-exercicios {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 720px;
+    }
+    .treino-tabela-exercicios th {
+      background: #f8fafc;
+      color: #1F4E78;
+      font-weight: 800;
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 2px solid #cbd5e1;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .treino-tabela-exercicios td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .treino-tabela-exercicios tr:hover {
+      background: #f8fafc;
+    }
+    .treino-input {
+      width: 100%;
+      padding: 6px 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #1e293b;
+      box-sizing: border-box;
+      min-height: 36px;
+    }
+    @media (max-width: 768px), (pointer: coarse) {
+      .treino-input {
+        font-size: 16px !important;
+        min-height: 44px !important;
+      }
+    }
+    .badge-grupo {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      background: #e0f2fe;
+      color: #0369a1;
+      white-space: nowrap;
+    }
+    .treino-cardio-panel {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 18px;
+    }
+    .sessao-history-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+    #ficha-treino-impressao {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -1266,6 +1500,14 @@
         <p style="font-size: 13px; color: #cbd5e1; margin: 0; font-weight: 500; letter-spacing: 0.4px;">Sistema Integrado de Avaliação Física &amp; Prescrição de Treinamento</p>
       </div>
       <div style="margin-top: 14px; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;" class="no-print">
+        <div id="user-badge-container" style="display: inline-flex; align-items: center; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; padding: 4px 10px; gap: 8px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span id="user-display-name" style="font-size: 11px; color: #f8fafc; font-weight: 700;">Administrador</span>
+          <span id="user-display-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: #38bdf8; color: #0f172a; text-transform: uppercase;">ADMIN</span>
+        </div>
+        <button type="button" id="btn-gerenciar-avaliadores" onclick="abrirModalGerenciarAvaliadores()" style="display: none; background: rgba(56, 189, 248, 0.22); border: 1px solid rgba(56, 189, 248, 0.5); color: #ffffff; font-size: 12px; font-weight: 700; padding: 7px 14px; border-radius: 6px; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); transition: all 0.2s;" title="Painel do Administrador: Gerenciar Usuários Avaliadores">
+          Gerenciar Avaliadores
+        </button>
         <div id="cloud-sync-container" style="display: inline-flex; align-items: center; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 6px; padding: 4px 10px; gap: 8px;">
           <span id="cloud-sync-indicator" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block; box-shadow: 0 0 6px #22c55e;"></span>
           <span id="cloud-sync-status" style="font-size: 11px; color: #f8fafc; font-weight: 600;">Nuvem Conectada</span>
@@ -1285,8 +1527,25 @@
       </div>
     </header>
 
-    <!-- NAVEGAÇÃO DOS PASSOS -->
-    <div class="steps-nav">
+    <!-- NAVEGAÇÃO DE ABAS PRINCIPAIS DO SISTEMA -->
+    <nav class="main-tabs-nav no-print" aria-label="Navegação dos Módulos Principais">
+      <button type="button" id="tab-btn-avaliacoes" class="main-tab-btn active" onclick="alternarModuloPrincipal('avaliacoes')">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+        <span>Cadastro &amp; Avaliações</span>
+      </button>
+      <button type="button" id="tab-btn-treino" class="main-tab-btn" onclick="alternarModuloPrincipal('treino')">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 5v14M18 5v14M3 9h3M18 9h3M3 15h3M18 15h3M6 12h12"></path></svg>
+        <span>Prescrição &amp; Acompanhamento de Treino</span>
+      </button>
+    </nav>
+
+    <!-- ======================================================== -->
+    <!-- MÓDULO 1: CADASTRO E AVALIAÇÕES (HISTÓRICO E PROTOCOLOS) -->
+    <!-- ======================================================== -->
+    <div id="modulo-avaliacoes" class="main-module-content active">
+
+      <!-- NAVEGAÇÃO DOS PASSOS -->
+      <div class="steps-nav">
       <div id="nav-step-1" class="step-item active" onclick="irParaPasso(1)">1. Anamnese & PAR-Q (Geral)</div>
       <div id="nav-step-2" class="step-item" onclick="irParaPasso(2)">2. Composição & Sinais Vitais</div>
       <div id="nav-step-3" class="step-item" onclick="irParaPasso(3)">3. Testes Funcionais</div>
@@ -2112,7 +2371,7 @@
                   <li><strong>Estágio 2 (4 a 8 min) - Trote / Marcha Rápida:</strong> se não atingir a FC alvo, velocidade confortável entre <strong>6,6 e 9,7 km/h</strong> (4,1 a 6,0 mph).</li>
                   <li><strong>Estágio 3 (8 a 12 min) - Corrida:</strong> se não atingir a FC alvo, velocidade confortável acima de <strong>9,7 km/h</strong> (&gt; 6,0 mph).</li>
                 </ul>
-                <strong>Critério de Término Submáximo:</strong> Finalizar o teste no estágio em que a frequência cardíaca atingir entre <strong>70% e 90% da FCmáx prevista</strong> (220 - idade). Utiliza-se a velocidade da esteira desse estágio no cálculo do VO2máx.
+                <strong>Critério de Término Submáximo:</strong> Finalizar o teste no estágio em que a frequência cardíaca atingir entre <strong>70% e 90% da FCmáx prevista</strong> pela fórmula de Tanaka et al. [208 - (0,7 × idade)]. Utiliza-se a velocidade da esteira desse estágio no cálculo do VO2máx.
               </div>
 
               <div class="form-grid">
@@ -2131,7 +2390,7 @@
                 <div class="form-group">
                   <label for="id_cardio_fc">FC Final Atingida (bpm)</label>
                   <input type="number" id="id_cardio_fc" min="50" max="220" placeholder="Ex: 118" oninput="calcularCardioIdoso()">
-                  <span id="id_cardio_fc_meta" style="font-size: 10px; color: #64748b;">(Faixa alvo 70-90% FCmáx: calculando...)</span>
+                  <span id="id_cardio_fc_meta" style="font-size: 10px; color: #64748b;">(Faixa alvo 70-90% FCmáx Tanaka: calculando...)</span>
                 </div>
                 <div class="form-group">
                   <label for="id_cardio_borg">Percepção de Esforço (Escala Borg 6-20)</label>
@@ -2377,24 +2636,134 @@
             <p id="ad_extensora_feedback" style="display: none;"></p>
           </div>
 
-          <!-- TESTE 3: TESTE DE ESFORÇO PROGRESSIVO NA ESTEIRA (OPCIONAL) -->
+          <!-- TESTE 3: TESTE CARDIORRESPIRATORIO EM ESTEIRA (OPCIONAL) -->
           <div class="test-box" style="border: 2px solid #1F4E78; background: #f8fafc;">
             <div class="test-header" style="align-items: center;">
               <div>
-                <h4 style="color: #1F4E78;">3. Teste Cardiorrespiratório: Esforço Progressivo Máximo na Esteira (Opcional)</h4>
-                <p style="font-size: 11px; color: #64748b; margin-top: 2px;">Protocolo plano (0% inclinação), 1 minuto por estágio (+1 km/h a cada min)</p>
+                <h4 style="color: #1F4E78;">3. Teste Cardiorrespiratório em Esteira (Opcional)</h4>
+                <p style="font-size: 11px; color: #64748b; margin-top: 2px;">Escolha entre o teste submáximo de George et al. (2009) ou o teste de esforço progressivo máximo (ACSM)</p>
               </div>
               <label style="font-size: 13px; font-weight: 700; color: #1F4E78; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                 <input type="checkbox" id="ad_check_esteira" onchange="alternarTesteEsteiraAdulto()">
-                Realizar Teste
+                Realizar Teste Aeróbio
               </label>
             </div>
 
-            <!-- CONTAINER EXPANSÍVEL DO TESTE DE ESTEIRA -->
+            <!-- CONTAINER EXPANSIVEL DO TESTE DE ESTEIRA -->
             <div id="ad-container-esteira" style="display: none; margin-top: 15px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-              <div class="test-instructions" style="border-left-color: #1F4E78; background: #f0f5fa; margin-bottom: 14px;">
-                <strong>Protocolo de Esforço Progressivo Máximo:</strong> Conduza o teste com cronômetro em tempo real registrando a frequência cardíaca (FC) e a percepção de esforço (Borg) a cada minuto, ou alterne para entrada direta caso o teste já tenha sido realizado.
+
+              <!-- SELETOR DE PROTOCOLO CARDIORRESPIRATORIO ADULTO -->
+              <div style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px 14px; margin-bottom: 15px;">
+                <label style="font-weight: 700; color: #1F4E78; font-size: 13px; display: block; margin-bottom: 8px;">
+                  Tipo de Protocolo Cardiorrespiratório:
+                </label>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                  <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #0f172a; cursor: pointer; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1; flex: 1; min-width: 260px;">
+                    <input type="radio" name="ad_radio_tipo_cardio" id="ad_radio_cardio_george" value="george" onchange="alternarTipoProtocoloCardioAdulto()" checked>
+                    <span><strong>Protocolo Submáximo em Esteira (Recomendado)</strong><br><small style="color: #64748b;">George et al. (2009) • 70% a 90% FCmáx • 0% inclinação</small></span>
+                  </label>
+                  <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: #0f172a; cursor: pointer; background: #f8fafc; padding: 10px 14px; border-radius: 6px; border: 1px solid #cbd5e1; flex: 1; min-width: 260px;">
+                    <input type="radio" name="ad_radio_tipo_cardio" id="ad_radio_cardio_maximo" value="maximo" onchange="alternarTipoProtocoloCardioAdulto()">
+                    <span><strong>Protocolo Incremental Máximo (Rampa)</strong><br><small style="color: #64748b;">ACSM • Velocidade de Pico (Vpico) • Esforço até exaustão</small></span>
+                  </label>
+                </div>
               </div>
+
+              <!-- CONTAINER 1: PROTOCOLO SUBMAXIMO DE GEORGE ET AL. (2009) -->
+              <div id="ad-container-cardio-george">
+                <div class="test-instructions">
+                  <strong>Como aplicar (Protocolo Submáximo em Esteira - George et al., 2009):</strong>
+                  Esteira ergométrica em <strong>inclinação fixa de 0%</strong>. O teste é organizado em até 3 estágios sucessivos de <strong>4 minutos</strong>:
+                  <ul style="margin: 4px 0 6px 18px; padding: 0;">
+                    <li><strong>Estágio 1 (0 a 4 min) - Caminhada:</strong> velocidade confortável entre <strong>4,8 e 6,4 km/h</strong> (3,0 a 4,0 mph) definida nos primeiros 20 segundos.</li>
+                    <li><strong>Estágio 2 (4 a 8 min) - Trote / Marcha Rápida:</strong> se não atingir a FC alvo, velocidade confortável entre <strong>6,6 e 9,7 km/h</strong> (4,1 a 6,0 mph).</li>
+                    <li><strong>Estágio 3 (8 a 12 min) - Corrida Moderada:</strong> se não atingir a FC alvo, velocidade confortável acima de <strong>9,7 km/h</strong> (&gt; 6,0 mph).</li>
+                  </ul>
+                  <strong>Critério de Interrupção Submáxima:</strong> Concluir o estágio em que a frequência cardíaca atingir entre <strong>70% e 90% da FCmáx prevista</strong> pela fórmula de Tanaka et al. [208 - (0,7 × idade)]. A velocidade final desse estágio e os dados não-exercício (PFA e PA-R) são utilizados no cálculo preditivo de VO2máx com alta precisão (R = 0,94).
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label for="ad_cardio_george_estagio">Estágio Final Concluído</label>
+                    <select id="ad_cardio_george_estagio" onchange="calcularCardioGeorgeAdulto()">
+                      <option value="1">Estágio 1: Caminhada (4,8 a 6,4 km/h)</option>
+                      <option value="2" selected>Estágio 2: Trote / Marcha Rápida (6,6 a 9,7 km/h)</option>
+                      <option value="3">Estágio 3: Corrida Moderada (&gt; 9,7 km/h)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_cardio_george_vel">Velocidade Final na Esteira (km/h) *</label>
+                    <input type="number" step="0.1" id="ad_cardio_george_vel" min="2" max="25" placeholder="Ex: 8.0" oninput="calcularCardioGeorgeAdulto()">
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_cardio_george_fc">FC Final Atingida (bpm) *</label>
+                    <input type="number" id="ad_cardio_george_fc" min="50" max="230" placeholder="Ex: 148" oninput="calcularCardioGeorgeAdulto()">
+                    <span id="ad_cardio_george_fc_meta" style="font-size: 10px; color: #64748b;">(Faixa alvo 70-90% FCmáx Tanaka: calculando...)</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_cardio_george_borg">Percepção de Esforço (Escala Borg 6-20)</label>
+                    <select id="ad_cardio_george_borg">
+                      <option value="6">6 - Sem esforço algum</option>
+                      <option value="9">9 - Muito leve</option>
+                      <option value="11">11 - Leve</option>
+                      <option value="12">12 - Moderado</option>
+                      <option value="13" selected>13 - Um pouco intenso</option>
+                      <option value="15">15 - Intenso (Cansativo)</option>
+                      <option value="17">17 - Muito intenso</option>
+                      <option value="19">19 - Exaustivo</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_cardio_george_pfa">Capacidade Funcional Percebida (PFA)</label>
+                    <select id="ad_cardio_george_pfa" onchange="calcularCardioGeorgeAdulto()">
+                      <option value="6">Baixa - Caminhada lenta / Sedentário (Score 6)</option>
+                      <option value="10">Moderada-Baixa - Caminhada habitual (Score 10)</option>
+                      <option value="14" selected>Moderada / Média Geral - Caminhada firme / trote leve (Score 14)</option>
+                      <option value="18">Boa - Trote regular com conforto (Score 18)</option>
+                      <option value="22">Muito Boa - Corrida regular sustentada (Score 22)</option>
+                      <option value="26">Excelente / Atleta - Ritmo acelerado contínuo (Score 26)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="ad_cardio_george_par">Nível de Atividade Física (PA-R)</label>
+                    <select id="ad_cardio_george_par" onchange="calcularCardioGeorgeAdulto()">
+                      <option value="0">0 - Sedentário (evita caminhadas)</option>
+                      <option value="1">1 - Sedentário leve (caminhadas recreativas esporádicas)</option>
+                      <option value="2">2 - Exercício leve 10-60 min/semana</option>
+                      <option value="3">3 - Exercício leve &gt; 1 hora/semana</option>
+                      <option value="4" selected>4 - Exercício aeróbio moderado 20-30 min/semana</option>
+                      <option value="5">5 - Exercício aeróbio moderado 30-60 min/semana</option>
+                      <option value="6">6 - Exercício regular 1 a 3 horas/semana</option>
+                      <option value="7">7 - Exercício regular &gt; 3 horas/semana</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- RESULTADOS GEORGE ADULTO -->
+                <div class="results-grid" style="margin-top: 15px;">
+                  <div class="result-card">
+                    <h4>Velocidade em mph</h4>
+                    <div class="value" id="ad_res_cardio_george_mph">--</div>
+                    <span class="status-badge badge-neutral" style="background:#f1f5f9; color:#475569;">Conversão mph</span>
+                  </div>
+                  <div class="result-card">
+                    <h4>VO2máx Submáximo Estimado</h4>
+                    <div class="value" id="ad_res_cardio_george_vo2">--</div>
+                    <span id="ad_res_cardio_george_vo2_badge" class="status-badge badge-neutral">Aguardando dados</span>
+                  </div>
+                  <div class="result-card">
+                    <h4>Critério Submáximo (% FCmáx)</h4>
+                    <div class="value" id="ad_res_cardio_george_fc_percent">--</div>
+                    <span id="ad_res_cardio_george_fc_badge" class="status-badge badge-neutral">Aguardando FC</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- CONTAINER 2: PROTOCOLO INCREMENTAL MAXIMO EM ESTEIRA (RAMPA ACSM) -->
+              <div id="ad-container-cardio-maximo" style="display: none;">
+                <div class="test-instructions" style="border-left-color: #1F4E78; background: #f0f5fa; margin-bottom: 14px;">
+                  <strong>Protocolo de Esforço Progressivo Máximo:</strong> Conduza o teste com cronômetro em tempo real registrando a frequência cardíaca (FC) e a percepção de esforço (Borg) a cada minuto, ou alterne para entrada direta caso o teste já tenha sido realizado.
+                </div>
 
               <!-- SELETOR DE MODO DO TESTE -->
               <div class="treadmill-mode-toggle no-print">
@@ -2656,6 +3025,7 @@
               </div>
             </div>
           </div>
+        </div>
 
           <!-- PARECER TÉCNICO -->
           <div class="section-box" style="margin-top: 15px;">
@@ -3079,6 +3449,365 @@
 
     </div>
 
+    </div>
+    <!-- FIM DO MÓDULO 1: CADASTRO E AVALIAÇÕES -->
+
+    <!-- ======================================================== -->
+    <!-- MÓDULO 2: PRESCRIÇÃO E ACOMPANHAMENTO DE TREINO          -->
+    <!-- ======================================================== -->
+    <div id="modulo-treino" class="main-module-content" style="display: none;">
+
+      <!-- SELETOR DE ALUNO PARA TREINO -->
+      <div class="patient-selector-box no-print" style="margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <label for="seletor-aluno-treino" style="font-weight: 800; color: #1F4E78; font-size: 14px; margin-bottom: 0;">
+            Aluno para Prescrição &amp; Acompanhamento de Treino:
+          </label>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button type="button" onclick="alternarModuloPrincipal('avaliacoes')" style="background: #ffffff; border: 1px solid #cbd5e1; color: #1F4E78; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;">
+              Ver Avaliações Deste Aluno
+            </button>
+            <span id="treino-aluno-status-badge" style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #e8f1f8; color: #1F4E78;">
+              Nenhum aluno selecionado
+            </span>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <select id="seletor-aluno-treino" onchange="aoTrocarAlunoTreino()" style="flex: 1; min-width: 240px; border: 2px solid #1F4E78; font-weight: 600; color: #0f172a; padding: 10px 12px; border-radius: 6px;">
+            <option value="">Selecione um aluno na lista para prescrever ou acompanhar...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- CONTEXTO CLÍNICO E APOIO À PRESCRIÇÃO -->
+      <div id="treino-aluno-context-card" class="treino-aluno-header-card no-print" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px;">
+          <div>
+            <h3 id="treino-resumo-nome" style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Nome do Aluno</h3>
+            <p id="treino-resumo-detalhes" style="font-size: 12px; color: #64748b; margin: 2px 0 0 0;">Idade, Sexo, Objetivo, Condição</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <span id="treino-resumo-frequencia" style="font-size: 11px; font-weight: 700; background: #f1f5f9; color: #334155; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1;">
+              Sessões Realizadas: 0
+            </span>
+          </div>
+        </div>
+
+        <!-- Alertas da Anamnese e Condições de Saúde -->
+        <div id="treino-alerta-anamnese" class="treino-clinical-alert">
+          <strong>Atenção Clínica / Restrições Ortopédicas:</strong>
+          <span id="treino-alerta-anamnese-texto">Nenhuma restrição relatada na anamnese.</span>
+        </div>
+
+        <!-- Suporte Científico da Avaliação Física (1RM, FC, VO2) -->
+        <div id="treino-suporte-avaliacao" class="treino-support-box">
+          <strong>Parâmetros Coletados na Última Avaliação:</strong>
+          <div id="treino-suporte-avaliacao-texto" style="margin-top: 6px; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px;">
+            <span>1RM Supino: --</span>
+            <span>1RM Extensora: --</span>
+            <span>1RM Leg Press: --</span>
+            <span>FC Repouso: -- bpm</span>
+            <span>VO2máx Estimado: -- ml/kg/min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-ABAS DE NAVEGAÇÃO INTERNA DO TREINO -->
+      <div class="treino-subtabs-nav no-print">
+        <button type="button" id="btn-subtab-fichas" class="treino-subtab-btn active" onclick="alternarSubabaTreino('fichas')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <span>Elaboração &amp; Fichas de Treino</span>
+        </button>
+        <button type="button" id="btn-subtab-diario" class="treino-subtab-btn" onclick="alternarSubabaTreino('diario')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Diário de Acompanhamento &amp; Sessões</span>
+        </button>
+      </div>
+
+      <!-- PAINEL 1: FICHAS DE TREINO -->
+      <div id="painel-subtab-fichas" class="treino-panel-content">
+        
+        <!-- Barra de Seleção e Criação de Ficha -->
+        <div class="section-box no-print" style="margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 260px;">
+              <label for="seletor-ficha-treino" style="font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 0; white-space: nowrap;">Ficha de Treino:</label>
+              <select id="seletor-ficha-treino" onchange="aoTrocarFichaSelecionada()" style="flex: 1; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; font-size: 13px;">
+                <!-- Opções de fichas do aluno -->
+              </select>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <button type="button" onclick="criarNovaFichaTreino()" class="btn btn-primary" style="font-size: 12px; padding: 8px 14px;">
+                + Nova Ficha de Treino
+              </button>
+              <button type="button" id="btn-imprimir-ficha" onclick="imprimirFichaTreino()" class="btn btn-secondary" style="font-size: 12px; padding: 8px 14px;">
+                Imprimir Ficha (PDF)
+              </button>
+              <button type="button" id="btn-excluir-ficha" onclick="excluirFichaTreinoAtual()" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fca5a5; font-size: 12px; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                Excluir Ficha
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formulário da Ficha Ativa -->
+        <div id="ficha-editor-container" class="section-box no-print">
+          
+          <div class="section-title">
+            <span>Dados Gerais da Ficha de Prescrição</span>
+            <span id="badge-ficha-status" style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; background: #e0f2fe; color: #0369a1;">Ficha Ativa</span>
+          </div>
+
+          <div class="form-grid" style="margin-bottom: 20px;">
+            <div class="form-group">
+              <label for="ficha-titulo">Nome / Identificação da Ficha *</label>
+              <input type="text" id="ficha-titulo" class="treino-input" placeholder="Ex: Ficha A/B - Hipertrofia & Força Funcional" required>
+            </div>
+            <div class="form-group">
+              <label for="ficha-objetivo">Objetivo Principal do Treino</label>
+              <select id="ficha-objetivo" class="treino-input">
+                <option value="Hipertrofia Muscular">Hipertrofia Muscular</option>
+                <option value="Força Máxima">Força Máxima</option>
+                <option value="Resistência Muscular">Resistência Muscular</option>
+                <option value="Emagrecimento / Composição Corporal">Emagrecimento / Composição Corporal</option>
+                <option value="Condicionamento Geral / Saúde">Condicionamento Geral / Saúde</option>
+                <option value="Autonomia Funcional do Idoso">Autonomia Funcional do Idoso</option>
+                <option value="Reabilitação / Correção Postural">Reabilitação / Correção Postural</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ficha-data-inicio">Data de Início</label>
+              <input type="date" id="ficha-data-inicio" class="treino-input">
+            </div>
+            <div class="form-group">
+              <label for="ficha-validade">Duração / Validade Estimada</label>
+              <select id="ficha-validade" class="treino-input">
+                <option value="4 semanas">4 semanas (1 mês)</option>
+                <option value="6 semanas">6 semanas (1,5 mês)</option>
+                <option value="8 semanas" selected>8 semanas (2 meses)</option>
+                <option value="12 semanas">12 semanas (3 meses)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="ficha-frequencia">Frequência Semanal Sugerida</label>
+              <input type="text" id="ficha-frequencia" class="treino-input" placeholder="Ex: 3x a 4x na semana" value="3x a 4x na semana">
+            </div>
+            <div class="form-group">
+              <label for="ficha-nivel">Nível do Praticante</label>
+              <select id="ficha-nivel" class="treino-input">
+                <option value="Iniciante / Adaptação">Iniciante / Adaptação</option>
+                <option value="Intermediário" selected>Intermediário</option>
+                <option value="Avançado">Avançado</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Navegação das Divisões de Treino (Treino A, B, C...) -->
+          <div class="section-title" style="margin-top: 25px;">
+            <span>Divisões de Treino</span>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" onclick="adicionarDivisaoTreino()" class="btn btn-secondary" style="font-size: 11px; padding: 4px 10px;">
+                + Adicionar Nova Divisão
+              </button>
+              <button type="button" id="btn-remover-divisao" onclick="removerDivisaoTreinoAtual()" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; font-size: 11px; padding: 4px 10px; border-radius: 4px; cursor: pointer;">
+                Remover Divisão Atual
+              </button>
+            </div>
+          </div>
+
+          <div id="treino-divisoes-tabs" class="treino-divisoes-bar">
+            <!-- Botões das divisões inseridos dinamicamente aqui -->
+          </div>
+
+          <!-- Conteúdo da Divisão Ativa -->
+          <div id="treino-divisao-box" style="background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+            
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="divisao-titulo" style="font-weight: 700; color: #1F4E78;">Nome / Foco Desta Divisão *</label>
+              <input type="text" id="divisao-titulo" class="treino-input" placeholder="Ex: Treino A - Peitoral, Ombros e Tríceps" oninput="aoMudarTituloDivisao(this.value)">
+            </div>
+
+            <!-- Tabela de Exercícios da Divisão -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <span style="font-size: 13px; font-weight: 700; color: #334155;">Prescrição dos Exercícios</span>
+              <button type="button" onclick="adicionarExercicioDivisaoAtual()" class="btn btn-primary" style="font-size: 11px; padding: 5px 10px;">
+                + Adicionar Exercício
+              </button>
+            </div>
+
+            <div class="treino-table-wrapper">
+              <table class="treino-tabela-exercicios">
+                <thead>
+                  <tr>
+                    <th style="width: 14%;">Grupo</th>
+                    <th style="width: 26%;">Exercício</th>
+                    <th style="width: 10%;">Séries</th>
+                    <th style="width: 12%;">Repetições</th>
+                    <th style="width: 12%;">Carga / %1RM</th>
+                    <th style="width: 10%;">Intervalo</th>
+                    <th style="width: 12%;">Método / Notas</th>
+                    <th style="width: 4%; text-align: center;">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-exercicios-tbody">
+                  <!-- Linhas de exercícios renderizadas dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bloco de Treino Cardiorrespiratório (Aeróbio) da Divisão -->
+            <div class="treino-cardio-panel">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <label style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: #1F4E78; font-size: 13px; cursor: pointer; margin-bottom: 0;">
+                  <input type="checkbox" id="cardio-ativo" onchange="alternarCardioDivisao(this.checked)">
+                  <span>Incluir Treinamento Cardiorrespiratório (Aeróbio) nesta Divisão</span>
+                </label>
+              </div>
+
+              <div id="cardio-campos" style="display: none;" class="form-grid">
+                <div class="form-group">
+                  <label for="cardio-modalidade">Modalidade</label>
+                  <select id="cardio-modalidade" class="treino-input" onchange="atualizarCardioDivisao()">
+                    <option value="Esteira Ergométrica">Esteira Ergométrica</option>
+                    <option value="Bicicleta Ergométrica">Bicicleta Ergométrica</option>
+                    <option value="Elíptico">Elíptico</option>
+                    <option value="Corrida de Rua">Corrida de Rua</option>
+                    <option value="Remo Ergométrico">Remo Ergométrico</option>
+                    <option value="Corda">Corda / Circuito</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="cardio-duracao">Duração (minutos)</label>
+                  <input type="text" id="cardio-duracao" class="treino-input" placeholder="Ex: 20 a 30 min" oninput="atualizarCardioDivisao()">
+                </div>
+                <div class="form-group">
+                  <label for="cardio-momento">Momento do Treino</label>
+                  <select id="cardio-momento" class="treino-input" onchange="atualizarCardioDivisao()">
+                    <option value="Após o treino de força">Após o treino de força (Pós-treino)</option>
+                    <option value="Antes do treino de força">Antes do treino de força (Pré-treino)</option>
+                    <option value="Em turno / dia separado">Em turno / dia separado</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="cardio-zona">Intensidade / Zona Alvo</label>
+                  <input type="text" id="cardio-zona" class="treino-input" placeholder="Ex: Zona 2 (65% a 75% da FCMáx)" oninput="atualizarCardioDivisao()">
+                </div>
+                <div class="form-group">
+                  <label for="cardio-velocidade">Velocidade / Carga / Inclinação</label>
+                  <input type="text" id="cardio-velocidade" class="treino-input" placeholder="Ex: 6.5 km/h, 1% de inclinação" oninput="atualizarCardioDivisao()">
+                </div>
+                <div class="form-group">
+                  <label for="cardio-pse">Percepção de Esforço (Borg)</label>
+                  <input type="text" id="cardio-pse" class="treino-input" placeholder="Ex: Borg 4 a 6 (Moderado a Intenso)" oninput="atualizarCardioDivisao()">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Observações Gerais da Ficha -->
+          <div style="margin-top: 18px;">
+            <label for="ficha-observacoes" style="font-weight: 700; color: #1F4E78; font-size: 13px; margin-bottom: 6px; display: block;">
+              Observações Gerais &amp; Recomendações do Profissional
+            </label>
+            <textarea id="ficha-observacoes" class="treino-input" rows="3" placeholder="Orientações sobre aquecimento, mobilidade articular, hidratação, postura e intervalos..."></textarea>
+          </div>
+
+          <!-- Barra de Ações do Formulário -->
+          <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+            <button type="button" onclick="salvarFichaTreino()" class="btn btn-primary" style="padding: 10px 20px; font-size: 13px;">
+              Salvar Ficha de Treino no Banco
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- PAINEL 2: DIÁRIO DE ACOMPANHAMENTO -->
+      <div id="painel-subtab-diario" class="treino-panel-content no-print" style="display: none;">
+        
+        <!-- Formulário de Registro de Nova Sessão -->
+        <div class="section-box">
+          <div class="section-title">
+            <span>Registrar Nova Sessão de Treino Executada</span>
+            <span style="font-size: 11px; color: #64748b;">Diário de Bordo &amp; Controle de Cargas</span>
+          </div>
+
+          <form id="form-sessao-treino" onsubmit="registrarSessaoTreino(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="sessao-data">Data da Sessão *</label>
+                <input type="date" id="sessao-data" class="treino-input" required>
+              </div>
+              <div class="form-group">
+                <label for="sessao-divisao">Treino Executado *</label>
+                <select id="sessao-divisao" class="treino-input" required>
+                  <option value="Treino A">Treino A</option>
+                  <option value="Treino B">Treino B</option>
+                  <option value="Treino C">Treino C</option>
+                  <option value="Treino D">Treino D</option>
+                  <option value="Treino Aeróbio Isolado">Treino Aeróbio Isolado</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="sessao-duracao">Duração Total (minutos)</label>
+                <input type="number" id="sessao-duracao" class="treino-input" placeholder="Ex: 50" min="5" max="300" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label for="sessao-pse">Percepção de Esforço da Sessão (PSE 0 a 10)</label>
+                <select id="sessao-pse" class="treino-input">
+                  <option value="1">1 - Muito, muito fácil</option>
+                  <option value="2">2 - Fácil</option>
+                  <option value="3">3 - Moderado</option>
+                  <option value="4">4 - Pouco intenso</option>
+                  <option value="5">5 - Difícil / Intenso</option>
+                  <option value="6">6 - Mais difícil</option>
+                  <option value="7" selected>7 - Muito difícil</option>
+                  <option value="8">8 - Muito pesado</option>
+                  <option value="9">9 - Próximo do limite</option>
+                  <option value="10">10 - Esforço Máximo Exaustivo</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="sessao-notas">Notas de Evolução, Cargas e Feedback</label>
+                <textarea id="sessao-notas" class="treino-input" rows="2" placeholder="Ex: Aumentou carga no supino de 40kg para 45kg; boa execução no agachamento; sem dores ou desconforto articular..."></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary" style="padding: 8px 18px; font-size: 12px;">
+                Registrar Sessão no Histórico
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Histórico de Sessões Registradas -->
+        <div class="section-box">
+          <div class="section-title">
+            <span>Histórico de Sessões Realizadas</span>
+            <span id="contador-sessoes-badge" style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #f1f5f9; color: #475569;">
+              0 sessões
+            </span>
+          </div>
+
+          <div id="lista-sessoes-container">
+            <!-- Lista de sessões inserida dinamicamente -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FICHA DE IMPRESSÃO (A4 / PDF) - VISÍVEL APENAS NA IMPRESSÃO -->
+      <div id="ficha-treino-impressao">
+        <!-- Renderizado dinamicamente com cabeçalho Barbosa Team, tabelas de exercícios de cada divisão, cardio e campo para o aluno preencher cargas -->
+      </div>
+
+    </div>
+    <!-- FIM DO MÓDULO 2: PRESCRIÇÃO E ACOMPANHAMENTO DE TREINO -->
+
   </div>
 
   <!-- MODAL DE DIRETRIZES & REFERÊNCIAS CIENTÍFICAS -->
@@ -3180,14 +3909,14 @@
               <h4 style="color: #0f172a; font-size: 13px; margin-bottom: 4px;">6. Aptidão Cardiorrespiratória - Protocolo Submáximo em Esteira (George et al., 2009)</h4>
               <p style="margin: 0; color: #475569;">
                 <strong>Artigo Original (Disponível na pasta REFERENCIAS/IDOSOS/GEORGE):</strong> George, J. D., Paul, S. L., Hyde, A., Bradshaw, P. R., Vehrs, P. R., Hager, R. L., &amp; Yanowitz, F. G. (2009). <em>Prediction of maximum oxygen uptake using both exercise and non-exercise data</em>. <strong>Measurement in Physical Education and Exercise Science</strong>, 13(1), 1–12. doi:10.1080/10913670802609086.<br>
-                <strong>Protocolo Submáximo (0% de Inclinação):</strong> Teste escalonado em 3 estágios com duração de 4 minutos cada. O teste é interrompido no estágio em que o participante atinge a faixa alvo submáxima de <strong>70% a 90% da FCmáx prevista</strong> (220 - idade):<br>
+                <strong>Protocolo Submáximo (0% de Inclinação):</strong> Teste escalonado em 3 estágios com duração de 4 minutos cada. O teste é interrompido no estágio em que o participante atinge a faixa alvo submáxima de <strong>70% a 90% da FCmáx prevista</strong> pela equação de Tanaka et al. (2001) [208 - (0,7 × idade)]:<br>
                 • <em>Estágio 1 (0 a 4 min):</em> Caminhada confortável (4,8 a 6,4 km/h / 3,0 a 4,0 mph);<br>
                 • <em>Estágio 2 (4 a 8 min):</em> Trote leve / Marcha rápida (6,6 a 9,7 km/h / 4,1 a 6,0 mph);<br>
                 • <em>Estágio 3 (8 a 12 min):</em> Corrida moderada (&gt; 9,7 km/h / &gt; 6,0 mph).<br>
                 <strong>Equação Multivariada (Tabela 4 - Modelo 2 do Estudo, R = 0,94, EPE = 3,09 ml·kg⁻¹·min⁻¹):</strong><br>
                 <code>VO2máx (ml·kg⁻¹·min⁻¹) = 30.04 + (6.37 × sexo; F=0, M=1) - (0.243 × idade) - (0.122 × peso kg) + (3.263 × velocidade mph) + (0.391 × PFA) + (0.669 × PA-R)</code><br>
                 <em>Variáveis Não-Exercício:</em> PFA = Perceived Functional Ability (escala de aptidão percebida de 2 a 26 pontos); PA-R = Physical Activity Rating (escala de nível de atividade física habitual de 0 a 7/10 pontos).<br>
-                <strong>Classificação Normativa:</strong> Diretrizes de Aptidão Cardiorrespiratória para Idosos (ACSM / Cooper Institute).
+                <strong>Classificação Normativa &amp; FCmáx:</strong> Diretrizes de Aptidão Cardiorrespiratória para Idosos (ACSM / Cooper Institute). FCmáx estimada pela equação validada de Tanaka, Monahan &amp; Seals (2001) [J Am Coll Cardiol, 37(1):153-6].
               </p>
             </div>
           </div>
@@ -3218,7 +3947,22 @@
               <strong>3. Dobras Cutâneas (Protocolo Jackson &amp; Pollock 3 Dobras):</strong> Jackson &amp; Pollock (1978, homens: Peitoral, Abdômen, Coxa) e Jackson, Pollock &amp; Ward (1980, mulheres: Tríceps, Supra-ilíaca, Coxa). Conversão para %G via equação de Siri (1961).
             </div>
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
-              <strong>4. Capacidade Aeróbia na Esteira Plana 0%:</strong> American College of Sports Medicine (ACSM, 2018). Equações metabólicas para corrida/caminhada plana: VO2máx = 3.333 × Vpico + 3.5 ml/kg/min. Escala de esforço de Borg (1982).
+              <strong>4. Capacidade Aeróbia na Esteira Plana 0% (Protocolo Máximo ACSM):</strong> American College of Sports Medicine (ACSM, 2018). Equações metabólicas para corrida/caminhada plana: VO2máx = 3.333 × Vpico + 3.5 ml/kg/min. Escala de esforço de Borg (1982).
+            </div>
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+              <h4 style="color: #0f172a; font-size: 13px; margin-bottom: 4px;">5. Aptidão Cardiorrespiratória - Protocolo Submáximo em Esteira (George et al., 2009)</h4>
+              <p style="margin: 0; color: #475569;">
+                <strong>Artigo Original (Disponível na pasta REFERENCIAS/IDOSOS/GEORGE):</strong> George, J. D., Paul, S. L., Hyde, A., Bradshaw, D. I., Vehrs, P. R., Hager, R. L., &amp; Yanowitz, F. G. (2009). <em>Prediction of maximum oxygen uptake using both exercise and non-exercise data</em>. <strong>Measurement in Physical Education and Exercise Science</strong>, 13(1), 1–12. doi:10.1080/10913670802609086.<br>
+                <strong>Validação e Amostra do Estudo:</strong> Desenvolvido e validado com <strong>homens e mulheres saudáveis de 18 a 65 anos</strong> (n = 100; 50 mulheres, 50 homens). Oferece predição de VO2máx altamente acurada (R = 0,94; EPE = 3,09 ml·kg⁻¹·min⁻¹) sem necessidade de esforço até a exaustão máxima.<br>
+                <strong>Protocolo Submáximo (0% de Inclinação):</strong> Teste escalonado em até 3 estágios de 4 minutos cada. O teste é interrompido no estágio em que o participante atinge a faixa alvo submáxima de <strong>70% a 90% da FCmáx prevista</strong> pela equação de Tanaka et al. (2001) [208 - (0,7 × idade)]:<br>
+                • <em>Estágio 1 (0 a 4 min):</em> Caminhada confortável (4,8 a 6,4 km/h / 3,0 a 4,0 mph);<br>
+                • <em>Estágio 2 (4 a 8 min):</em> Trote / Marcha rápida (6,6 a 9,7 km/h / 4,1 a 6,0 mph);<br>
+                • <em>Estágio 3 (8 a 12 min):</em> Corrida moderada (&gt; 9,7 km/h / &gt; 6,0 mph).<br>
+                <strong>Equação Modelo 2:</strong><br>
+                <code>VO2máx (ml·kg⁻¹·min⁻¹) = 30.04 + (6.37 × sexo; F=0, M=1) - (0.243 × idade) - (0.122 × peso kg) + (3.263 × velocidade mph) + (0.391 × PFA) + (0.669 × PA-R)</code><br>
+                <em>Variáveis Não-Exercício:</em> PFA = Perceived Functional Ability (aptidão percebida de 2 a 26 pontos); PA-R = Physical Activity Rating (nível de atividade física de 0 a 7/10 pontos).<br>
+                <strong>Classificação Normativa &amp; FCmáx:</strong> Normas de Aptidão Cardiorrespiratória para Adultos (ACSM / Cooper Institute). FCmáx estimada pela equação validada de Tanaka, Monahan &amp; Seals (2001) [J Am Coll Cardiol, 37(1):153-6].
+              </p>
             </div>
           </div>
         </div>
@@ -3276,7 +4020,7 @@
 
       <!-- Rodapé do Modal -->
       <div style="padding: 12px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-        <button type="button" onclick="restaurarAlunosDemonstracao()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
+        <button type="button" id="btn-restaurar-demo" onclick="restaurarAlunosDemonstracao()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; font-size: 12px; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 600;">
           Restaurar Demonstração
         </button>
         <div style="display: flex; gap: 10px; align-items: center;">
@@ -3287,6 +4031,87 @@
             Fechar
           </button>
         </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE GESTÃO DE AVALIADORES (EXCLUSIVO ADMINISTRADOR) -->
+  <div id="modal-gerenciar-avaliadores" class="no-print" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); z-index: 9999; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(3px);">
+    <div style="background: #ffffff; border-radius: 12px; width: 100%; max-width: 860px; max-height: 90vh; max-height: 90dvh; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); overflow: hidden;">
+      
+      <!-- Cabeçalho do Modal -->
+      <div style="padding: 16px 20px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+        <div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
+            Gestão de Avaliadores &bull; Barbosa Team
+          </h3>
+          <p style="font-size: 12px; color: #64748b; margin: 2px 0 0 0;">Painel Administrativo: Cadastre novos avaliadores e controle o acesso e a compartimentalização</p>
+        </div>
+        <button type="button" onclick="fecharModalGerenciarAvaliadores()" style="background: none; border: none; font-size: 20px; color: #94a3b8; cursor: pointer; padding: 4px 8px; border-radius: 4px;">&times;</button>
+      </div>
+
+      <!-- Conteúdo do Modal (Scrollável) -->
+      <div style="padding: 20px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Formulário de Cadastro de Novo Avaliador -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin: 0 0 12px 0;">
+            Cadastrar Novo Avaliador
+          </h4>
+
+          <div id="novo-avaliador-erro" style="display: none; background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-bottom: 12px;">
+            <span id="novo-avaliador-erro-msg"></span>
+          </div>
+          <div id="novo-avaliador-sucesso" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; margin-bottom: 12px;">
+            <span id="novo-avaliador-sucesso-msg">Avaliador cadastrado com sucesso!</span>
+          </div>
+
+          <form id="form-novo-avaliador" onsubmit="cadastrarNovoAvaliador(event)" style="margin: 0;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+              <div>
+                <label for="novo-avaliador-nome" style="display: block; font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">Nome Completo</label>
+                <input type="text" id="novo-avaliador-nome" class="login-input" placeholder="Ex: Carlos Eduardo Silva" required style="font-size: 13px; padding: 8px 12px;">
+              </div>
+              <div>
+                <label for="novo-avaliador-usuario" style="display: block; font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">Usuário de Acesso (Login)</label>
+                <input type="text" id="novo-avaliador-usuario" class="login-input" placeholder="Ex: carlos.silva" required style="font-size: 13px; padding: 8px 12px;" autocomplete="off" autocapitalize="none">
+              </div>
+              <div>
+                <label for="novo-avaliador-senha" style="display: block; font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">Senha Inicial (Mín. 6 caracteres)</label>
+                <input type="password" id="novo-avaliador-senha" class="login-input" placeholder="Senha de acesso" minlength="6" required style="font-size: 13px; padding: 8px 12px;" autocomplete="new-password">
+              </div>
+              <div>
+                <label for="novo-avaliador-confirma" style="display: block; font-size: 11px; font-weight: 700; color: #334155; margin-bottom: 4px;">Confirmar Senha</label>
+                <input type="password" id="novo-avaliador-confirma" class="login-input" placeholder="Repita a senha" minlength="6" required style="font-size: 13px; padding: 8px 12px;" autocomplete="new-password">
+              </div>
+            </div>
+
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary" style="font-size: 12px; padding: 8px 18px;">
+                Cadastrar Avaliador
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Lista de Avaliadores Cadastrados -->
+        <div>
+          <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin: 0 0 10px 0;">
+            Usuários do Sistema
+          </h4>
+          <div id="modal-avaliadores-lista-container">
+            <!-- Tabela montada dinamicamente via renderizarListaAvaliadores() -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div style="padding: 12px 20px; border-top: 1px solid #e2e8f0; background: #f8fafc; display: flex; justify-content: flex-end; align-items: center;">
+        <button type="button" onclick="fecharModalGerenciarAvaliadores()" class="btn btn-secondary" style="font-size: 12px; padding: 6px 16px;">
+          Fechar
+        </button>
       </div>
 
     </div>
@@ -3374,11 +4199,21 @@
     // SISTEMA DE AUTENTICAÇÃO E CONTROLE DE ACESSO
     // ==========================================
     const AUTH_STORAGE_KEY = 'barbosa_auth_creds';
+    const AUTH_USERS_KEY = 'barbosa_auth_usuarios_v1';
     const AUTH_SESSION_KEY = 'barbosa_auth_session';
+    const AUTH_SESSION_USER_KEY = 'barbosa_auth_session_user';
     const AUTH_SALT = 'barbosa_team_salt_2026';
     const DEFAULT_AUTH = {
       usuario: 'admin',
       senhaHash: 'e72e6a28b24ffba66b1e9d5348ee0f43274f0e45b2aa3e351b57ca36a09220c2'
+    };
+    const DEFAULT_ADMIN_USER = {
+      id: 'usr_admin',
+      usuario: 'admin',
+      nome: 'Administrador Barbosa',
+      perfil: 'admin',
+      senhaHash: 'e72e6a28b24ffba66b1e9d5348ee0f43274f0e45b2aa3e351b57ca36a09220c2',
+      criadoEm: '2026-01-01'
     };
 
     // Função de Hashing SHA-256 criptograficamente seguro (com fallback nativo)
@@ -3443,17 +4278,69 @@
       return hex;
     }
 
-    function obterCredenciaisArmazenadas() {
+    function obterUsuariosArmazenados() {
       try {
-        const data = localStorage.getItem(AUTH_STORAGE_KEY);
-        if (data) {
-          const parsed = JSON.parse(data);
-          if (parsed && parsed.usuario && parsed.senhaHash) {
+        const raw = localStorage.getItem(AUTH_USERS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed) && parsed.length > 0) {
             return parsed;
           }
         }
       } catch (e) {
-        console.error('Erro ao ler credenciais do localStorage:', e);
+        console.error('Erro ao ler lista de usuarios do localStorage:', e);
+      }
+
+      // Migracao automatica da credencial admin legada para o novo array de usuarios
+      let adminUser = { ...DEFAULT_ADMIN_USER };
+      try {
+        const credLegada = localStorage.getItem(AUTH_STORAGE_KEY);
+        if (credLegada) {
+          const parsedLegada = JSON.parse(credLegada);
+          if (parsedLegada && parsedLegada.usuario && parsedLegada.senhaHash) {
+            adminUser.usuario = parsedLegada.usuario;
+            adminUser.senhaHash = parsedLegada.senhaHash;
+          }
+        }
+      } catch (e) {
+        console.warn('Falha na migracao da credencial legada:', e);
+      }
+
+      const listaInicial = [adminUser];
+      try {
+        localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(listaInicial));
+      } catch (e) {
+        console.error('Erro ao inicializar lista de usuarios:', e);
+      }
+      return listaInicial;
+    }
+
+    function salvarUsuariosArmazenados(lista) {
+      try {
+        localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(lista));
+        const adminUser = lista.find(u => u.perfil === 'admin');
+        if (adminUser) {
+          salvarCredenciais(adminUser.usuario, adminUser.senhaHash);
+        }
+        return true;
+      } catch (e) {
+        console.error('Erro ao salvar lista de usuarios:', e);
+        return false;
+      }
+    }
+
+    function obterCredenciaisArmazenadas() {
+      try {
+        const usuarios = obterUsuariosArmazenados();
+        const admin = usuarios.find(u => u.perfil === 'admin') || usuarios[0];
+        if (admin) {
+          return {
+            usuario: admin.usuario,
+            senhaHash: admin.senhaHash
+          };
+        }
+      } catch (e) {
+        console.error('Erro ao obter credenciais:', e);
       }
       return DEFAULT_AUTH;
     }
@@ -3471,6 +4358,32 @@
       }
     }
 
+    function obterUsuarioLogado() {
+      try {
+        const sessaoTemp = sessionStorage.getItem(AUTH_SESSION_USER_KEY);
+        if (sessaoTemp) return JSON.parse(sessaoTemp);
+
+        const sessaoLocal = localStorage.getItem(AUTH_SESSION_USER_KEY);
+        if (sessaoLocal) return JSON.parse(sessaoLocal);
+      } catch (e) {
+        console.error('Erro ao recuperar usuario logado:', e);
+      }
+
+      if (estaAutenticado()) {
+        const usuarios = obterUsuariosArmazenados();
+        const admin = usuarios.find(u => u.perfil === 'admin') || usuarios[0];
+        if (admin) {
+          return {
+            id: admin.id,
+            usuario: admin.usuario,
+            nome: admin.nome,
+            perfil: admin.perfil
+          };
+        }
+      }
+      return null;
+    }
+
     function estaAutenticado() {
       try {
         const sessaoLocal = localStorage.getItem(AUTH_SESSION_KEY);
@@ -3483,12 +4396,25 @@
       return false;
     }
 
-    function definirSessaoAutenticada(lembrar) {
+    function definirSessaoAutenticada(lembrar, usuario) {
       try {
+        const payloadUser = usuario ? JSON.stringify({
+          id: usuario.id,
+          usuario: usuario.usuario,
+          nome: usuario.nome,
+          perfil: usuario.perfil
+        }) : '';
+
         if (lembrar) {
           localStorage.setItem(AUTH_SESSION_KEY, 'ativo');
+          if (payloadUser) localStorage.setItem(AUTH_SESSION_USER_KEY, payloadUser);
+          sessionStorage.removeItem(AUTH_SESSION_KEY);
+          sessionStorage.removeItem(AUTH_SESSION_USER_KEY);
         } else {
           sessionStorage.setItem(AUTH_SESSION_KEY, 'ativo');
+          if (payloadUser) sessionStorage.setItem(AUTH_SESSION_USER_KEY, payloadUser);
+          localStorage.removeItem(AUTH_SESSION_KEY);
+          localStorage.removeItem(AUTH_SESSION_USER_KEY);
         }
       } catch (e) {
         console.error('Erro ao salvar sessao:', e);
@@ -3498,9 +4424,42 @@
     function limparSessao() {
       try {
         localStorage.removeItem(AUTH_SESSION_KEY);
+        localStorage.removeItem(AUTH_SESSION_USER_KEY);
         sessionStorage.removeItem(AUTH_SESSION_KEY);
+        sessionStorage.removeItem(AUTH_SESSION_USER_KEY);
       } catch (e) {
         console.error('Erro ao limpar sessao:', e);
+      }
+    }
+
+    function atualizarInterfaceUsuario(usuarioLogado) {
+      const nameEl = document.getElementById('user-display-name');
+      const badgeEl = document.getElementById('user-display-badge');
+      const btnGerenciar = document.getElementById('btn-gerenciar-avaliadores');
+      const btnRestaurarDemo = document.getElementById('btn-restaurar-demo');
+
+      if (usuarioLogado) {
+        if (nameEl) nameEl.textContent = usuarioLogado.nome || usuarioLogado.usuario;
+        if (badgeEl) {
+          if (usuarioLogado.perfil === 'admin') {
+            badgeEl.textContent = 'ADMIN';
+            badgeEl.style.background = '#38bdf8';
+            badgeEl.style.color = '#0f172a';
+          } else {
+            badgeEl.textContent = 'AVALIADOR';
+            badgeEl.style.background = '#93c5fd';
+            badgeEl.style.color = '#1e3a8a';
+          }
+        }
+        if (btnGerenciar) {
+          btnGerenciar.style.display = (usuarioLogado.perfil === 'admin') ? 'inline-flex' : 'none';
+        }
+        if (btnRestaurarDemo) {
+          btnRestaurarDemo.style.display = (usuarioLogado.perfil === 'admin') ? 'inline-block' : 'none';
+        }
+      } else {
+        if (btnGerenciar) btnGerenciar.style.display = 'none';
+        if (btnRestaurarDemo) btnRestaurarDemo.style.display = 'none';
       }
     }
 
@@ -3510,6 +4469,23 @@
       if (autenticado) {
         if (portal) portal.style.display = 'none';
         if (app) app.style.display = 'block';
+
+        const usuarioLogado = obterUsuarioLogado();
+        atualizarInterfaceUsuario(usuarioLogado);
+        atualizarDropdownPacientes();
+
+        const alunosVisiveis = typeof obterAlunosVisiveis === 'function' ? obterAlunosVisiveis() : (bancoDados.alunos || []);
+        if (alunosVisiveis.length > 0) {
+          carregarAlunoNosCampos(alunosVisiveis[0]);
+          const selEl = document.getElementById('seletor-paciente');
+          if (selEl) selEl.value = alunosVisiveis[0].id;
+          atualizarVisualSeletor(alunosVisiveis[0]);
+        } else {
+          limparCamposCadastro();
+          const selEl = document.getElementById('seletor-paciente');
+          if (selEl) selEl.value = 'novo';
+          aoTrocarPacienteSelecionado();
+        }
       } else {
         if (portal) portal.style.display = 'flex';
         if (app) app.style.display = 'none';
@@ -3517,10 +4493,10 @@
         const passEl = document.getElementById('login-senha');
         if (passEl) passEl.value = '';
         if (userEl) {
-          const creds = obterCredenciaisArmazenadas();
-          userEl.value = creds.usuario;
-          setTimeout(() => { if (passEl) passEl.focus(); }, 100);
+          userEl.value = '';
+          setTimeout(() => { if (userEl) userEl.focus(); }, 100);
         }
+        atualizarInterfaceUsuario(null);
       }
     }
 
@@ -3544,11 +4520,15 @@
         return;
       }
 
-      const creds = obterCredenciaisArmazenadas();
+      const usuarios = obterUsuariosArmazenados();
       const hashDigitado = await gerarHashSenha(senhaDigitada);
 
-      if (usuarioDigitado.toLowerCase() === creds.usuario.toLowerCase() && hashDigitado === creds.senhaHash) {
-        definirSessaoAutenticada(lembrar);
+      const usuarioEncontrado = usuarios.find(u => 
+        (u.usuario || '').toLowerCase() === usuarioDigitado.toLowerCase()
+      );
+
+      if (usuarioEncontrado && usuarioEncontrado.senhaHash === hashDigitado) {
+        definirSessaoAutenticada(lembrar, usuarioEncontrado);
         aplicarEstadoAutenticacao(true);
         if (erroEl) erroEl.style.display = 'none';
         puxarDadosNuvem(true);
@@ -3567,6 +4547,246 @@
         limparSessao();
         aplicarEstadoAutenticacao(false);
       }
+    }
+
+    function abrirModalGerenciarAvaliadores() {
+      const usuarioLogado = obterUsuarioLogado();
+      if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
+        alert('Acesso restrito: somente administradores podem gerenciar avaliadores.');
+        return;
+      }
+
+      const modal = document.getElementById('modal-gerenciar-avaliadores');
+      const errBox = document.getElementById('novo-avaliador-erro');
+      const sucBox = document.getElementById('novo-avaliador-sucesso');
+      if (errBox) errBox.style.display = 'none';
+      if (sucBox) sucBox.style.display = 'none';
+
+      const nomeInput = document.getElementById('novo-avaliador-nome');
+      const userInput = document.getElementById('novo-avaliador-usuario');
+      const passInput = document.getElementById('novo-avaliador-senha');
+      const confInput = document.getElementById('novo-avaliador-confirma');
+      if (nomeInput) nomeInput.value = '';
+      if (userInput) userInput.value = '';
+      if (passInput) passInput.value = '';
+      if (confInput) confInput.value = '';
+
+      renderizarListaAvaliadores();
+
+      if (modal) modal.style.display = 'flex';
+      bloquearScrollFundoIOS(true);
+      setTimeout(() => { if (nomeInput) nomeInput.focus(); }, 100);
+    }
+
+    function fecharModalGerenciarAvaliadores() {
+      const modal = document.getElementById('modal-gerenciar-avaliadores');
+      if (modal) modal.style.display = 'none';
+      bloquearScrollFundoIOS(false);
+    }
+
+    async function cadastrarNovoAvaliador(e) {
+      if (e && e.preventDefault) e.preventDefault();
+      const usuarioLogado = obterUsuarioLogado();
+      if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
+        alert('Acesso restrito: somente administradores podem cadastrar novos avaliadores.');
+        return;
+      }
+
+      const errBox = document.getElementById('novo-avaliador-erro');
+      const errMsg = document.getElementById('novo-avaliador-erro-msg');
+      const sucBox = document.getElementById('novo-avaliador-sucesso');
+      const sucMsg = document.getElementById('novo-avaliador-sucesso-msg');
+
+      if (errBox) errBox.style.display = 'none';
+      if (sucBox) sucBox.style.display = 'none';
+
+      const nome = document.getElementById('novo-avaliador-nome')?.value?.trim() || '';
+      const usuarioRaw = document.getElementById('novo-avaliador-usuario')?.value?.trim() || '';
+      const usuario = usuarioRaw.toLowerCase();
+      const senha = document.getElementById('novo-avaliador-senha')?.value || '';
+      const confirma = document.getElementById('novo-avaliador-confirma')?.value || '';
+
+      if (!nome || nome.length < 2) {
+        if (errMsg) errMsg.textContent = 'Informe o nome completo do avaliador.';
+        if (errBox) errBox.style.display = 'block';
+        return;
+      }
+
+      const regexUsuario = /^[a-z0-9._-]+$/;
+      if (!usuario || !regexUsuario.test(usuario)) {
+        if (errMsg) errMsg.textContent = 'O usuário deve conter apenas letras minúsculas, números, pontos ou traços (sem espaços ou acentos).';
+        if (errBox) errBox.style.display = 'block';
+        return;
+      }
+
+      const usuarios = obterUsuariosArmazenados();
+      if (usuarios.some(u => (u.usuario || '').toLowerCase() === usuario)) {
+        if (errMsg) errMsg.textContent = `O usuário "${usuario}" já está cadastrado. Escolha outro nome de login.`;
+        if (errBox) errBox.style.display = 'block';
+        return;
+      }
+
+      if (!senha || senha.length < 6) {
+        if (errMsg) errMsg.textContent = 'A senha inicial deve ter no mínimo 6 caracteres.';
+        if (errBox) errBox.style.display = 'block';
+        return;
+      }
+
+      if (senha !== confirma) {
+        if (errMsg) errMsg.textContent = 'A confirmação de senha não coincide com a senha digitada.';
+        if (errBox) errBox.style.display = 'block';
+        return;
+      }
+
+      const senhaHash = await gerarHashSenha(senha);
+      const hoje = new Date().toISOString().split('T')[0];
+
+      const novoUsuario = {
+        id: 'usr_' + Date.now(),
+        usuario: usuario,
+        nome: nome,
+        perfil: 'avaliador',
+        senhaHash: senhaHash,
+        criadoEm: hoje,
+        criadoPor: usuarioLogado.usuario
+      };
+
+      usuarios.push(novoUsuario);
+      salvarUsuariosArmazenados(usuarios);
+
+      document.getElementById('novo-avaliador-nome').value = '';
+      document.getElementById('novo-avaliador-usuario').value = '';
+      document.getElementById('novo-avaliador-senha').value = '';
+      document.getElementById('novo-avaliador-confirma').value = '';
+
+      if (sucMsg) sucMsg.textContent = `Avaliador "${nome}" (${usuario}) cadastrado com sucesso!`;
+      if (sucBox) sucBox.style.display = 'block';
+
+      renderizarListaAvaliadores();
+    }
+
+    function excluirAvaliador(id) {
+      const usuarioLogado = obterUsuarioLogado();
+      if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
+        alert('Acesso restrito: somente administradores podem excluir avaliadores.');
+        return;
+      }
+
+      const usuarios = obterUsuariosArmazenados();
+      const alvo = usuarios.find(u => u.id === id);
+      if (!alvo) return;
+
+      if (alvo.perfil === 'admin' || alvo.usuario === 'admin') {
+        alert('O usuário Administrador Principal não pode ser excluído.');
+        return;
+      }
+
+      if (alvo.id === usuarioLogado.id || alvo.usuario.toLowerCase() === usuarioLogado.usuario.toLowerCase()) {
+        alert('Você não pode excluir o seu próprio usuário na sessão ativa.');
+        return;
+      }
+
+      const todosAlunos = bancoDados.alunos || [];
+      const alunosDoAvaliador = todosAlunos.filter(a => (a.criadoPor || '').toLowerCase() === alvo.usuario.toLowerCase());
+
+      const confirmacao = confirm(
+        `Deseja realmente excluir o avaliador "${alvo.nome}" (${alvo.usuario})?\n\n` +
+        (alunosDoAvaliador.length > 0
+          ? `• Este avaliador possui ${alunosDoAvaliador.length} aluno(s) cadastrado(s).\n• Os dados dos alunos serão mantidos sob visualização do Administrador.\n\n`
+          : '• Nenhum aluno foi cadastrado por este usuário.\n\n') +
+        'Pressione OK para confirmar a exclusão.'
+      );
+
+      if (!confirmacao) return;
+
+      const novaLista = usuarios.filter(u => u.id !== id);
+      salvarUsuariosArmazenados(novaLista);
+      renderizarListaAvaliadores();
+      alert(`Avaliador "${alvo.nome}" excluído com sucesso.`);
+    }
+
+    function renderizarListaAvaliadores() {
+      const container = document.getElementById('modal-avaliadores-lista-container');
+      if (!container) return;
+
+      const usuarios = obterUsuariosArmazenados();
+      const usuarioLogado = obterUsuarioLogado() || {};
+      const todosAlunos = (bancoDados && Array.isArray(bancoDados.alunos)) ? bancoDados.alunos : [];
+
+      if (!usuarios || usuarios.length === 0) {
+        container.innerHTML = '<p style="color: #64748b; font-size: 12px;">Nenhum usuário encontrado.</p>';
+        return;
+      }
+
+      let html = `
+        <table style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1; text-align: left; color: #334155;">
+              <th style="padding: 10px 12px; border: 1px solid #e2e8f0;">Nome</th>
+              <th style="padding: 10px 12px; border: 1px solid #e2e8f0;">Usuário</th>
+              <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Perfil</th>
+              <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Alunos</th>
+              <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      usuarios.forEach((usr, idx) => {
+        const bg = (idx % 2 === 0) ? '#ffffff' : '#f8fafc';
+        const ehAdmin = usr.perfil === 'admin' || usr.usuario === 'admin';
+        const ehEuMesmo = (usr.id === usuarioLogado.id || (usr.usuario && usr.usuario.toLowerCase() === (usuarioLogado.usuario || '').toLowerCase()));
+        const qtdAlunos = todosAlunos.filter(a => {
+          if (ehAdmin) {
+            return (!a.criadoPor || a.criadoPor.toLowerCase() === 'admin' || a.criadoPor.toLowerCase() === usr.usuario.toLowerCase());
+          }
+          return (a.criadoPor || '').toLowerCase() === usr.usuario.toLowerCase();
+        }).length;
+
+        const badgePerfil = ehAdmin
+          ? '<span style="background: #e0f2fe; color: #0284c7; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Administrador</span>'
+          : '<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px;">Avaliador</span>';
+
+        let acaoHtml = '';
+        if (ehAdmin) {
+          acaoHtml = '<span style="color: #64748b; font-size: 11px; font-weight: 600;">Padrão / Sistema</span>';
+        } else if (ehEuMesmo) {
+          acaoHtml = '<span style="color: #0284c7; font-size: 11px; font-weight: 600;">Sessão Ativa</span>';
+        } else {
+          acaoHtml = `<button type="button" onclick="excluirAvaliador('${usr.id}')" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fca5a5; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">Excluir</button>`;
+        }
+
+        html += `
+          <tr style="background: ${bg}; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 9px 12px; border: 1px solid #e2e8f0;">
+              <strong style="color: #0f172a;">${usr.nome || usr.usuario}</strong>
+              ${ehEuMesmo ? '<span style="margin-left: 6px; font-size: 10px; background: #f0fdf4; color: #166534; padding: 2px 5px; border-radius: 3px; font-weight: 700;">Você</span>' : ''}
+              <div style="font-size: 10px; color: #94a3b8;">Cadastrado em: ${usr.criadoEm || '--'}</div>
+            </td>
+            <td style="padding: 9px 12px; border: 1px solid #e2e8f0; font-family: monospace; color: #334155;">
+              ${usr.usuario}
+            </td>
+            <td style="padding: 9px 12px; border: 1px solid #e2e8f0; text-align: center;">
+              ${badgePerfil}
+            </td>
+            <td style="padding: 9px 12px; border: 1px solid #e2e8f0; text-align: center;">
+              <span style="background: #e8f1f8; color: #1F4E78; font-weight: 700; padding: 2px 8px; border-radius: 10px; font-size: 11px;">
+                ${qtdAlunos} ${qtdAlunos === 1 ? 'aluno' : 'alunos'}
+              </span>
+            </td>
+            <td style="padding: 9px 12px; border: 1px solid #e2e8f0; text-align: center;">
+              ${acaoHtml}
+            </td>
+          </tr>
+        `;
+      });
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = html;
     }
 
     function alternarVisibilidadeSenha(inputId, iconContainerId) {
@@ -3641,7 +4861,7 @@
 
     function abrirModalTrocarSenha() {
       const modal = document.getElementById('modal-trocar-senha');
-      const creds = obterCredenciaisArmazenadas();
+      const usuarioLogado = obterUsuarioLogado();
       const userEl = document.getElementById('trocar-usuario-atual');
       const atualEl = document.getElementById('trocar-senha-atual');
       const novaEl = document.getElementById('trocar-senha-nova');
@@ -3649,7 +4869,10 @@
       const errEl = document.getElementById('trocar-senha-erro');
       const sucEl = document.getElementById('trocar-senha-sucesso');
 
-      if (userEl) userEl.value = creds.usuario;
+      if (userEl) {
+        userEl.value = usuarioLogado ? usuarioLogado.usuario : 'admin';
+        userEl.readOnly = true;
+      }
       if (atualEl) atualEl.value = '';
       if (novaEl) novaEl.value = '';
       if (confEl) confEl.value = '';
@@ -3681,12 +4904,13 @@
       if (errEl) errEl.style.display = 'none';
       if (sucEl) sucEl.style.display = 'none';
 
-      const novoUsuario = userEl ? userEl.value.trim() : '';
+      const usuarioLogado = obterUsuarioLogado();
+      const usuarioAlvo = (userEl ? userEl.value.trim() : '') || (usuarioLogado ? usuarioLogado.usuario : 'admin');
       const senhaAtual = atualEl ? atualEl.value : '';
       const novaSenha = novaEl ? novaEl.value : '';
       const confirmaSenha = confEl ? confEl.value : '';
 
-      if (!novoUsuario) {
+      if (!usuarioAlvo) {
         if (errMsg) errMsg.textContent = 'Informe um nome de usuário válido.';
         if (errEl) errEl.style.display = 'block';
         return;
@@ -3707,28 +4931,31 @@
         return;
       }
 
-      const creds = obterCredenciaisArmazenadas();
-      const hashAtualDigitada = await gerarHashSenha(senhaAtual);
+      const usuarios = obterUsuariosArmazenados();
+      const usrIdx = usuarios.findIndex(u => (u.usuario || '').toLowerCase() === usuarioAlvo.toLowerCase());
 
-      if (hashAtualDigitada !== creds.senhaHash) {
+      if (usrIdx === -1) {
+        if (errMsg) errMsg.textContent = 'Usuário não encontrado no sistema.';
+        if (errEl) errEl.style.display = 'block';
+        return;
+      }
+
+      const hashAtualDigitada = await gerarHashSenha(senhaAtual);
+      if (hashAtualDigitada !== usuarios[usrIdx].senhaHash) {
         if (errMsg) errMsg.textContent = 'A senha atual informada está incorreta.';
         if (errEl) errEl.style.display = 'block';
         return;
       }
 
       const novoHash = await gerarHashSenha(novaSenha);
-      const salvo = salvarCredenciais(novoUsuario, novoHash);
+      usuarios[usrIdx].senhaHash = novoHash;
+      salvarUsuariosArmazenados(usuarios);
 
-      if (salvo) {
-        if (sucMsg) sucMsg.textContent = 'Credenciais atualizadas com sucesso! Utilize as novas credenciais no próximo acesso.';
-        if (sucEl) sucEl.style.display = 'block';
-        setTimeout(() => {
-          fecharModalTrocarSenha();
-        }, 1500);
-      } else {
-        if (errMsg) errMsg.textContent = 'Erro ao gravar novas credenciais.';
-        if (errEl) errEl.style.display = 'block';
-      }
+      if (sucMsg) sucMsg.textContent = 'Credenciais atualizadas com sucesso! Utilize a nova senha no próximo acesso.';
+      if (sucEl) sucEl.style.display = 'block';
+      setTimeout(() => {
+        fecharModalTrocarSenha();
+      }, 1500);
     }
     // ==========================================
     // BANCO DE DADOS LOCAL (LOCALSTORAGE)
@@ -4084,6 +5311,10 @@
           if (!a.grupoEtario) {
             a.grupoEtario = (a.idade >= 60 ? 'idoso' : (a.idade < 18 ? 'adolescente' : 'adulto'));
           }
+          if (!a.criadoPor) {
+            a.criadoPor = 'admin';
+            a.avaliadorNome = 'Administrador Barbosa';
+          }
         });
 
         localStorage.setItem(DB_KEY, JSON.stringify(parsed));
@@ -4096,6 +5327,21 @@
     function salvarBanco(db) {
       localStorage.setItem(DB_KEY, JSON.stringify(db));
     }
+
+    // Compartimentalizacao de Alunos por Perfil de Usuario
+    function obterAlunosVisiveis() {
+      if (!bancoDados || !Array.isArray(bancoDados.alunos)) return [];
+      const usuarioLogado = obterUsuarioLogado();
+      if (!usuarioLogado || usuarioLogado.perfil === 'admin') {
+        return bancoDados.alunos;
+      }
+      const u = (usuarioLogado.usuario || '').toLowerCase();
+      return bancoDados.alunos.filter(aluno => {
+        const criador = (aluno.criadoPor || '').toLowerCase();
+        return criador === u;
+      });
+    }
+    window.obterAlunosVisiveis = obterAlunosVisiveis;
 
     // ==========================================
     // SINCRONIZAÇÃO EM NUVEM (GOOGLE SHEETS API)
@@ -4234,6 +5480,9 @@
               if (aNuvem.grupoEtario && !aLocal.grupoEtario) aLocal.grupoEtario = aNuvem.grupoEtario;
               if (aNuvem.objetivo && !aLocal.objetivo) aLocal.objetivo = aNuvem.objetivo;
               if (aNuvem.telefone && !aLocal.telefone) aLocal.telefone = aNuvem.telefone;
+              if (aNuvem.criadoPor && !aLocal.criadoPor) aLocal.criadoPor = aNuvem.criadoPor;
+              if (aNuvem.avaliadorNome && !aLocal.avaliadorNome) aLocal.avaliadorNome = aNuvem.avaliadorNome;
+              if (aNuvem.criadoEm && !aLocal.criadoEm) aLocal.criadoEm = aNuvem.criadoEm;
               if (aNuvem.anamnese && (!aLocal.anamnese || Object.keys(aLocal.anamnese).length === 0)) {
                 aLocal.anamnese = aNuvem.anamnese;
                 houveAlteracao = true;
@@ -4421,10 +5670,23 @@
         }
 
         if (t.fezEsteira) {
-          if (t.esteiraVelPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Velocidade de Pico (Vpico)', `${Number(t.esteiraVelPico).toFixed(2)} km/h`, 'Velocidade máxima na esteira plana');
-          if (t.esteiraVo2) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'VO2máx Estimado', `${t.esteiraVo2} ml/kg/min`, t.esteiraVo2 >= (sexo === 'M' ? 44 : 38) ? 'Capacidade Aeróbia Excelente' : 'Bom Condicionamento');
-          if (t.esteiraFcPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'FC Pico Atingida', `${t.esteiraFcPico} bpm`, `${Math.round((t.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista`);
-          if (t.esteiraRfc1Min != null) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Recuperação da FC (RFC 1º min)', `-${t.esteiraRfc1Min} bpm`, t.esteiraRfc1Min >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)');
+          if (t.cardioTipo === 'george') {
+            const estTxt = t.cardioEstagio === '1' ? 'Estágio 1 (Caminhada 4,8-6,4 km/h)' : (t.cardioEstagio === '2' ? 'Estágio 2 (Trote 6,6-9,7 km/h)' : 'Estágio 3 (Corrida >9,7 km/h)');
+            addLinha('Aptidão Cardiorrespiratória (George et al.)', 'Protocolo Submáximo', estTxt, 'Esteira Plana 0%');
+            if (t.cardioVelKm) addLinha('Aptidão Cardiorrespiratória (George et al.)', 'Velocidade na Esteira', `${t.cardioVelKm} km/h (${(t.cardioVelKm / 1.60934).toFixed(1)} mph)`, 'Velocidade do estágio atingido');
+            if (t.cardioVo2 || t.esteiraVo2) addLinha('Aptidão Cardiorrespiratória (George et al.)', 'VO2máx Submáximo Estimado', `${t.cardioVo2 || t.esteiraVo2} ml/kg/min`, t.cardioClassificacao || t.esteiraClassificacao || 'Capacidade Aeróbia Submáxima');
+            if (t.cardioFcFinal || t.esteiraFcPico) {
+              const fcVal = t.cardioFcFinal || t.esteiraFcPico;
+              const fcMaxTanaka = Math.round(208 - (0.7 * idade));
+              addLinha('Aptidão Cardiorrespiratória (George et al.)', 'FC Final Atingida', `${fcVal} bpm`, `${Math.round((fcVal / fcMaxTanaka) * 100)}% da FCmáx Tanaka (${fcMaxTanaka} bpm)`);
+            }
+            if (t.cardioBorg) addLinha('Aptidão Cardiorrespiratória (George et al.)', 'Percepção de Esforço (Borg)', `${t.cardioBorg}`, 'Escala 6-20');
+          } else {
+            if (t.esteiraVelPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Velocidade de Pico (Vpico)', `${Number(t.esteiraVelPico).toFixed(2)} km/h`, 'Velocidade máxima na esteira plana');
+            if (t.esteiraVo2) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'VO2máx Estimado', `${t.esteiraVo2} ml/kg/min`, t.esteiraClassificacao || (t.esteiraVo2 >= (sexo === 'M' ? 44 : 38) ? 'Capacidade Aeróbia Excelente' : 'Bom Condicionamento'));
+            if (t.esteiraFcPico) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'FC Pico Atingida', `${t.esteiraFcPico} bpm`, `${Math.round((t.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista`);
+            if (t.esteiraRfc1Min != null) addLinha('Aptidão Cardiorrespiratória (Esteira)', 'Recuperação da FC (RFC 1º min)', `-${t.esteiraRfc1Min} bpm`, t.esteiraRfc1Min >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)');
+          }
         }
       }
 
@@ -4552,11 +5814,12 @@
       atualizarDropdownPacientes();
 
       // Carrega o primeiro aluno por padrão para demonstração, ou inicia ficha em branco se vazio
-      if (bancoDados.alunos && bancoDados.alunos.length > 0) {
-        carregarAlunoNosCampos(bancoDados.alunos[0]);
+      const alunosIniciais = obterAlunosVisiveis();
+      if (alunosIniciais && alunosIniciais.length > 0) {
+        carregarAlunoNosCampos(alunosIniciais[0]);
         const selEl = document.getElementById('seletor-paciente');
-        if (selEl) selEl.value = bancoDados.alunos[0].id;
-        atualizarVisualSeletor(bancoDados.alunos[0]);
+        if (selEl) selEl.value = alunosIniciais[0].id;
+        atualizarVisualSeletor(alunosIniciais[0]);
       } else {
         limparCamposCadastro();
         const selEl = document.getElementById('seletor-paciente');
@@ -4599,29 +5862,34 @@
       const btnExcluir = document.getElementById('btn-excluir-aluno');
       const valorAtual = sel.value;
 
+      const alunosVisiveis = obterAlunosVisiveis();
+
       let html = '<option value="novo">Cadastrar Novo Paciente (Ficha em Branco)</option>';
-      (bancoDados.alunos || []).forEach(a => {
+      alunosVisiveis.forEach(a => {
         const evalsCount = a.avaliacoes ? a.avaliacoes.length : 0;
         html += `<option value="${a.id}">${a.nome} (${evalsCount} avaliaç${evalsCount === 1 ? 'ão' : 'ões'})</option>`;
       });
 
       sel.innerHTML = html;
-      if (valorAtual && valorAtual !== 'novo' && bancoDados.alunos.some(a => a.id === valorAtual)) {
+      if (valorAtual && valorAtual !== 'novo' && alunosVisiveis.some(a => a.id === valorAtual)) {
         sel.value = valorAtual;
         if (btnReavaliar) btnReavaliar.style.display = 'inline-block';
         if (btnExcluir) btnExcluir.style.display = 'inline-block';
-      } else if (valorAtual === 'novo') {
+      } else if (valorAtual === 'novo' || alunosVisiveis.length === 0) {
         sel.value = 'novo';
         if (btnReavaliar) btnReavaliar.style.display = 'none';
         if (btnExcluir) btnExcluir.style.display = 'none';
-      } else if (bancoDados.alunos.length > 0) {
-        sel.value = bancoDados.alunos[0].id;
+        if (valorAtual !== 'novo') {
+          limparCamposCadastro();
+        }
+      } else {
+        sel.value = alunosVisiveis[0].id;
         if (btnReavaliar) btnReavaliar.style.display = 'inline-block';
         if (btnExcluir) btnExcluir.style.display = 'inline-block';
-      } else {
-        sel.value = 'novo';
-        if (btnReavaliar) btnReavaliar.style.display = 'none';
-        if (btnExcluir) btnExcluir.style.display = 'none';
+      }
+
+      if (typeof atualizarDropdownAlunosTreino === 'function') {
+        atualizarDropdownAlunosTreino();
       }
     }
 
@@ -4629,16 +5897,17 @@
     function aoTrocarPacienteSelecionado() {
       const sel = document.getElementById('seletor-paciente');
       const selVal = sel ? sel.value : 'novo';
-      const btnReavaliar = document.getElementById('btn-reavaliar-direto');
-      const btnExcluir = document.getElementById('btn-excluir-aluno');
+      const alunosVisiveis = obterAlunosVisiveis();
 
       if (selVal === 'novo') {
         limparCamposCadastro();
       } else {
-        const aluno = bancoDados.alunos.find(a => a.id === selVal);
+        const aluno = alunosVisiveis.find(a => a.id === selVal);
         if (aluno) {
           carregarAlunoNosCampos(aluno);
           atualizarVisualSeletor(aluno);
+        } else {
+          limparCamposCadastro();
         }
       }
     }
@@ -4795,6 +6064,12 @@
       if (document.getElementById('ad_extensora_feedback')) document.getElementById('ad_extensora_feedback').textContent = '';
       if (document.getElementById('ad_check_esteira')) document.getElementById('ad_check_esteira').checked = false;
       if (document.getElementById('ad-container-esteira')) document.getElementById('ad-container-esteira').style.display = 'none';
+      if (document.getElementById('ad_radio_cardio_george')) document.getElementById('ad_radio_cardio_george').checked = true;
+      if (document.getElementById('ad_cardio_george_vel')) document.getElementById('ad_cardio_george_vel').value = '';
+      if (document.getElementById('ad_cardio_george_fc')) document.getElementById('ad_cardio_george_fc').value = '';
+      if (document.getElementById('ad_cardio_george_estagio')) document.getElementById('ad_cardio_george_estagio').value = '2';
+      if (document.getElementById('ad_cardio_george_pfa')) document.getElementById('ad_cardio_george_pfa').value = '14';
+      if (document.getElementById('ad_cardio_george_par')) document.getElementById('ad_cardio_george_par').value = '4';
       if (document.getElementById('ad_esteira_vel_completa')) document.getElementById('ad_esteira_vel_completa').value = '';
       if (document.getElementById('ad_esteira_segundos')) document.getElementById('ad_esteira_segundos').value = '';
       if (document.getElementById('ad_esteira_fc_pico')) document.getElementById('ad_esteira_fc_pico').value = '';
@@ -4820,8 +6095,18 @@
     }
 
     function excluirAlunoPorId(id) {
-      const aluno = bancoDados.alunos.find(a => a.id === id);
+      const todosAlunos = bancoDados.alunos || [];
+      const aluno = todosAlunos.find(a => a.id === id);
       if (!aluno) return;
+
+      const usuarioLogado = obterUsuarioLogado();
+      if (usuarioLogado && usuarioLogado.perfil !== 'admin') {
+        const criador = (aluno.criadoPor || '').toLowerCase();
+        if (criador !== (usuarioLogado.usuario || '').toLowerCase()) {
+          alert('Permissão negada: você só pode excluir alunos cadastrados por você.');
+          return;
+        }
+      }
 
       const evCount = aluno.avaliacoes ? aluno.avaliacoes.length : 0;
       const confirmacao = confirm(
@@ -4850,9 +6135,10 @@
       renderizarListaModalAlunos();
 
       const selEl = document.getElementById('seletor-paciente');
+      const alunosVisiveis = obterAlunosVisiveis();
       if (dadosAluno.id === id || (selEl && selEl.value === id)) {
-        if (bancoDados.alunos.length > 0) {
-          const proximo = bancoDados.alunos[0];
+        if (alunosVisiveis.length > 0) {
+          const proximo = alunosVisiveis[0];
           carregarAlunoNosCampos(proximo);
           if (selEl) selEl.value = proximo.id;
           atualizarVisualSeletor(proximo);
@@ -4902,7 +6188,8 @@
     }
 
     function selecionarAlunoViaModal(id) {
-      const aluno = bancoDados.alunos.find(a => a.id === id);
+      const alunosVisiveis = obterAlunosVisiveis();
+      const aluno = alunosVisiveis.find(a => a.id === id);
       if (!aluno) return;
       carregarAlunoNosCampos(aluno);
       const sel = document.getElementById('seletor-paciente');
@@ -4924,18 +6211,27 @@
       const container = document.getElementById('modal-alunos-lista-container');
       if (!container) return;
 
-      if (!bancoDados.alunos || bancoDados.alunos.length === 0) {
+      const usuarioLogado = obterUsuarioLogado() || {};
+      const ehAdmin = (usuarioLogado.perfil === 'admin');
+      const alunosVisiveis = obterAlunosVisiveis();
+
+      if (!alunosVisiveis || alunosVisiveis.length === 0) {
         container.innerHTML = `
           <div style="text-align: center; padding: 40px 20px; color: #64748b;">
             <p style="font-size: 15px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">Nenhum aluno cadastrado no momento.</p>
-            <p style="font-size: 13px; margin-bottom: 20px; color: #64748b;">Todos os alunos foram excluídos. Você pode iniciar um novo cadastro do zero ou restaurar os dados de demonstração.</p>
+            <p style="font-size: 13px; margin-bottom: 20px; color: #64748b;">
+              ${ehAdmin
+                ? 'Todos os alunos foram excluídos. Você pode iniciar um novo cadastro do zero ou restaurar os dados de demonstração.'
+                : 'Você ainda não possui alunos cadastrados. Clique no botão abaixo para iniciar um novo cadastro.'}
+            </p>
             <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
               <button type="button" onclick="iniciarNovoCadastroViaModal()" class="btn btn-primary" style="font-size: 12px; padding: 8px 16px;">
                 + Iniciar Novo Cadastro
               </button>
+              ${ehAdmin ? `
               <button type="button" onclick="restaurarAlunosDemonstracao()" class="btn btn-secondary" style="font-size: 12px; padding: 8px 16px;">
                 Restaurar Demonstração
-              </button>
+              </button>` : ''}
             </div>
           </div>
         `;
@@ -4946,13 +6242,16 @@
 
       let html = `
         <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-          <span style="font-size: 12px; color: #64748b; font-weight: 600;">Total de alunos cadastrados: <strong>${bancoDados.alunos.length}</strong></span>
+          <span style="font-size: 12px; color: #64748b; font-weight: 600;">
+            ${ehAdmin ? 'Total de alunos cadastrados no sistema:' : 'Alunos cadastrados por você:'} <strong>${alunosVisiveis.length}</strong>
+          </span>
           <span style="font-size: 11px; color: #94a3b8;">Clique em "Excluir" para remover o aluno e seu histórico</span>
         </div>
         <table style="width: 100%; border-collapse: collapse; font-size: 12px; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
           <thead>
             <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1; text-align: left; color: #334155;">
               <th style="padding: 10px 12px; border: 1px solid #e2e8f0;">Aluno / Paciente</th>
+              ${ehAdmin ? '<th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Cadastrado Por</th>' : ''}
               <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Idade / Sexo</th>
               <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Avaliações</th>
               <th style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center;">Última Avaliação</th>
@@ -4962,11 +6261,12 @@
           <tbody>
       `;
 
-      bancoDados.alunos.forEach((aluno, idx) => {
+      alunosVisiveis.forEach((aluno, idx) => {
         const evCount = aluno.avaliacoes ? aluno.avaliacoes.length : 0;
         const ultData = evCount > 0 ? aluno.avaliacoes[evCount - 1].data : 'Nenhuma';
         const ehAtivo = (dadosAluno.id === aluno.id || selAtual === aluno.id);
         const bg = ehAtivo ? '#f0f9ff' : (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
+        const criadorNome = aluno.avaliadorNome || aluno.criadoPor || 'Administrador';
 
         html += `
           <tr style="background: ${bg}; border-bottom: 1px solid #e2e8f0;">
@@ -4975,6 +6275,12 @@
               ${ehAtivo ? '<span style="margin-left: 6px; font-size: 10px; background: #e0f2fe; color: #0284c7; padding: 2px 6px; border-radius: 4px; font-weight: 700;">Ativo</span>' : ''}
               <div style="font-size: 11px; color: #64748b; margin-top: 2px;">${aluno.objetivo || 'Sem objetivo informado'}</div>
             </td>
+            ${ehAdmin ? `
+            <td style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center; color: #334155;">
+              <span style="display: inline-block; background: #f1f5f9; color: #1e293b; font-weight: 600; padding: 2px 8px; border-radius: 4px; font-size: 11px;">
+                ${criadorNome}
+              </span>
+            </td>` : ''}
             <td style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center; color: #334155;">
               ${aluno.idade ? `${aluno.idade} anos` : '--'} / ${aluno.sexo === 'M' ? 'M' : 'F'}
             </td>
@@ -5007,6 +6313,12 @@
     }
 
     function restaurarAlunosDemonstracao() {
+      const usuarioLogado = obterUsuarioLogado();
+      if (!usuarioLogado || usuarioLogado.perfil !== 'admin') {
+        alert('Acesso restrito: somente administradores podem restaurar a base de demonstração.');
+        return;
+      }
+
       const confirmacao = confirm(
         'Deseja restaurar os 4 alunos de demonstração (Carlos Mendes, Mariana Costa, Lucas Santos e Dona Dirce)?\n\n' +
         '• Alunos cadastrados por você não serão apagados.\n' +
@@ -5018,6 +6330,8 @@
       bancoDados.excluidos = (bancoDados.excluidos || []).filter(id => !demos.some(d => d.id === id));
 
       demos.forEach(d => {
+        d.criadoPor = 'admin';
+        d.avaliadorNome = 'Administrador Barbosa';
         const idx = bancoDados.alunos.findIndex(a => a.id === d.id);
         if (idx >= 0) {
           bancoDados.alunos[idx] = JSON.parse(JSON.stringify(d));
@@ -5031,8 +6345,9 @@
       atualizarDropdownPacientes();
       renderizarListaModalAlunos();
 
-      if (bancoDados.alunos.length > 0) {
-        const primeiro = bancoDados.alunos[0];
+      const alunosVisiveis = obterAlunosVisiveis();
+      if (alunosVisiveis.length > 0) {
+        const primeiro = alunosVisiveis[0];
         carregarAlunoNosCampos(primeiro);
         const selEl = document.getElementById('seletor-paciente');
         if (selEl) selEl.value = primeiro.id;
@@ -5199,10 +6514,30 @@
               alternarTesteEsteiraAdulto();
             }
             if (ultAv.testes.fezEsteira) {
-              if (document.getElementById('ad_esteira_vel_completa')) document.getElementById('ad_esteira_vel_completa').value = ultAv.testes.esteiraVelCompleta || '';
-              if (document.getElementById('ad_esteira_segundos')) document.getElementById('ad_esteira_segundos').value = ultAv.testes.esteiraSegundos || '';
-              if (document.getElementById('ad_esteira_fc_pico')) document.getElementById('ad_esteira_fc_pico').value = ultAv.testes.esteiraFcPico || '';
-              if (document.getElementById('ad_esteira_borg')) document.getElementById('ad_esteira_borg').value = ultAv.testes.esteiraBorg || '19';
+              const isGeorge = (ultAv.testes.cardioTipo === 'george') || (ultAv.testes.cardioVo2 && !ultAv.testes.esteiraVelCompleta);
+              if (document.getElementById('ad_radio_cardio_george')) {
+                document.getElementById('ad_radio_cardio_george').checked = isGeorge;
+              }
+              if (document.getElementById('ad_radio_cardio_maximo')) {
+                document.getElementById('ad_radio_cardio_maximo').checked = !isGeorge;
+              }
+              alternarTipoProtocoloCardioAdulto();
+
+              if (isGeorge) {
+                if (document.getElementById('ad_cardio_george_estagio')) document.getElementById('ad_cardio_george_estagio').value = ultAv.testes.cardioEstagio || '2';
+                if (document.getElementById('ad_cardio_george_vel')) document.getElementById('ad_cardio_george_vel').value = ultAv.testes.cardioVelKm || ultAv.testes.esteiraVelPico || '';
+                if (document.getElementById('ad_cardio_george_fc')) document.getElementById('ad_cardio_george_fc').value = ultAv.testes.cardioFcFinal || ultAv.testes.esteiraFcPico || '';
+                if (document.getElementById('ad_cardio_george_borg')) document.getElementById('ad_cardio_george_borg').value = ultAv.testes.cardioBorg || ultAv.testes.esteiraBorg || '13';
+                if (document.getElementById('ad_cardio_george_pfa')) document.getElementById('ad_cardio_george_pfa').value = ultAv.testes.cardioPfa || '14';
+                if (document.getElementById('ad_cardio_george_par')) document.getElementById('ad_cardio_george_par').value = ultAv.testes.cardioPar || '4';
+                calcularCardioGeorgeAdulto();
+              } else {
+                if (document.getElementById('ad_esteira_vel_completa')) document.getElementById('ad_esteira_vel_completa').value = ultAv.testes.esteiraVelCompleta || '';
+                if (document.getElementById('ad_esteira_segundos')) document.getElementById('ad_esteira_segundos').value = ultAv.testes.esteiraSegundos || '';
+                if (document.getElementById('ad_esteira_fc_pico')) document.getElementById('ad_esteira_fc_pico').value = ultAv.testes.esteiraFcPico || '';
+                if (document.getElementById('ad_esteira_borg')) document.getElementById('ad_esteira_borg').value = ultAv.testes.esteiraBorg || '19';
+                calcularEsteiraAdulto();
+              }
             }
           }
         }
@@ -5223,7 +6558,7 @@
         calcularForcaMMSS();
         calcularForcaMMII();
         if (document.getElementById('ad_check_esteira')?.checked) {
-          calcularEsteiraAdulto();
+          alternarTipoProtocoloCardioAdulto();
         }
       } else {
         alternarMetodoGorduraJovem();
@@ -5384,6 +6719,10 @@
       identificarPerfilIdade();
 
       // Salva ou atualiza o aluno diretamente no banco de dados local (localStorage)
+      const usuarioLogado = obterUsuarioLogado();
+      const loginAtual = usuarioLogado ? usuarioLogado.usuario : 'admin';
+      const nomeAtual = usuarioLogado ? (usuarioLogado.nome || usuarioLogado.usuario) : 'Administrador';
+
       let alunoExistente = bancoDados.alunos.find(a => 
         (dadosAluno.id && a.id === dadosAluno.id) || 
         (a.nome && a.nome.trim().toLowerCase() === nome.toLowerCase())
@@ -5400,7 +6739,10 @@
           grupoEtario: dadosAluno.grupoEtario || (idade >= 60 ? 'idoso' : (idade < 18 ? 'adolescente' : 'adulto')),
           identificacao: { ...dadosAluno.identificacao },
           anamnese: { ...dadosAluno.anamnese },
-          avaliacoes: []
+          avaliacoes: [],
+          criadoPor: loginAtual,
+          avaliadorNome: nomeAtual,
+          criadoEm: new Date().toISOString()
         };
         bancoDados.alunos.unshift(alunoExistente);
       } else {
@@ -5412,6 +6754,10 @@
         alunoExistente.grupoEtario = dadosAluno.grupoEtario || alunoExistente.grupoEtario || (idade >= 60 ? 'idoso' : (idade < 18 ? 'adolescente' : 'adulto'));
         alunoExistente.identificacao = { ...(alunoExistente.identificacao || {}), ...dadosAluno.identificacao };
         alunoExistente.anamnese = { ...(alunoExistente.anamnese || {}), ...dadosAluno.anamnese };
+        if (!alunoExistente.criadoPor) {
+          alunoExistente.criadoPor = loginAtual;
+          alunoExistente.avaliadorNome = nomeAtual;
+        }
       }
 
       dadosAluno.id = alunoExistente.id;
@@ -5803,13 +7149,13 @@
       const idade = (dadosAluno && dadosAluno.identificacao && dadosAluno.identificacao.idade) || parseInt(document.getElementById('idade')?.value) || 68;
       const peso = (dadosAluno && dadosAluno.composicao && dadosAluno.composicao.peso) || parseFloat(document.getElementById('idoso_peso')?.value) || 65.0;
 
-      // FCmáx prevista e faixa alvo de 70% a 90% (George et al. 2009: 220 - idade)
-      const fcMax = Math.max(100, 220 - idade);
+      // FCmáx prevista por Tanaka et al. (2001) [208 - (0.7 * idade)] e faixa alvo de 70% a 90%
+      const fcMax = Math.round(208 - (0.7 * idade));
       const fc70 = Math.round(0.70 * fcMax);
       const fc90 = Math.round(0.90 * fcMax);
       const metaSpan = document.getElementById('id_cardio_fc_meta');
       if (metaSpan) {
-        metaSpan.textContent = `(Faixa alvo 70-90% FCmáx: ${fc70} a ${fc90} bpm • FCmáx prevista: ${fcMax} bpm)`;
+        metaSpan.textContent = `(Faixa alvo 70-90% FCmáx Tanaka: ${fc70} a ${fc90} bpm • FCmáx Tanaka: ${fcMax} bpm)`;
       }
 
       const resMph = document.getElementById('id_res_cardio_mph');
@@ -5879,7 +7225,7 @@
 
       if (fcFinal > 0) {
         const pct = Math.round((fcFinal / fcMax) * 100);
-        if (resFcPct) resFcPct.textContent = `${pct}% da FCmáx (${fcFinal} bpm)`;
+        if (resFcPct) resFcPct.textContent = `${pct}% da FCmáx Tanaka (${fcFinal} bpm)`;
         if (resFcBadge) {
           if (pct >= 70 && pct <= 90) {
             resFcBadge.className = 'status-badge badge-ok';
@@ -6842,16 +8188,30 @@
       }
     }
 
-    function alternarTesteEsteiraAdulto() {
-      const chk = document.getElementById('ad_check_esteira').checked;
-      const cont = document.getElementById('ad-container-esteira');
-      cont.style.display = chk ? 'block' : 'none';
-      if (chk) {
+    function alternarTipoProtocoloCardioAdulto() {
+      const isGeorge = document.getElementById('ad_radio_cardio_george')?.checked ?? true;
+      const secGeorge = document.getElementById('ad-container-cardio-george');
+      const secMaximo = document.getElementById('ad-container-cardio-maximo');
+      if (secGeorge) secGeorge.style.display = isGeorge ? 'block' : 'none';
+      if (secMaximo) secMaximo.style.display = isGeorge ? 'none' : 'block';
+
+      if (isGeorge) {
+        calcularCardioGeorgeAdulto();
+      } else {
         const tbody = document.getElementById('treadmill-protocolo-corpo');
         if (!tbody || !tbody.hasChildNodes() || tbody.children.length === 0) {
           gerarTabelaProtocoloEsteira();
         }
         calcularEsteiraAdulto();
+      }
+    }
+
+    function alternarTesteEsteiraAdulto() {
+      const chk = document.getElementById('ad_check_esteira').checked;
+      const cont = document.getElementById('ad-container-esteira');
+      cont.style.display = chk ? 'block' : 'none';
+      if (chk) {
+        alternarTipoProtocoloCardioAdulto();
       }
     }
 
@@ -7480,6 +8840,157 @@
       return linhas;
     }
 
+    function classificarVo2Adulto(vo2, idade, sexo) {
+      if (!vo2 || isNaN(vo2) || vo2 <= 0) {
+        return { texto: 'Aguardando dados', badge: 'badge-neutral' };
+      }
+      const isM = (sexo === 'M');
+      const id = parseInt(idade, 10) || 30;
+
+      if (id < 30) {
+        // 18 a 29 anos (ACSM / Cooper Institute)
+        if (isM) {
+          if (vo2 >= 52.4) return { texto: 'Superior / Atleta (≥ 52.4)', badge: 'badge-ok' };
+          if (vo2 >= 46.4) return { texto: 'Excelente (46.4 a 52.3)', badge: 'badge-ok' };
+          if (vo2 >= 42.4) return { texto: 'Bom (42.4 a 46.3)', badge: 'badge-ok' };
+          if (vo2 >= 37.8) return { texto: 'Regular (37.8 a 42.3)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 37.8)', badge: 'badge-alert' };
+        } else {
+          if (vo2 >= 41.0) return { texto: 'Superior / Atleta (≥ 41.0)', badge: 'badge-ok' };
+          if (vo2 >= 35.6) return { texto: 'Excelente (35.6 a 40.9)', badge: 'badge-ok' };
+          if (vo2 >= 32.3) return { texto: 'Bom (32.3 a 35.5)', badge: 'badge-ok' };
+          if (vo2 >= 29.4) return { texto: 'Regular (29.4 a 32.2)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 29.4)', badge: 'badge-alert' };
+        }
+      } else if (id < 40) {
+        // 30 a 39 anos
+        if (isM) {
+          if (vo2 >= 50.0) return { texto: 'Superior / Atleta (≥ 50.0)', badge: 'badge-ok' };
+          if (vo2 >= 44.0) return { texto: 'Excelente (44.0 a 49.9)', badge: 'badge-ok' };
+          if (vo2 >= 41.0) return { texto: 'Bom (41.0 a 43.9)', badge: 'badge-ok' };
+          if (vo2 >= 35.0) return { texto: 'Regular (35.0 a 40.9)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 35.0)', badge: 'badge-alert' };
+        } else {
+          if (vo2 >= 39.0) return { texto: 'Superior / Atleta (≥ 39.0)', badge: 'badge-ok' };
+          if (vo2 >= 33.8) return { texto: 'Excelente (33.8 a 38.9)', badge: 'badge-ok' };
+          if (vo2 >= 30.5) return { texto: 'Bom (30.5 a 33.7)', badge: 'badge-ok' };
+          if (vo2 >= 27.2) return { texto: 'Regular (27.2 a 30.4)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 27.2)', badge: 'badge-alert' };
+        }
+      } else if (id < 50) {
+        // 40 a 49 anos
+        if (isM) {
+          if (vo2 >= 46.0) return { texto: 'Superior / Atleta (≥ 46.0)', badge: 'badge-ok' };
+          if (vo2 >= 41.0) return { texto: 'Excelente (41.0 a 45.9)', badge: 'badge-ok' };
+          if (vo2 >= 38.0) return { texto: 'Bom (38.0 a 40.9)', badge: 'badge-ok' };
+          if (vo2 >= 33.0) return { texto: 'Regular (33.0 a 37.9)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 33.0)', badge: 'badge-alert' };
+        } else {
+          if (vo2 >= 37.0) return { texto: 'Superior / Atleta (≥ 37.0)', badge: 'badge-ok' };
+          if (vo2 >= 31.6) return { texto: 'Excelente (31.6 a 36.9)', badge: 'badge-ok' };
+          if (vo2 >= 28.7) return { texto: 'Bom (28.7 a 31.5)', badge: 'badge-ok' };
+          if (vo2 >= 25.0) return { texto: 'Regular (25.0 a 28.6)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 25.0)', badge: 'badge-alert' };
+        }
+      } else {
+        // 50 a 59 anos (ou mais)
+        if (isM) {
+          if (vo2 >= 43.0) return { texto: 'Superior / Atleta (≥ 43.0)', badge: 'badge-ok' };
+          if (vo2 >= 38.0) return { texto: 'Excelente (38.0 a 42.9)', badge: 'badge-ok' };
+          if (vo2 >= 35.0) return { texto: 'Bom (35.0 a 37.9)', badge: 'badge-ok' };
+          if (vo2 >= 30.0) return { texto: 'Regular (30.0 a 34.9)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 30.0)', badge: 'badge-alert' };
+        } else {
+          if (vo2 >= 34.0) return { texto: 'Superior / Atleta (≥ 34.0)', badge: 'badge-ok' };
+          if (vo2 >= 28.7) return { texto: 'Excelente (28.7 a 33.9)', badge: 'badge-ok' };
+          if (vo2 >= 25.5) return { texto: 'Bom (25.5 a 28.6)', badge: 'badge-ok' };
+          if (vo2 >= 22.0) return { texto: 'Regular (22.0 a 25.4)', badge: 'badge-warn' };
+          return { texto: 'Abaixo da Média (< 22.0)', badge: 'badge-alert' };
+        }
+      }
+    }
+
+    function calcularCardioGeorgeAdulto() {
+      const velKm = parseFloat(document.getElementById('ad_cardio_george_vel')?.value) || 0;
+      const fcFinal = parseInt(document.getElementById('ad_cardio_george_fc')?.value) || 0;
+      const pfa = parseFloat(document.getElementById('ad_cardio_george_pfa')?.value) || 14;
+      const par = parseFloat(document.getElementById('ad_cardio_george_par')?.value) || 4;
+
+      const sexo = (dadosAluno && dadosAluno.identificacao && dadosAluno.identificacao.sexo) || document.getElementById('sexo')?.value || 'M';
+      const idade = (dadosAluno && dadosAluno.identificacao && dadosAluno.identificacao.idade) || parseInt(document.getElementById('idade')?.value) || 30;
+      const peso = (dadosAluno && dadosAluno.composicao && dadosAluno.composicao.peso) || parseFloat(document.getElementById('ad_peso')?.value) || 70.0;
+
+      // FCmáx prevista por Tanaka et al. (2001) [208 - (0.7 * idade)] e faixa alvo de 70% a 90%
+      const fcMax = Math.round(208 - (0.7 * idade));
+      const fc70 = Math.round(0.70 * fcMax);
+      const fc90 = Math.round(0.90 * fcMax);
+      const metaSpan = document.getElementById('ad_cardio_george_fc_meta');
+      if (metaSpan) {
+        metaSpan.textContent = `(Faixa alvo 70-90% FCmáx Tanaka: ${fc70} a ${fc90} bpm • FCmáx Tanaka: ${fcMax} bpm)`;
+      }
+
+      const resMph = document.getElementById('ad_res_cardio_george_mph');
+      const resVo2 = document.getElementById('ad_res_cardio_george_vo2');
+      const resVo2Badge = document.getElementById('ad_res_cardio_george_vo2_badge');
+      const resFcPct = document.getElementById('ad_res_cardio_george_fc_percent');
+      const resFcBadge = document.getElementById('ad_res_cardio_george_fc_badge');
+
+      if (velKm > 0) {
+        const velMph = velKm / 1.60934;
+        if (resMph) resMph.textContent = `${velMph.toFixed(1)} mph`;
+
+        // Equação de George et al. (2009) - Modelo 2:
+        // VO2max = 30.04 + (6.37 * gender; F=0, M=1) - (0.243 * age) - (0.122 * body_mass_kg) + (3.263 * speed_mph) + (0.391 * PFA) + (0.669 * PA-R)
+        const genderVal = (sexo === 'M' ? 1 : 0);
+        const vo2 = 30.04 + (6.37 * genderVal) - (0.243 * idade) - (0.122 * peso) + (3.263 * velMph) + (0.391 * pfa) + (0.669 * par);
+        const vo2Final = Math.max(10.0, Number(vo2.toFixed(1)));
+
+        if (resVo2) {
+          resVo2.textContent = `${vo2Final.toFixed(1)} ml/kg/min`;
+          resVo2.setAttribute('data-vo2', vo2Final.toFixed(1));
+        }
+
+        const classif = classificarVo2Adulto(vo2Final, idade, sexo);
+        if (resVo2Badge) {
+          resVo2Badge.className = `status-badge ${classif.badge}`;
+          resVo2Badge.textContent = classif.texto;
+        }
+      } else {
+        if (resMph) resMph.textContent = '--';
+        if (resVo2) {
+          resVo2.textContent = '--';
+          resVo2.removeAttribute('data-vo2');
+        }
+        if (resVo2Badge) {
+          resVo2Badge.className = 'status-badge badge-neutral';
+          resVo2Badge.textContent = 'Aguardando dados';
+        }
+      }
+
+      if (fcFinal > 0) {
+        const pct = Math.round((fcFinal / fcMax) * 100);
+        if (resFcPct) resFcPct.textContent = `${pct}% da FCmáx Tanaka (${fcFinal} bpm)`;
+        if (resFcBadge) {
+          if (pct >= 70 && pct <= 90) {
+            resFcBadge.className = 'status-badge badge-ok';
+            resFcBadge.textContent = 'Critério Atingido (70 a 90%)';
+          } else if (pct < 70) {
+            resFcBadge.className = 'status-badge badge-warn';
+            resFcBadge.textContent = 'Submáximo Leve (< 70%)';
+          } else {
+            resFcBadge.className = 'status-badge badge-alert';
+            resFcBadge.textContent = 'Intensidade Alta (> 90%)';
+          }
+        }
+      } else {
+        if (resFcPct) resFcPct.textContent = '--';
+        if (resFcBadge) {
+          resFcBadge.className = 'status-badge badge-neutral';
+          resFcBadge.textContent = 'Aguardando FC';
+        }
+      }
+    }
+
     function calcularEsteiraAdulto() {
       const velComp = parseFloat(document.getElementById('ad_esteira_vel_completa').value) || 0;
       const segs = parseInt(document.getElementById('ad_esteira_segundos').value) || 0;
@@ -7498,44 +9009,13 @@
         resVel.textContent = `${velPico.toFixed(2)} km/h`;
 
         // Fórmula ACSM corrida esteira sem inclinação (0%): VO2 = (3.333 * Vpico) + 3.5
-        const vo2 = (3.333 * velPico) + 3.5;
+        const vo2 = Number(((3.333 * velPico) + 3.5).toFixed(1));
         resVo2.textContent = `${vo2.toFixed(1)} ml/kg/min`;
 
-        // Classificação ACSM
-        if (sexo === 'M') {
-          if (vo2 >= 52) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Superior / Atleta (≥ 52)';
-          } else if (vo2 >= 44) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Excelente (44 a 51.9)';
-          } else if (vo2 >= 36) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Bom (36 a 43.9)';
-          } else if (vo2 >= 31) {
-            resVo2Badge.className = 'status-badge badge-warn';
-            resVo2Badge.textContent = 'Regular (31 a 35.9)';
-          } else {
-            resVo2Badge.className = 'status-badge badge-alert';
-            resVo2Badge.textContent = 'Fraco (< 31)';
-          }
-        } else {
-          if (vo2 >= 45) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Superior / Atleta (≥ 45)';
-          } else if (vo2 >= 38) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Excelente (38 a 44.9)';
-          } else if (vo2 >= 32) {
-            resVo2Badge.className = 'status-badge badge-ok';
-            resVo2Badge.textContent = 'Bom (32 a 37.9)';
-          } else if (vo2 >= 27) {
-            resVo2Badge.className = 'status-badge badge-warn';
-            resVo2Badge.textContent = 'Regular (27 a 31.9)';
-          } else {
-            resVo2Badge.className = 'status-badge badge-alert';
-            resVo2Badge.textContent = 'Fraco (< 27)';
-          }
+        const classif = classificarVo2Adulto(vo2, idade, sexo);
+        if (resVo2Badge) {
+          resVo2Badge.className = `status-badge ${classif.badge}`;
+          resVo2Badge.textContent = classif.texto;
         }
       } else {
         resVel.textContent = '-- km/h';
@@ -7575,28 +9055,62 @@
 
       let esteiraDados = { fezEsteira: false };
       if (fezEsteira) {
-        const velComp = parseFloat(document.getElementById('ad_esteira_vel_completa').value) || 0;
-        const segs = parseInt(document.getElementById('ad_esteira_segundos').value) || 0;
-        const fcPico = parseInt(document.getElementById('ad_esteira_fc_pico').value) || 0;
-        const borg = parseInt(document.getElementById('ad_esteira_borg').value) || 19;
-        const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(2));
-        const vo2 = Number(((3.333 * velPico) + 3.5).toFixed(1));
+        const tipoProtocolo = document.querySelector('input[name="ad_radio_tipo_cardio"]:checked')?.value || 'george';
+        if (tipoProtocolo === 'george') {
+          const estagio = document.getElementById('ad_cardio_george_estagio')?.value || '2';
+          const velKm = parseFloat(document.getElementById('ad_cardio_george_vel')?.value) || 0;
+          const fcFinal = parseInt(document.getElementById('ad_cardio_george_fc')?.value) || 0;
+          const borg = parseInt(document.getElementById('ad_cardio_george_borg')?.value) || 13;
+          const pfa = parseFloat(document.getElementById('ad_cardio_george_pfa')?.value) || 14;
+          const par = parseFloat(document.getElementById('ad_cardio_george_par')?.value) || 4;
+          const vo2Attr = document.getElementById('ad_res_cardio_george_vo2')?.getAttribute('data-vo2');
+          const vo2Val = vo2Attr ? parseFloat(vo2Attr) : null;
+          const classif = document.getElementById('ad_res_cardio_george_vo2_badge')?.textContent?.trim() || '';
 
-        const rfcTxt = document.getElementById('ad_res_rfc')?.textContent;
-        const rfcVal = (rfcTxt && rfcTxt.includes('-')) ? parseInt(rfcTxt.replace(/[^0-9]/g, ''), 10) : null;
+          esteiraDados = {
+            fezEsteira: true,
+            cardioTipo: 'george',
+            cardioEstagio: estagio,
+            cardioVelKm: velKm,
+            cardioFcFinal: fcFinal,
+            cardioBorg: borg,
+            cardioPfa: pfa,
+            cardioPar: par,
+            cardioVo2: vo2Val,
+            cardioClassificacao: classif,
+            // Propriedades universais para retrocompatibilidade com graficos, tabelas comparativas e prescricao
+            esteiraVo2: vo2Val,
+            esteiraFcPico: fcFinal,
+            esteiraBorg: borg,
+            esteiraVelPico: velKm,
+            esteiraClassificacao: classif
+          };
+        } else {
+          // Protocolo incremental maximo (Rampa)
+          const velComp = parseFloat(document.getElementById('ad_esteira_vel_completa').value) || 0;
+          const segs = parseInt(document.getElementById('ad_esteira_segundos').value) || 0;
+          const fcPico = parseInt(document.getElementById('ad_esteira_fc_pico').value) || 0;
+          const borg = parseInt(document.getElementById('ad_esteira_borg').value) || 19;
+          const velPico = Number((velComp + (Math.min(59, segs) / 60)).toFixed(2));
+          const vo2 = Number(((3.333 * velPico) + 3.5).toFixed(1));
 
-        esteiraDados = {
-          fezEsteira: true,
-          esteiraVelCompleta: velComp,
-          esteiraSegundos: segs,
-          esteiraVelPico: velPico,
-          esteiraVo2: vo2,
-          esteiraFcPico: fcPico,
-          esteiraBorg: borg,
-          esteiraRfc1Min: rfcVal,
-          esteiraClassificacao: document.getElementById('ad_res_esteira_classificacao')?.textContent?.trim() || '',
-          esteiraProtocoloLinhas: obterDadosProtocoloEsteira()
-        };
+          const rfcTxt = document.getElementById('ad_res_rfc')?.textContent;
+          const rfcVal = (rfcTxt && rfcTxt.includes('-')) ? parseInt(rfcTxt.replace(/[^0-9]/g, ''), 10) : null;
+
+          esteiraDados = {
+            fezEsteira: true,
+            cardioTipo: 'maximo_acsm',
+            esteiraVelCompleta: velComp,
+            esteiraSegundos: segs,
+            esteiraVelPico: velPico,
+            esteiraVo2: vo2,
+            esteiraFcPico: fcPico,
+            esteiraBorg: borg,
+            esteiraRfc1Min: rfcVal,
+            esteiraClassificacao: document.getElementById('ad_res_vo2_badge')?.textContent?.trim() || '',
+            esteiraProtocoloLinhas: obterDadosProtocoloEsteira()
+          };
+        }
       }
 
       dadosAluno.testes = {
@@ -8151,6 +9665,10 @@
       const nomeAluno = dadosAluno.identificacao.nome || nomeInput;
       if (!nomeAluno) return;
 
+      const usuarioLogado = obterUsuarioLogado();
+      const loginAtual = usuarioLogado ? usuarioLogado.usuario : 'admin';
+      const nomeAtual = usuarioLogado ? (usuarioLogado.nome || usuarioLogado.usuario) : 'Administrador';
+
       if (!dadosAluno.identificacao.nome) {
         dadosAluno.identificacao = {
           nome: nomeAluno,
@@ -8168,7 +9686,9 @@
         data: dadosAluno.composicao.data || new Date().toISOString().split('T')[0],
         composicao: { ...dadosAluno.composicao },
         testes: { ...dadosAluno.testes },
-        parecer: document.getElementById('laudo-parecer')?.value || document.getElementById('ped_parecer')?.value || document.getElementById('ad_parecer')?.value || ''
+        parecer: document.getElementById('laudo-parecer')?.value || document.getElementById('ped_parecer')?.value || document.getElementById('ad_parecer')?.value || '',
+        avaliador: loginAtual,
+        avaliadorNome: nomeAtual
       };
 
       if (!alunoExistente) {
@@ -8182,7 +9702,10 @@
           grupoEtario: dadosAluno.grupoEtario || (dadosAluno.identificacao.idade >= 60 ? 'idoso' : (dadosAluno.identificacao.idade < 18 ? 'adolescente' : 'adulto')),
           identificacao: { ...dadosAluno.identificacao },
           anamnese: { ...dadosAluno.anamnese },
-          avaliacoes: [novaAvaliacao]
+          avaliacoes: [novaAvaliacao],
+          criadoPor: loginAtual,
+          avaliadorNome: nomeAtual,
+          criadoEm: new Date().toISOString()
         };
         bancoDados.alunos.unshift(alunoExistente);
       } else {
@@ -8191,6 +9714,10 @@
         alunoExistente.grupoEtario = dadosAluno.grupoEtario || alunoExistente.grupoEtario || (dadosAluno.identificacao.idade >= 60 ? 'idoso' : (dadosAluno.identificacao.idade < 18 ? 'adolescente' : 'adulto'));
         alunoExistente.identificacao = { ...(alunoExistente.identificacao || {}), ...dadosAluno.identificacao };
         alunoExistente.anamnese = { ...(alunoExistente.anamnese || {}), ...dadosAluno.anamnese };
+        if (!alunoExistente.criadoPor) {
+          alunoExistente.criadoPor = loginAtual;
+          alunoExistente.avaliadorNome = nomeAtual;
+        }
 
         const idx = alunoExistente.avaliacoes.findIndex(av => av.data === novaAvaliacao.data);
         if (idx >= 0) {
@@ -8222,15 +9749,17 @@
       const nomeInput = document.getElementById('nome')?.value?.trim();
       const nomeAluno = dadosAluno.identificacao.nome || nomeInput;
 
-      let aluno = bancoDados.alunos.find(a => 
+      const alunosVisiveis = obterAlunosVisiveis();
+
+      let aluno = alunosVisiveis.find(a => 
         (dadosAluno.id && a.id === dadosAluno.id) ||
         (selVal && selVal !== 'novo' && a.id === selVal) ||
         (nomeAluno && a.nome.toLowerCase() === nomeAluno.toLowerCase())
       );
 
-      // Se ainda não encontrou e há pacientes cadastrados no banco, carrega o primeiro para nunca exibir tela em branco
-      if (!aluno && bancoDados.alunos && bancoDados.alunos.length > 0) {
-        aluno = bancoDados.alunos[0];
+      // Se ainda não encontrou e há pacientes visíveis no banco, carrega o primeiro para nunca exibir tela em branco
+      if (!aluno && alunosVisiveis && alunosVisiveis.length > 0) {
+        aluno = alunosVisiveis[0];
         carregarAlunoNosCampos(aluno);
         const selEl = document.getElementById('seletor-paciente');
         if (selEl) {
@@ -12031,7 +13560,11 @@
           vBase: (tB && tB.fezEsteira) ? `${tB.esteiraFcPico} bpm` : '--',
           vTarget: (tT && tT.fezEsteira) ? `${tT.esteiraFcPico} bpm` : '--',
           delta: (ehReavaliacao && tB.esteiraFcPico && tT.esteiraFcPico) ? `${(tT.esteiraFcPico - tB.esteiraFcPico > 0 ? '+' : '')}${tT.esteiraFcPico - tB.esteiraFcPico} bpm` : '--',
-          status: (tT && tT.esteiraFcPico) ? `${Math.round((tT.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista` : '--'
+          status: (tT && tT.esteiraFcPico) ? (
+            tT.cardioTipo === 'george'
+              ? `${Math.round((tT.esteiraFcPico / Math.round(208 - (0.7 * idade))) * 100)}% da FCmáx Tanaka`
+              : `${Math.round((tT.esteiraFcPico / (220 - idade)) * 100)}% da FCmáx prevista`
+          ) : '--'
         });
 
         if ((tT && tT.esteiraRfc1Min != null) || (tB && tB.esteiraRfc1Min != null)) {
@@ -12390,6 +13923,12 @@
         document.getElementById('ad_extensora_reps').value = '';
         document.getElementById('ad_check_esteira').checked = false;
         document.getElementById('ad-container-esteira').style.display = 'none';
+        if (document.getElementById('ad_radio_cardio_george')) document.getElementById('ad_radio_cardio_george').checked = true;
+        if (document.getElementById('ad_cardio_george_vel')) document.getElementById('ad_cardio_george_vel').value = '';
+        if (document.getElementById('ad_cardio_george_fc')) document.getElementById('ad_cardio_george_fc').value = '';
+        if (document.getElementById('ad_cardio_george_estagio')) document.getElementById('ad_cardio_george_estagio').value = '2';
+        if (document.getElementById('ad_cardio_george_pfa')) document.getElementById('ad_cardio_george_pfa').value = '14';
+        if (document.getElementById('ad_cardio_george_par')) document.getElementById('ad_cardio_george_par').value = '4';
         document.getElementById('ad_esteira_vel_completa').value = '';
         document.getElementById('ad_esteira_segundos').value = '';
         document.getElementById('ad_esteira_fc_pico').value = '';
@@ -12459,6 +13998,965 @@
       });
     }
 
+    // ==========================================
+    // MÓDULO DE PRESCRIÇÃO E ACOMPANHAMENTO DE TREINO
+    // ==========================================
+    let alunoTreinoAtualId = null;
+    let fichaTreinoAtiva = null;
+    let divisaoTreinoAtivaId = 'div_A';
+
+    // Lista de exercícios padrão por grupo muscular para auto-sugestão
+    const SUGESTOES_EXERCICIOS = {
+      'Peitoral': [
+        'Supino Reto com Barra', 'Supino Inclinado com Halteres', 'Supino Declinado com Barra',
+        'Crucifixo Reto com Halteres', 'Crucifixo Inclinado', 'Crossover no Cross (Polia Alta)',
+        'Crossover no Cross (Polia Média)', 'Voador / Peck Deck', 'Flexão de Braços no Solo'
+      ],
+      'Dorsais / Costas': [
+        'Puxada Frontal Aberta (Pulley)', 'Puxada Triângulo', 'Remada Curvada com Barra',
+        'Remada Baixa com Triângulo', 'Remada Unilateral com Halter (Serrote)',
+        'Remada Cavalinho', 'Pulldown no Cross', 'Barra Fixa (Pronada ou Supinada)', 'Levantamento Terra'
+      ],
+      'Ombros / Deltoides': [
+        'Desenvolvimento com Halteres', 'Desenvolvimento Militar com Barra',
+        'Elevação Lateral com Halteres', 'Elevação Lateral na Polia', 'Elevação Frontal',
+        'Crucifixo Invertido no Voador', 'Crucifixo Invertido com Halteres', 'Face Pull na Polia'
+      ],
+      'Bíceps': [
+        'Rosca Direta com Barra W', 'Rosca Alternada com Halteres', 'Rosca Martelo',
+        'Rosca Scott na Máquina', 'Rosca Concentrada', 'Rosca no Cross na Polia Baixa'
+      ],
+      'Tríceps': [
+        'Tríceps Pulley (Corda)', 'Tríceps Pulley (Barra Reta)', 'Tríceps Francês com Halter',
+        'Tríceps Testa com Barra W', 'Tríceps Coice na Polia', 'Mergulho no Banco / Paralelas'
+      ],
+      'Quadríceps': [
+        'Agachamento Livre com Barra', 'Agachamento no Smith', 'Agachamento Búlgaro',
+        'Leg Press 45°', 'Leg Press Horizontal', 'Cadeira Extensora', 'Passada / Avanço'
+      ],
+      'Posteriores de Coxa': [
+        'Mesa Flexora', 'Cadeira Flexora', 'Stiff com Barra ou Halteres', 'Flexora Unilateral em Pé'
+      ],
+      'Glúteos': [
+        'Elevação Pélvica com Barra', 'Glúteo no Cabo (Coice)', 'Cadeira Abdutora',
+        'Agachamento Sumô', 'Glúteo no Graviton'
+      ],
+      'Panturrilhas': [
+        'Gêmeos Sentado na Máquina', 'Gêmeos em Pé no Smith', 'Panturrilha no Leg Press'
+      ],
+      'Abdômen / Core': [
+        'Abdominal Crunch no Solo', 'Abdominal Infra na Paralela', 'Prancha Isométrica',
+        'Prancha Lateral', 'Abdominal na Roda / Wheel', 'Abdominal no Cross (Corda)'
+      ],
+      'Mobilidade / Alongamento': [
+        'Alongamento Isquiotibiais', 'Mobilidade de Quadril 90/90', 'Mobilidade de Tornozelo',
+        'Alongamento de Peitoral e Ombros', 'Mobilidade Torácica (Gato-Camelo)'
+      ]
+    };
+
+    function alternarModuloPrincipal(modulo) {
+      const btnAval = document.getElementById('tab-btn-avaliacoes');
+      const btnTreino = document.getElementById('tab-btn-treino');
+      const modAval = document.getElementById('modulo-avaliacoes');
+      const modTreino = document.getElementById('modulo-treino');
+
+      if (!btnAval || !btnTreino || !modAval || !modTreino) return;
+
+      if (modulo === 'treino') {
+        btnAval.classList.remove('active');
+        btnTreino.classList.add('active');
+        modAval.style.display = 'none';
+        modTreino.style.display = 'block';
+
+        atualizarDropdownAlunosTreino();
+
+        if (dadosAluno && dadosAluno.id) {
+          selecionarAlunoNoModuloTreino(dadosAluno.id);
+        } else if (!alunoTreinoAtualId) {
+          const alunosVisiveis = obterAlunosVisiveis();
+          if (alunosVisiveis.length > 0) {
+            selecionarAlunoNoModuloTreino(alunosVisiveis[0].id);
+          }
+        }
+      } else {
+        btnTreino.classList.remove('active');
+        btnAval.classList.add('active');
+        modTreino.style.display = 'none';
+        modAval.style.display = 'block';
+
+        if (alunoTreinoAtualId && (!dadosAluno || dadosAluno.id !== alunoTreinoAtualId)) {
+          const selPaciente = document.getElementById('seletor-paciente');
+          if (selPaciente) {
+            selPaciente.value = alunoTreinoAtualId;
+            aoTrocarPacienteSelecionado();
+          }
+        }
+      }
+    }
+
+    function atualizarDropdownAlunosTreino() {
+      const select = document.getElementById('seletor-aluno-treino');
+      if (!select) return;
+
+      const alunos = obterAlunosVisiveis();
+      const valorAtual = select.value;
+
+      select.innerHTML = '<option value="">-- Selecione um aluno na lista para prescrever ou acompanhar --</option>';
+
+      alunos.forEach(aluno => {
+        const opt = document.createElement('option');
+        opt.value = aluno.id;
+        const totalFichas = (aluno.fichasTreino || []).length;
+        const totalSessoes = (aluno.historicoTreinos || []).length;
+        const nomeAluno = aluno.nome || (aluno.identificacao && aluno.identificacao.nome) || 'Sem nome';
+        const idadeAluno = aluno.idade || (aluno.identificacao && aluno.identificacao.idade) || '--';
+        opt.textContent = `${nomeAluno} (${idadeAluno} anos) - ${totalFichas} ficha(s) / ${totalSessoes} sessão(ões)`;
+        select.appendChild(opt);
+      });
+
+      if (valorAtual && alunos.some(a => a.id === valorAtual)) {
+        select.value = valorAtual;
+      }
+    }
+
+    function aoTrocarAlunoTreino() {
+      const select = document.getElementById('seletor-aluno-treino');
+      if (!select) return;
+      selecionarAlunoNoModuloTreino(select.value);
+    }
+
+    function selecionarAlunoNoModuloTreino(alunoId) {
+      alunoTreinoAtualId = alunoId;
+      const select = document.getElementById('seletor-aluno-treino');
+      if (select && alunoId) {
+        select.value = alunoId;
+      }
+
+      const contextCard = document.getElementById('treino-aluno-context-card');
+      const badgeStatus = document.getElementById('treino-aluno-status-badge');
+
+      if (!alunoId) {
+        if (contextCard) contextCard.style.display = 'none';
+        if (badgeStatus) badgeStatus.textContent = 'Nenhum aluno selecionado';
+        renderizarListaFichasDropdown([]);
+        fichaTreinoAtiva = null;
+        renderizarHistoricoSessoes([]);
+        return;
+      }
+
+      const alunos = obterAlunosVisiveis();
+      const aluno = alunos.find(a => a.id === alunoId);
+      if (!aluno) return;
+
+      if (!aluno.fichasTreino) aluno.fichasTreino = [];
+      if (!aluno.historicoTreinos) aluno.historicoTreinos = [];
+
+      const nomeAluno = aluno.nome || (aluno.identificacao && aluno.identificacao.nome) || 'Sem nome';
+      const idadeAluno = aluno.idade || (aluno.identificacao && aluno.identificacao.idade) || '--';
+      const sexoAluno = aluno.sexo || (aluno.identificacao && aluno.identificacao.sexo) || 'M';
+      const objetivoAluno = aluno.objetivo || (aluno.identificacao && aluno.identificacao.objetivo) || 'Não informado';
+      const telAluno = aluno.telefone || (aluno.identificacao && aluno.identificacao.telefone) || '--';
+
+      if (badgeStatus) {
+        badgeStatus.textContent = `Aluno: ${nomeAluno}`;
+      }
+
+      if (contextCard) {
+        contextCard.style.display = 'block';
+        const elNome = document.getElementById('treino-resumo-nome');
+        if (elNome) elNome.textContent = nomeAluno;
+
+        const elDetalhes = document.getElementById('treino-resumo-detalhes');
+        if (elDetalhes) {
+          elDetalhes.textContent = `${idadeAluno} anos • Sexo: ${sexoAluno === 'M' ? 'Masculino' : 'Feminino'} • Objetivo: ${objetivoAluno} • Fone: ${telAluno}`;
+        }
+
+        const elFreq = document.getElementById('treino-resumo-frequencia');
+        if (elFreq) {
+          elFreq.textContent = `Sessões Realizadas: ${aluno.historicoTreinos.length}`;
+        }
+
+        const anamnese = aluno.anamnese || {};
+        const parq = aluno.parq || {};
+        const alertas = [];
+
+        if (anamnese.doencasDiagnosticadas && anamnese.doencasDiagnosticadas.trim() !== '' && anamnese.doencasDiagnosticadas.toLowerCase() !== 'nenhuma') {
+          alertas.push(`Patologias: ${anamnese.doencasDiagnosticadas}`);
+        }
+        if (anamnese.cirurgiasInternacoes && anamnese.cirurgiasInternacoes.trim() !== '' && anamnese.cirurgiasInternacoes.toLowerCase() !== 'nenhuma') {
+          alertas.push(`Cirurgias: ${anamnese.cirurgiasInternacoes}`);
+        }
+        if (anamnese.doresArticulares && anamnese.doresArticulares.trim() !== '' && anamnese.doresArticulares.toLowerCase() !== 'nenhuma') {
+          alertas.push(`Dores Articulares: ${anamnese.doresArticulares}`);
+        }
+        if (parq.dorPeito === 'sim' || parq.tontura === 'sim' || parq.articular === 'sim') {
+          alertas.push('PAR-Q: Resposta afirmativa para risco cardiovascular/articular');
+        }
+
+        const alertaTexto = document.getElementById('treino-alerta-anamnese-texto');
+        if (alertaTexto) {
+          alertaTexto.textContent = alertas.length > 0 ? alertas.join(' | ') : 'Nenhuma contraindicação ou restrição articular relatada na anamnese.';
+        }
+
+        const avaliacoes = aluno.avaliacoes || [];
+        const ultimaAvaliacao = avaliacoes.length > 0 ? avaliacoes[avaliacoes.length - 1] : null;
+        const suporteTexto = document.getElementById('treino-suporte-avaliacao-texto');
+
+        if (suporteTexto) {
+          if (ultimaAvaliacao) {
+            const neuromusculares = ultimaAvaliacao.neuromusculares || {};
+            const sinais = ultimaAvaliacao.sinaisVitais || {};
+            const cardio = ultimaAvaliacao.cardiorrespiratorio || {};
+
+            let itensSuporte = [];
+            const supinoVal = neuromusculares.supino1RM || (ultimaAvaliacao.testes?.forcaMMSS?.exercicio === 'supino' ? ultimaAvaliacao.testes?.forcaMMSS?.rm1 : null);
+            if (supinoVal) itensSuporte.push(`<span>1RM Supino: <strong>${supinoVal} kg</strong></span>`);
+
+            const extensoraVal = neuromusculares.extensora1RM || ultimaAvaliacao.testes?.extensora1RM || (ultimaAvaliacao.testes?.forcaMMII?.exercicio === 'extensora' ? ultimaAvaliacao.testes?.forcaMMII?.rm1 : null);
+            if (extensoraVal) itensSuporte.push(`<span>1RM Extensora: <strong>${extensoraVal} kg</strong></span>`);
+
+            const legVal = neuromusculares.leg1RM || (ultimaAvaliacao.testes?.forcaMMII?.exercicio === 'leg_press' ? ultimaAvaliacao.testes?.forcaMMII?.rm1 : null);
+            if (legVal) itensSuporte.push(`<span>1RM Leg Press: <strong>${legVal} kg</strong></span>`);
+
+            const remadaVal = neuromusculares.remada1RM || (ultimaAvaliacao.testes?.forcaMMSS?.exercicio === 'puxada' ? ultimaAvaliacao.testes?.forcaMMSS?.rm1 : null);
+            if (remadaVal) itensSuporte.push(`<span>1RM Remada/Puxada: <strong>${remadaVal} kg</strong></span>`);
+
+            if (ultimaAvaliacao.testes?.flexoesReps) itensSuporte.push(`<span>Flexões: <strong>${ultimaAvaliacao.testes.flexoesReps} reps</strong></span>`);
+
+            const fcRep = sinais.fcRepouso || ultimaAvaliacao.composicao?.fcRepouso;
+            if (fcRep) itensSuporte.push(`<span>FC Repouso: <strong>${fcRep} bpm</strong></span>`);
+
+            const vo2Val = cardio.vo2Max || ultimaAvaliacao.testes?.cardioVo2 || ultimaAvaliacao.testes?.esteiraVo2;
+            if (vo2Val) {
+              const tipoLabel = (ultimaAvaliacao.testes?.cardioTipo === 'george' || ultimaAvaliacao.testes?.cardioVo2) ? 'George et al.' : 'Esteira Máxima';
+              itensSuporte.push(`<span>VO2máx: <strong>${vo2Val} ml/kg/min</strong> <small style="color: #64748b;">(${tipoLabel})</small></span>`);
+            }
+
+            if (itensSuporte.length === 0) {
+              itensSuporte.push('<span>Avaliação registrada sem testes de 1RM ou esforço aeróbio.</span>');
+            }
+            suporteTexto.innerHTML = itensSuporte.join('');
+          } else {
+            suporteTexto.innerHTML = '<span>Nenhuma avaliação física cadastrada ainda para este aluno.</span>';
+          }
+        }
+      }
+
+      renderizarListaFichasDropdown(aluno.fichasTreino);
+
+      if (aluno.fichasTreino.length > 0) {
+        carregarFichaTreino(aluno.fichasTreino[0].id);
+      } else {
+        criarNovaFichaTreino();
+      }
+
+      renderizarHistoricoSessoes(aluno.historicoTreinos);
+    }
+
+    function renderizarListaFichasDropdown(fichas) {
+      const select = document.getElementById('seletor-ficha-treino');
+      if (!select) return;
+
+      select.innerHTML = '';
+      if (!fichas || fichas.length === 0) {
+        select.innerHTML = '<option value="">Nenhuma ficha criada (Clique em "+ Nova Ficha")</option>';
+        return;
+      }
+
+      fichas.forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.id;
+        opt.textContent = `${f.titulo} (${f.dataInicio || 'Sem data'} - ${f.divisoes ? f.divisoes.length : 0} divisões)`;
+        select.appendChild(opt);
+      });
+    }
+
+    function aoTrocarFichaSelecionada() {
+      const select = document.getElementById('seletor-ficha-treino');
+      if (!select || !select.value) return;
+      carregarFichaTreino(select.value);
+    }
+
+    function carregarFichaTreino(fichaId) {
+      if (!alunoTreinoAtualId) return;
+      const alunos = obterAlunosVisiveis();
+      const aluno = alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno || !aluno.fichasTreino) return;
+
+      const ficha = aluno.fichasTreino.find(f => f.id === fichaId);
+      if (!ficha) return;
+
+      fichaTreinoAtiva = JSON.parse(JSON.stringify(ficha));
+      preencherFormularioFicha(fichaTreinoAtiva);
+    }
+
+    function criarNovaFichaTreino() {
+      const hoje = new Date().toISOString().split('T')[0];
+      fichaTreinoAtiva = {
+        id: 'fch_' + Date.now(),
+        titulo: 'Ficha A/B - Força & Hipertrofia',
+        objetivo: 'Hipertrofia Muscular',
+        dataInicio: hoje,
+        validade: '8 semanas',
+        frequencia: '3x a 4x na semana',
+        nivel: 'Intermediário',
+        observacoes: 'Aquecimento: 5 a 10 minutos de esteira/mobilidade articular antes do treino.\nDescanso adequado entre as séries e hidratação constante.',
+        divisoes: [
+          {
+            id: 'div_A',
+            letra: 'A',
+            nome: 'Treino A - Peitoral, Ombros e Tríceps',
+            exercicios: [
+              { grupo: 'Peitoral', exercicio: 'Supino Reto com Barra', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Controle excêntrico' },
+              { grupo: 'Peitoral', exercicio: 'Supino Inclinado com Halteres', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Banco a 30 graus' },
+              { grupo: 'Ombros / Deltoides', exercicio: 'Desenvolvimento com Halteres', series: '3', repeticoes: '10', carga: 'Moderada', intervalo: '60s', notas: 'Amplitude completa' },
+              { grupo: 'Ombros / Deltoides', exercicio: 'Elevação Lateral com Halteres', series: '3', repeticoes: '12-15', carga: 'Leve/Mod.', intervalo: '45s', notas: 'Sem impulsão' },
+              { grupo: 'Tríceps', exercicio: 'Tríceps Pulley (Corda)', series: '3', repeticoes: '12', carga: 'Moderada', intervalo: '45s', notas: 'Pico de contração' }
+            ],
+            cardio: {
+              ativo: true,
+              modalidade: 'Esteira Ergométrica',
+              duracao: '20 min',
+              momento: 'Após o treino de força',
+              zona: 'Zona 2 (65% a 75% FCMáx)',
+              velocidade: '6.0 km/h',
+              pse: 'Borg 4-5 (Moderado)'
+            }
+          },
+          {
+            id: 'div_B',
+            letra: 'B',
+            nome: 'Treino B - Dorsais, Bíceps e Abdômen',
+            exercicios: [
+              { grupo: 'Dorsais / Costas', exercicio: 'Puxada Frontal Aberta (Pulley)', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Puxar até clavícula' },
+              { grupo: 'Dorsais / Costas', exercicio: 'Remada Baixa com Triângulo', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Manter coluna neutra' },
+              { grupo: 'Bíceps', exercicio: 'Rosca Direta com Barra W', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Cotovelos fixos' },
+              { grupo: 'Bíceps', exercicio: 'Rosca Martelo', series: '3', repeticoes: '10', carga: 'Moderada', intervalo: '45s', notas: 'Pegada neutra' },
+              { grupo: 'Abdômen / Core', exercicio: 'Prancha Isométrica', series: '3', repeticoes: '30-45s', carga: 'Peso Corporal', intervalo: '45s', notas: 'Alinhamento pélvico' }
+            ],
+            cardio: {
+              ativo: false,
+              modalidade: 'Esteira Ergométrica',
+              duracao: '',
+              momento: 'Após o treino de força',
+              zona: '',
+              velocidade: '',
+              pse: ''
+            }
+          }
+        ]
+      };
+
+      divisaoTreinoAtivaId = 'div_A';
+      preencherFormularioFicha(fichaTreinoAtiva);
+
+      const selFicha = document.getElementById('seletor-ficha-treino');
+      if (selFicha) {
+        const optNova = document.createElement('option');
+        optNova.value = fichaTreinoAtiva.id;
+        optNova.textContent = '* Nova Ficha de Treino (Não salva)';
+        optNova.selected = true;
+        selFicha.appendChild(optNova);
+      }
+    }
+
+    function preencherFormularioFicha(ficha) {
+      if (!ficha) return;
+
+      document.getElementById('ficha-titulo').value = ficha.titulo || '';
+      document.getElementById('ficha-objetivo').value = ficha.objetivo || 'Hipertrofia Muscular';
+      document.getElementById('ficha-data-inicio').value = ficha.dataInicio || '';
+      document.getElementById('ficha-validade').value = ficha.validade || '8 semanas';
+      document.getElementById('ficha-frequencia').value = ficha.frequencia || '3x a 4x na semana';
+      document.getElementById('ficha-nivel').value = ficha.nivel || 'Intermediário';
+      document.getElementById('ficha-observacoes').value = ficha.observacoes || '';
+
+      if (!ficha.divisoes || ficha.divisoes.length === 0) {
+        ficha.divisoes = [{ id: 'div_A', letra: 'A', nome: 'Treino A', exercicios: [], cardio: { ativo: false } }];
+      }
+
+      if (!ficha.divisoes.some(d => d.id === divisaoTreinoAtivaId)) {
+        divisaoTreinoAtivaId = ficha.divisoes[0].id;
+      }
+
+      renderizarDivisoesTabs();
+      renderizarDivisaoAtiva();
+    }
+
+    function renderizarDivisoesTabs() {
+      const container = document.getElementById('treino-divisoes-tabs');
+      if (!container || !fichaTreinoAtiva) return;
+
+      container.innerHTML = '';
+      fichaTreinoAtiva.divisoes.forEach(div => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `treino-div-btn ${div.id === divisaoTreinoAtivaId ? 'active' : ''}`;
+        btn.textContent = div.letra ? `Treino ${div.letra}` : div.nome;
+        btn.onclick = () => alternarDivisaoTreino(div.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function alternarDivisaoTreino(divId) {
+      salvarEstadoDivisaoAtual();
+      divisaoTreinoAtivaId = divId;
+      renderizarDivisoesTabs();
+      renderizarDivisaoAtiva();
+    }
+
+    function adicionarDivisaoTreino() {
+      if (!fichaTreinoAtiva) return;
+      salvarEstadoDivisaoAtual();
+
+      const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+      const qtdAtual = fichaTreinoAtiva.divisoes.length;
+      const proxLetra = qtdAtual < letras.length ? letras[qtdAtual] : String(qtdAtual + 1);
+      const novoId = 'div_' + proxLetra;
+
+      fichaTreinoAtiva.divisoes.push({
+        id: novoId,
+        letra: proxLetra,
+        nome: `Treino ${proxLetra} - Membros Inferiores / Geral`,
+        exercicios: [
+          { grupo: 'Quadríceps', exercicio: 'Leg Press 45 graus', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '60s', notas: 'Pés alinhados' },
+          { grupo: 'Quadríceps', exercicio: 'Cadeira Extensora', series: '3', repeticoes: '12', carga: 'Moderada', intervalo: '45s', notas: 'Pico de contração' },
+          { grupo: 'Posteriores de Coxa', exercicio: 'Mesa Flexora', series: '3', repeticoes: '10-12', carga: 'Moderada', intervalo: '45s', notas: 'Sem elevar quadril' },
+          { grupo: 'Panturrilhas', exercicio: 'Gêmeos Sentado na Máquina', series: '4', repeticoes: '15', carga: 'Moderada', intervalo: '45s', notas: 'Amplitude completa' }
+        ],
+        cardio: { ativo: false, modalidade: 'Esteira Ergométrica', duracao: '', momento: 'Após o treino de força', zona: '', velocidade: '', pse: '' }
+      });
+
+      divisaoTreinoAtivaId = novoId;
+      renderizarDivisoesTabs();
+      renderizarDivisaoAtiva();
+    }
+
+    function removerDivisaoTreinoAtual() {
+      if (!fichaTreinoAtiva || fichaTreinoAtiva.divisoes.length <= 1) {
+        alert('A ficha precisa ter pelo menos 1 divisão de treino.');
+        return;
+      }
+
+      if (!confirm('Deseja realmente remover esta divisão de treino da ficha?')) return;
+
+      fichaTreinoAtiva.divisoes = fichaTreinoAtiva.divisoes.filter(d => d.id !== divisaoTreinoAtivaId);
+      divisaoTreinoAtivaId = fichaTreinoAtiva.divisoes[0].id;
+      renderizarDivisoesTabs();
+      renderizarDivisaoAtiva();
+    }
+
+    function salvarEstadoDivisaoAtual() {
+      if (!fichaTreinoAtiva) return;
+      const div = fichaTreinoAtiva.divisoes.find(d => d.id === divisaoTreinoAtivaId);
+      if (!div) return;
+
+      const tituloEl = document.getElementById('divisao-titulo');
+      if (tituloEl) div.nome = tituloEl.value;
+
+      const linhas = document.querySelectorAll('#tabela-exercicios-tbody tr');
+      const exerciciosAtualizados = [];
+      linhas.forEach(tr => {
+        const grupo = tr.querySelector('.sel-grupo-muscular')?.value || '';
+        const exercicio = tr.querySelector('.inp-exercicio-nome')?.value || '';
+        const series = tr.querySelector('.inp-series')?.value || '';
+        const repeticoes = tr.querySelector('.inp-repeticoes')?.value || '';
+        const carga = tr.querySelector('.inp-carga')?.value || '';
+        const intervalo = tr.querySelector('.inp-intervalo')?.value || '';
+        const notas = tr.querySelector('.inp-notas')?.value || '';
+
+        if (exercicio.trim() !== '') {
+          exerciciosAtualizados.push({ grupo, exercicio, series, repeticoes, carga, intervalo, notas });
+        }
+      });
+      div.exercicios = exerciciosAtualizados;
+
+      const cardioAtivo = document.getElementById('cardio-ativo')?.checked || false;
+      div.cardio = {
+        ativo: cardioAtivo,
+        modalidade: document.getElementById('cardio-modalidade')?.value || 'Esteira Ergométrica',
+        duracao: document.getElementById('cardio-duracao')?.value || '',
+        momento: document.getElementById('cardio-momento')?.value || 'Após o treino de força',
+        zona: document.getElementById('cardio-zona')?.value || '',
+        velocidade: document.getElementById('cardio-velocidade')?.value || '',
+        pse: document.getElementById('cardio-pse')?.value || ''
+      };
+    }
+
+    function aoMudarTituloDivisao(val) {
+      if (!fichaTreinoAtiva) return;
+      const div = fichaTreinoAtiva.divisoes.find(d => d.id === divisaoTreinoAtivaId);
+      if (div) {
+        div.nome = val;
+        renderizarDivisoesTabs();
+      }
+    }
+
+    function renderizarDivisaoAtiva() {
+      if (!fichaTreinoAtiva) return;
+      const div = fichaTreinoAtiva.divisoes.find(d => d.id === divisaoTreinoAtivaId);
+      if (!div) return;
+
+      document.getElementById('divisao-titulo').value = div.nome || `Treino ${div.letra || ''}`;
+
+      const tbody = document.getElementById('tabela-exercicios-tbody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      const grupos = Object.keys(SUGESTOES_EXERCICIOS);
+
+      (div.exercicios || []).forEach((ex, idx) => {
+        const tr = document.createElement('tr');
+
+        let optionsGrupos = '';
+        grupos.forEach(g => {
+          optionsGrupos += `<option value="${g}" ${ex.grupo === g ? 'selected' : ''}>${g}</option>`;
+        });
+
+        const datalistId = `dl-ex-${div.id}-${idx}`;
+        const sugestoesDoGrupo = SUGESTOES_EXERCICIOS[ex.grupo] || [];
+        let optionsDatalist = '';
+        sugestoesDoGrupo.forEach(s => {
+          optionsDatalist += `<option value="${s}">`;
+        });
+
+        tr.innerHTML = `
+          <td>
+            <select class="treino-input sel-grupo-muscular" onchange="aoTrocarGrupoMuscularLinha(this, '${datalistId}')" style="font-size: 11px; padding: 4px;">
+              ${optionsGrupos}
+            </select>
+          </td>
+          <td>
+            <input type="text" list="${datalistId}" class="treino-input inp-exercicio-nome" value="${ex.exercicio || ''}" placeholder="Nome do exercício" style="font-size: 12px;">
+            <datalist id="${datalistId}">
+              ${optionsDatalist}
+            </datalist>
+          </td>
+          <td>
+            <input type="text" class="treino-input inp-series" value="${ex.series || '3'}" placeholder="3" style="text-align: center;">
+          </td>
+          <td>
+            <input type="text" class="treino-input inp-repeticoes" value="${ex.repeticoes || '10-12'}" placeholder="10-12" style="text-align: center;">
+          </td>
+          <td>
+            <input type="text" class="treino-input inp-carga" value="${ex.carga || ''}" placeholder="Ex: 40 kg ou 70%" style="text-align: center;">
+          </td>
+          <td>
+            <input type="text" class="treino-input inp-intervalo" value="${ex.intervalo || '60s'}" placeholder="60s" style="text-align: center;">
+          </td>
+          <td>
+            <input type="text" class="treino-input inp-notas" value="${ex.notas || ''}" placeholder="Pausa, cadência, etc.">
+          </td>
+          <td style="text-align: center;">
+            <button type="button" onclick="removerExercicioLinha(this)" style="background: none; border: none; color: #ef4444; font-size: 16px; cursor: pointer; padding: 4px;" title="Remover exercício">&times;</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const cardio = div.cardio || { ativo: false };
+      const chkCardio = document.getElementById('cardio-ativo');
+      if (chkCardio) chkCardio.checked = !!cardio.ativo;
+
+      const camposCardio = document.getElementById('cardio-campos');
+      if (camposCardio) camposCardio.style.display = cardio.ativo ? 'grid' : 'none';
+
+      if (cardio.ativo) {
+        document.getElementById('cardio-modalidade').value = cardio.modalidade || 'Esteira Ergométrica';
+        document.getElementById('cardio-duracao').value = cardio.duracao || '';
+        document.getElementById('cardio-momento').value = cardio.momento || 'Após o treino de força';
+        document.getElementById('cardio-zona').value = cardio.zona || '';
+        document.getElementById('cardio-velocidade').value = cardio.velocidade || '';
+        document.getElementById('cardio-pse').value = cardio.pse || '';
+      }
+    }
+
+    function aoTrocarGrupoMuscularLinha(selectEl, datalistId) {
+      const grupo = selectEl.value;
+      const dl = document.getElementById(datalistId);
+      if (!dl) return;
+
+      const lista = SUGESTOES_EXERCICIOS[grupo] || [];
+      dl.innerHTML = lista.map(item => `<option value="${item}">`).join('');
+    }
+
+    function adicionarExercicioDivisaoAtual() {
+      if (!fichaTreinoAtiva) return;
+      const div = fichaTreinoAtiva.divisoes.find(d => d.id === divisaoTreinoAtivaId);
+      if (!div) return;
+
+      if (!div.exercicios) div.exercicios = [];
+      div.exercicios.push({
+        grupo: 'Peitoral',
+        exercicio: '',
+        series: '3',
+        repeticoes: '10-12',
+        carga: '',
+        intervalo: '60s',
+        notas: ''
+      });
+
+      renderizarDivisaoAtiva();
+    }
+
+    function removerExercicioLinha(btnEl) {
+      const tr = btnEl.closest('tr');
+      if (tr) tr.remove();
+      salvarEstadoDivisaoAtual();
+    }
+
+    function alternarCardioDivisao(ativo) {
+      const camposCardio = document.getElementById('cardio-campos');
+      if (camposCardio) {
+        camposCardio.style.display = ativo ? 'grid' : 'none';
+      }
+      salvarEstadoDivisaoAtual();
+    }
+
+    function atualizarCardioDivisao() {
+      salvarEstadoDivisaoAtual();
+    }
+
+    function salvarFichaTreino() {
+      if (!alunoTreinoAtualId) {
+        alert('Selecione um aluno antes de salvar a ficha.');
+        return;
+      }
+
+      salvarEstadoDivisaoAtual();
+
+      const titulo = document.getElementById('ficha-titulo').value.trim();
+      if (!titulo) {
+        alert('Por favor, informe o Nome / Identificação da Ficha.');
+        document.getElementById('ficha-titulo').focus();
+        return;
+      }
+
+      fichaTreinoAtiva.titulo = titulo;
+      fichaTreinoAtiva.objetivo = document.getElementById('ficha-objetivo').value;
+      fichaTreinoAtiva.dataInicio = document.getElementById('ficha-data-inicio').value;
+      fichaTreinoAtiva.validade = document.getElementById('ficha-validade').value;
+      fichaTreinoAtiva.frequencia = document.getElementById('ficha-frequencia').value;
+      fichaTreinoAtiva.nivel = document.getElementById('ficha-nivel').value;
+      fichaTreinoAtiva.observacoes = document.getElementById('ficha-observacoes').value;
+      
+      const usuarioLogado = obterUsuarioLogado();
+      fichaTreinoAtiva.atualizadoPor = usuarioLogado ? usuarioLogado.usuario : 'admin';
+      fichaTreinoAtiva.atualizadoEm = new Date().toISOString();
+
+      const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno) return;
+
+      if (!aluno.fichasTreino) aluno.fichasTreino = [];
+
+      const idxExistente = aluno.fichasTreino.findIndex(f => f.id === fichaTreinoAtiva.id);
+      if (idxExistente >= 0) {
+        aluno.fichasTreino[idxExistente] = JSON.parse(JSON.stringify(fichaTreinoAtiva));
+      } else {
+        aluno.fichasTreino.unshift(JSON.parse(JSON.stringify(fichaTreinoAtiva)));
+      }
+
+      salvarBanco();
+      renderizarListaFichasDropdown(aluno.fichasTreino);
+      
+      const selFicha = document.getElementById('seletor-ficha-treino');
+      if (selFicha) selFicha.value = fichaTreinoAtiva.id;
+
+      const nomeAluno = aluno.nome || (aluno.identificacao && aluno.identificacao.nome) || 'Aluno';
+      alert(`Ficha de Treino "${titulo}" salva com sucesso para ${nomeAluno}!`);
+    }
+
+    function excluirFichaTreinoAtual() {
+      if (!alunoTreinoAtualId || !fichaTreinoAtiva) return;
+
+      const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno || !aluno.fichasTreino) return;
+
+      if (!confirm(`Deseja realmente excluir a ficha "${fichaTreinoAtiva.titulo}"?`)) return;
+
+      aluno.fichasTreino = aluno.fichasTreino.filter(f => f.id !== fichaTreinoAtiva.id);
+      salvarBanco();
+
+      renderizarListaFichasDropdown(aluno.fichasTreino);
+      if (aluno.fichasTreino.length > 0) {
+        carregarFichaTreino(aluno.fichasTreino[0].id);
+      } else {
+        criarNovaFichaTreino();
+      }
+      alert('Ficha de treino excluída com sucesso.');
+    }
+
+    function imprimirFichaTreino() {
+      if (!alunoTreinoAtualId || !fichaTreinoAtiva) {
+        alert('Selecione uma ficha de treino para imprimir.');
+        return;
+      }
+
+      salvarEstadoDivisaoAtual();
+
+      const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno) return;
+
+      const printContainer = document.getElementById('ficha-treino-impressao');
+      if (!printContainer) return;
+
+      let htmlDivisoes = '';
+
+      (fichaTreinoAtiva.divisoes || []).forEach(div => {
+        let htmlLinhas = '';
+        (div.exercicios || []).forEach(ex => {
+          htmlLinhas += `
+            <tr style="border-bottom: 1px solid #cbd5e1;">
+              <td style="padding: 6px 8px; font-weight: 700; color: #1e293b; border: 1px solid #cbd5e1;">${ex.exercicio}</td>
+              <td style="padding: 6px 8px; font-size: 10px; color: #64748b; border: 1px solid #cbd5e1;">${ex.grupo}</td>
+              <td style="padding: 6px 8px; text-align: center; font-weight: 700; border: 1px solid #cbd5e1;">${ex.series}</td>
+              <td style="padding: 6px 8px; text-align: center; font-weight: 700; border: 1px solid #cbd5e1;">${ex.repeticoes}</td>
+              <td style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">${ex.carga || '--'}</td>
+              <td style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">${ex.intervalo || '--'}</td>
+              <td style="padding: 6px 8px; font-size: 11px; border: 1px solid #cbd5e1;">${ex.notas || '--'}</td>
+              <td style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1; width: 60px; color: #94a3b8; font-size: 10px;">[ &nbsp;&nbsp;&nbsp;&nbsp; ]</td>
+            </tr>
+          `;
+        });
+
+        let htmlCardio = '';
+        if (div.cardio && div.cardio.ativo) {
+          htmlCardio = `
+            <div style="margin-top: 8px; padding: 8px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; color: #166534;">
+              <strong>Treino Aeróbio / Cardio:</strong> ${div.cardio.modalidade} • <strong>Duração:</strong> ${div.cardio.duracao || '--'} • <strong>Momento:</strong> ${div.cardio.momento || '--'} • <strong>Intensidade / Zona:</strong> ${div.cardio.zona || '--'} • <strong>Velocidade/Inclinação:</strong> ${div.cardio.velocidade || '--'}
+            </div>
+          `;
+        }
+
+        htmlDivisoes += `
+          <div style="margin-bottom: 20px; break-inside: avoid; page-break-inside: avoid;">
+            <div style="background: #1F4E78; color: #ffffff; padding: 8px 12px; border-radius: 6px 6px 0 0; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+              ${div.nome || ('Treino ' + div.letra)}
+            </div>
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; border: 1px solid #cbd5e1;">
+              <thead>
+                <tr style="background: #f1f5f9; color: #1F4E78; font-weight: 800; text-align: left; font-size: 10px; text-transform: uppercase;">
+                  <th style="padding: 6px 8px; border: 1px solid #cbd5e1;">Exercício</th>
+                  <th style="padding: 6px 8px; border: 1px solid #cbd5e1;">Grupo Muscular</th>
+                  <th style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">Séries</th>
+                  <th style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">Repetições</th>
+                  <th style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">Carga / %1RM</th>
+                  <th style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">Intervalo</th>
+                  <th style="padding: 6px 8px; border: 1px solid #cbd5e1;">Instruções / Cadência</th>
+                  <th style="padding: 6px 8px; text-align: center; border: 1px solid #cbd5e1;">Realizado</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${htmlLinhas}
+              </tbody>
+            </table>
+            ${htmlCardio}
+          </div>
+        `;
+      });
+
+      const usuarioLogado = obterUsuarioLogado();
+      const nomeAvaliador = (aluno.avaliadorNome || (usuarioLogado ? usuarioLogado.nome : 'Barbosa Team'));
+
+      printContainer.innerHTML = `
+        <div style="border: 2px solid #1F4E78; border-radius: 8px; padding: 18px; margin-bottom: 14px; background: #ffffff;">
+          
+          <!-- Cabeçalho Barbosa Team -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1F4E78; padding-bottom: 12px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <img src="logo_barbosa_dark_trans.png" alt="Barbosa Team" style="height: 52px; object-fit: contain;">
+              <div>
+                <h1 style="font-size: 17px; font-weight: 900; color: #1F4E78; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Barbosa Team - Prescrição de Treinamento</h1>
+                <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">Programa Individualizado de Exercícios Físicos &amp; Condicionamento</p>
+              </div>
+            </div>
+            <div style="text-align: right; font-size: 11px; color: #475569;">
+              <div><strong>Ficha:</strong> ${fichaTreinoAtiva.titulo}</div>
+              <div><strong>Início:</strong> ${fichaTreinoAtiva.dataInicio || '--'} • <strong>Validade:</strong> ${fichaTreinoAtiva.validade || '--'}</div>
+            </div>
+          </div>
+
+          <!-- Dados do Aluno -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0; font-size: 11px; margin-bottom: 16px;">
+            <div><strong>Aluno:</strong> ${aluno.nome || (aluno.identificacao && aluno.identificacao.nome) || 'Aluno'}</div>
+            <div><strong>Idade / Sexo:</strong> ${aluno.idade || (aluno.identificacao && aluno.identificacao.idade) || '--'} anos (${(aluno.sexo || (aluno.identificacao && aluno.identificacao.sexo)) === 'M' ? 'Masc.' : 'Fem.'})</div>
+            <div><strong>Objetivo:</strong> ${fichaTreinoAtiva.objetivo}</div>
+            <div><strong>Frequência:</strong> ${fichaTreinoAtiva.frequencia}</div>
+          </div>
+
+          <!-- Divisões de Treino -->
+          ${htmlDivisoes}
+
+          <!-- Observações Gerais -->
+          ${fichaTreinoAtiva.observacoes ? `
+            <div style="margin-top: 14px; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; color: #334155;">
+              <strong style="color: #1F4E78;">Orientações e Recomendações Gerais:</strong><br>
+              ${fichaTreinoAtiva.observacoes.replace(/\n/g, '<br>')}
+            </div>
+          ` : ''}
+
+          <!-- Rodapé com Assinatura -->
+          <div style="margin-top: 24px; display: flex; justify-content: space-between; align-items: flex-end; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <div>
+              Prescrito por: <strong>${nomeAvaliador}</strong><br>
+              Barbosa Team &bull; Consultoria &amp; Avaliação Física
+            </div>
+            <div style="text-align: center; width: 220px; border-top: 1px solid #0f172a; padding-top: 4px; color: #0f172a; font-weight: 700;">
+              Assinatura do Profissional
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      document.body.classList.add('imprimindo-treino');
+      window.print();
+      setTimeout(() => {
+        document.body.classList.remove('imprimindo-treino');
+      }, 1000);
+    }
+
+    function alternarSubabaTreino(subaba) {
+      const btnFichas = document.getElementById('btn-subtab-fichas');
+      const btnDiario = document.getElementById('btn-subtab-diario');
+      const painelFichas = document.getElementById('painel-subtab-fichas');
+      const painelDiario = document.getElementById('painel-subtab-diario');
+
+      if (!btnFichas || !btnDiario || !painelFichas || !painelDiario) return;
+
+      if (subaba === 'diario') {
+        btnFichas.classList.remove('active');
+        btnDiario.classList.add('active');
+        painelFichas.style.display = 'none';
+        painelDiario.style.display = 'block';
+
+        const selSessaoDiv = document.getElementById('sessao-divisao');
+        if (selSessaoDiv && fichaTreinoAtiva && fichaTreinoAtiva.divisoes) {
+          selSessaoDiv.innerHTML = '';
+          fichaTreinoAtiva.divisoes.forEach(d => {
+            const opt = document.createElement('option');
+            opt.value = d.nome || `Treino ${d.letra}`;
+            opt.textContent = d.nome || `Treino ${d.letra}`;
+            selSessaoDiv.appendChild(opt);
+          });
+          const optCardio = document.createElement('option');
+          optCardio.value = 'Treino Aeróbio Isolado';
+          optCardio.textContent = 'Treino Aeróbio Isolado';
+          selSessaoDiv.appendChild(optCardio);
+        }
+
+        const inpData = document.getElementById('sessao-data');
+        if (inpData && !inpData.value) {
+          inpData.value = new Date().toISOString().split('T')[0];
+        }
+      } else {
+        btnDiario.classList.remove('active');
+        btnFichas.classList.add('active');
+        painelDiario.style.display = 'none';
+        painelFichas.style.display = 'block';
+      }
+    }
+
+    function registrarSessaoTreino(e) {
+      e.preventDefault();
+      if (!alunoTreinoAtualId) {
+        alert('Selecione um aluno antes de registrar a sessão.');
+        return;
+      }
+
+      const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno) return;
+
+      if (!aluno.historicoTreinos) aluno.historicoTreinos = [];
+
+      const data = document.getElementById('sessao-data').value;
+      const divisao = document.getElementById('sessao-divisao').value;
+      const duracao = document.getElementById('sessao-duracao').value;
+      const pse = document.getElementById('sessao-pse').value;
+      const notas = document.getElementById('sessao-notas').value;
+
+      const usuarioLogado = obterUsuarioLogado();
+
+      const novaSessao = {
+        id: 'ses_' + Date.now(),
+        data: data,
+        divisao: divisao,
+        duracao: duracao ? parseInt(duracao) : null,
+        pse: parseInt(pse),
+        notas: notas,
+        registradoPor: usuarioLogado ? usuarioLogado.usuario : 'admin',
+        registradoEm: new Date().toISOString()
+      };
+
+      aluno.historicoTreinos.unshift(novaSessao);
+      salvarBanco();
+
+      document.getElementById('sessao-duracao').value = '';
+      document.getElementById('sessao-notas').value = '';
+
+      renderizarHistoricoSessoes(aluno.historicoTreinos);
+      alert(`Sessão do dia ${data} registrada com sucesso!`);
+    }
+
+    function renderizarHistoricoSessoes(sessoes) {
+      const container = document.getElementById('lista-sessoes-container');
+      const badgeContador = document.getElementById('contador-sessoes-badge');
+      if (!container) return;
+
+      if (badgeContador) {
+        badgeContador.textContent = `${(sessoes || []).length} sessão(ões)`;
+      }
+
+      if (!sessoes || sessoes.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 25px; color: #64748b; font-size: 13px;">
+            Nenhuma sessão de treino registrada ainda para este aluno.
+          </div>
+        `;
+        return;
+      }
+
+      let html = '';
+      sessoes.forEach(s => {
+        let pseColor = '#10b981';
+        if (s.pse >= 8) pseColor = '#ef4444';
+        else if (s.pse >= 5) pseColor = '#f59e0b';
+
+        html += `
+          <div class="sessao-history-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-weight: 800; font-size: 13px; color: #1F4E78;">${s.data}</span>
+                <span style="font-size: 12px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 2px 8px; border-radius: 4px;">${s.divisao}</span>
+                ${s.duracao ? `<span style="font-size: 11px; color: #64748b;">${s.duracao} min</span>` : ''}
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: ${pseColor}; color: #ffffff;">
+                  PSE: ${s.pse}/10
+                </span>
+                <button type="button" onclick="excluirSessaoTreino('${s.id}')" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; padding: 2px 6px;" title="Excluir sessão">&times;</button>
+              </div>
+            </div>
+            ${s.notas ? `<p style="margin: 0; font-size: 12px; color: #334155; line-height: 1.4;">${s.notas}</p>` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function excluirSessaoTreino(sessaoId) {
+      if (!alunoTreinoAtualId) return;
+      const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+      if (!aluno || !aluno.historicoTreinos) return;
+
+      if (!confirm('Deseja excluir este registro de sessão?')) return;
+
+      aluno.historicoTreinos = aluno.historicoTreinos.filter(s => s.id !== sessaoId);
+      salvarBanco();
+      renderizarHistoricoSessoes(aluno.historicoTreinos);
+    }
+
     window.addEventListener('click', function(e) {
       const modalRef = document.getElementById('modal-referencias');
       if (e.target === modalRef) {
@@ -12472,6 +14970,10 @@
       if (e.target === modalTrocar) {
         fecharModalTrocarSenha();
       }
+      const modalAvaliadores = document.getElementById('modal-gerenciar-avaliadores');
+      if (e.target === modalAvaliadores) {
+        fecharModalGerenciarAvaliadores();
+      }
     });
 
     window.addEventListener('keydown', function(e) {
@@ -12479,6 +14981,7 @@
         fecharModalReferencias();
         fecharModalGerenciarAlunos();
         fecharModalTrocarSenha();
+        fecharModalGerenciarAvaliadores();
       }
     });
   </script>
