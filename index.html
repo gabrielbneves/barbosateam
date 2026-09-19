@@ -502,7 +502,7 @@
         margin: 0 auto !important;
       }
       #laudo-comparativo-impresso {
-        padding: 14mm 16mm !important;
+        padding: 10mm 12mm !important;
         margin: 0 auto !important;
         box-sizing: border-box !important;
       }
@@ -925,6 +925,10 @@
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 12px !important;
       }
+      .chart-section-title {
+        break-after: avoid !important;
+        page-break-after: avoid !important;
+      }
       .chart-mixed-card {
         break-inside: avoid !important;
         page-break-inside: avoid !important;
@@ -933,7 +937,7 @@
         margin-bottom: 12px !important;
       }
       .chart-canvas-box {
-        height: 190px !important;
+        height: 180px !important;
       }
       .treadmill-control-card, .treadmill-mode-toggle, .treadmill-timer-card {
         display: none !important;
@@ -2878,8 +2882,8 @@
                     <button type="button" id="treadmill-btn-pause" class="treadmill-btn treadmill-btn-pause" onclick="pausarTimerEsteira()" style="display: none;">
                       Pausar
                     </button>
-                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="resetarTimerEsteira()">
-                      Resetar
+                    <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="limparDadosETabelaEsteira(true)" title="Limpar todas as FCs e reiniciar a tabela do teste">
+                      Resetar &amp; Limpar
                     </button>
                     <button type="button" class="treadmill-btn treadmill-btn-reset" onclick="ajustarTempoAquecimento(1)" title="Adicionar 1 minuto de aquecimento ao teste">
                       +1 min Aquec.
@@ -3189,7 +3193,10 @@
               <button type="button" class="btn btn-secondary" onclick="iniciarReavaliacao()" style="font-size: 12px; padding: 8px 14px;">
                 Fazer Nova Reavaliação
               </button>
-              <button type="button" class="btn" onclick="excluirAlunoDoLaudo()" style="font-size: 12px; padding: 8px 14px; background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; font-weight: 700; cursor: pointer; border-radius: 6px;">
+              <button type="button" class="btn" id="btn-excluir-avaliacao" onclick="excluirAvaliacaoAtual()" style="font-size: 12px; padding: 8px 14px; background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; font-weight: 700; cursor: pointer; border-radius: 6px;" title="Excluir apenas a avaliação selecionada deste aluno">
+                Excluir Avaliação
+              </button>
+              <button type="button" class="btn" onclick="excluirAlunoDoLaudo()" style="font-size: 12px; padding: 8px 14px; background: #fff1f2; color: #b91c1c; border: 1px solid #fecdd3; font-weight: 700; cursor: pointer; border-radius: 6px;" title="Excluir o cadastro completo do aluno">
                 Excluir Aluno
               </button>
               <button type="button" class="btn btn-primary" onclick="prepararEImprimirLaudo()" style="font-size: 12px; padding: 8px 14px;">
@@ -3201,13 +3208,23 @@
         </div>
 
         <!-- SELETORES DE DATAS CASO TENHA MAIS DE 2 AVALIAÇÕES -->
-        <div id="seletor-avaliacoes-container" style="display: none; margin-top: 15px; padding-top: 12px; border-top: 1px solid #e2e8f0; gap: 15px; align-items: center;">
-          <div style="flex: 1;">
-            <label style="font-size: 11px;">Avaliação Anterior (Base):</label>
+        <div id="seletor-avaliacoes-container" style="display: none; margin-top: 15px; padding-top: 12px; border-top: 1px solid #e2e8f0; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 200px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label style="font-size: 11px; font-weight: 600; color: #475569;">Avaliação Anterior (Base):</label>
+              <button type="button" onclick="excluirAvaliacaoPorSeletor('sel-eval-base')" style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;" title="Excluir apenas esta avaliação base">
+                Excluir esta avaliação
+              </button>
+            </div>
             <select id="sel-eval-base" onchange="renderizarComparativoGeral()" style="width: 100%; padding: 6px; font-size: 12px;"></select>
           </div>
-          <div style="flex: 1;">
-            <label style="font-size: 11px;">Reavaliação Atual:</label>
+          <div style="flex: 1; min-width: 200px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label style="font-size: 11px; font-weight: 600; color: #475569;">Reavaliação Atual:</label>
+              <button type="button" onclick="excluirAvaliacaoPorSeletor('sel-eval-target')" style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;" title="Excluir apenas esta reavaliação (ex: duplicada)">
+                Excluir esta avaliação
+              </button>
+            </div>
             <select id="sel-eval-target" onchange="renderizarComparativoGeral()" style="width: 100%; padding: 6px; font-size: 12px;"></select>
           </div>
         </div>
@@ -3236,6 +3253,10 @@
           <div style="background: #f8fafc; padding: 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
             <strong id="label-laudo-periodo" style="color: #64748b;">PERÍODO COMPARADO:</strong><br>
             <span id="laudo-periodo" style="font-weight: 700; color: #1F4E78; font-size: 13px;">--</span>
+            <div class="no-print" style="margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+              <label for="input-laudo-data" style="font-size: 11px; color: #64748b; font-weight: 600;">Alterar data:</label>
+              <input type="date" id="input-laudo-data" onchange="alterarDataLaudo(this.value)" style="border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; font-size: 11px; color: #0f172a; background: #ffffff;">
+            </div>
           </div>
         </div>
 
@@ -3281,22 +3302,22 @@
 
           <!-- CARDS ADULTO -->
           <div id="cards-deltas-adulto" class="comparative-deltas-grid" style="display: none;">
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-peso">
               <div class="title">Massa Corporal (Peso)</div>
               <div id="ad-delta-peso" class="delta-val">--</div>
               <div id="ad-sub-peso" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-gordura">
               <div class="title">% de Gordura</div>
               <div id="ad-delta-gordura" class="delta-val">--</div>
               <div id="ad-sub-gordura" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-magra">
               <div class="title">Massa Magra Livre</div>
               <div id="ad-delta-magra" class="delta-val">--</div>
               <div id="ad-sub-magra" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-rcq">
               <div class="title">Relação Cintura-Quadril</div>
               <div id="ad-delta-rcq" class="delta-val">--</div>
               <div id="ad-sub-rcq" class="subtext">--</div>
@@ -3320,37 +3341,37 @@
 
           <!-- CARDS ADOLESCENTE / JOVEM (CRESCIMENTO & APTIDÃO FÍSICA) -->
           <div id="cards-deltas-adolescente" class="comparative-deltas-grid" style="display: none;">
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-altura">
               <div class="title">Estatura / Altura</div>
               <div id="ped-delta-altura" class="delta-val">--</div>
               <div id="ped-sub-altura" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-imc">
               <div class="title">IMC Pediátrico</div>
               <div id="ped-delta-imc" class="delta-val">--</div>
               <div id="ped-sub-imc" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-gordura">
               <div class="title">% Gordura Corporal</div>
               <div id="ped-delta-gordura" class="delta-val">--</div>
               <div id="ped-sub-gordura" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-flex">
               <div class="title">Flexibilidade</div>
               <div id="ped-delta-flex" class="delta-val">--</div>
               <div id="ped-sub-flex" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-salto">
               <div class="title">Salto Horizontal (MMII)</div>
               <div id="ped-delta-salto" class="delta-val">--</div>
               <div id="ped-sub-salto" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-abd">
               <div class="title">Abdominal 1 Minuto</div>
               <div id="ped-delta-abd" class="delta-val">--</div>
               <div id="ped-sub-abd" class="subtext">--</div>
             </div>
-            <div class="delta-card">
+            <div class="delta-card" id="card-delta-ped-agilidade">
               <div class="title">Agilidade (Quadrado 4x4)</div>
               <div id="ped-delta-agilidade" class="delta-val">--</div>
               <div id="ped-sub-agilidade" class="subtext">--</div>
@@ -3425,14 +3446,16 @@
         <div style="margin-top: 35px; padding-top: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
           
           <!-- Data e Local -->
-          <div style="margin-bottom: 30px; font-size: 12px; color: #334155; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+          <div style="margin-bottom: 12px; font-size: 12px; color: #334155; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
             <span class="no-print" style="color: #64748b; font-size: 11px;">Cidade/Local:</span>
             <input type="text" id="input-laudo-cidade" class="no-print" placeholder="Digite a cidade (opcional)" oninput="atualizarDataLocalLaudo()" style="border: 1px solid #cbd5e1; border-radius: 4px; padding: 4px 8px; font-size: 11px; width: 170px;">
+            <span class="no-print" style="color: #64748b; font-size: 11px; margin-left: 6px;">Data:</span>
+            <input type="date" id="input-laudo-data-rodape" class="no-print" onchange="alterarDataLaudo(this.value)" style="border: 1px solid #cbd5e1; border-radius: 4px; padding: 3px 6px; font-size: 11px; color: #0f172a; background: #ffffff;">
             <span id="laudo-local-data-texto" style="font-weight: 600; color: #1e293b;"></span>
           </div>
 
-          <!-- Assinatura Exclusiva do Responsável Técnico -->
-          <div style="width: 320px; max-width: 90%; text-align: center;">
+          <!-- Assinatura Exclusiva do Responsável Técnico (Oculto temporariamente) -->
+          <div id="bloco-assinatura-laudo" style="display: none !important; width: 320px; max-width: 90%; text-align: center;">
             <div style="border-bottom: 1.5px solid #1e293b; margin-bottom: 8px; width: 100%;"></div>
             <strong style="font-size: 13px; color: #0f172a; display: block; letter-spacing: 0.3px;">Assinatura do Responsável Técnico</strong>
             <span style="font-size: 11px; color: #64748b;">Profissional de Educação Física (CREF)</span>
@@ -5266,14 +5289,8 @@
     function carregarBanco() {
       const db = localStorage.getItem(DB_KEY);
       if (!db) {
-        // Dados de demonstração inicial com PA e FC
         const dbInicial = {
-          alunos: [
-            demoAdultoCarlos,
-            demoAdultaMariana,
-            demoJovemLucas,
-            demoDonaDirce
-          ],
+          alunos: [],
           excluidos: []
         };
         localStorage.setItem(DB_KEY, JSON.stringify(dbInicial));
@@ -5286,26 +5303,9 @@
           parsed.alunos = [];
         }
 
-        // Atualização de compatibilidade de esquemas dos perfis de demonstração (se presentes)
-        const cIdx = parsed.alunos.findIndex(a => a.id === 'demo-carlos-mendes');
-        if (cIdx >= 0 && !parsed.alunos[cIdx].avaliacoes[0]?.testes?.extensora1RM) {
-          parsed.alunos[cIdx] = demoAdultoCarlos;
-        }
-
-        const mIdx = parsed.alunos.findIndex(a => a.id === 'demo-mariana-costa');
-        if (mIdx >= 0 && !parsed.alunos[mIdx].avaliacoes[0]?.testes?.extensora1RM) {
-          parsed.alunos[mIdx] = demoAdultaMariana;
-        }
-
-        const dIdx = parsed.alunos.findIndex(a => a.id === 'demo-dona-dirce');
-        if (dIdx >= 0 && (!parsed.alunos[dIdx].grupoEtario || !parsed.alunos[dIdx].avaliacoes[1] || !parsed.alunos[dIdx].avaliacoes[0]?.testes?.cardioVo2)) {
-          parsed.alunos[dIdx] = demoDonaDirce;
-        }
-
-        const lIdx = parsed.alunos.findIndex(a => a.id === 'demo-lucas-santos');
-        if (lIdx >= 0 && (!parsed.alunos[lIdx].grupoEtario || !parsed.alunos[lIdx].avaliacoes[1])) {
-          parsed.alunos[lIdx] = demoJovemLucas;
-        }
+        // Remocao estrita de quaisquer perfis de demonstracao/exemplo para garantir que apenas dados reais do paciente sejam salvos
+        const demoIds = ['demo-carlos-mendes', 'demo-mariana-costa', 'demo-dona-dirce', 'demo-lucas-santos'];
+        parsed.alunos = parsed.alunos.filter(a => a && a.id && !demoIds.includes(a.id) && !a.id.startsWith('demo-'));
 
         parsed.alunos.forEach(a => {
           if (!a.grupoEtario) {
@@ -5320,7 +5320,7 @@
         localStorage.setItem(DB_KEY, JSON.stringify(parsed));
         return parsed;
       } catch (e) {
-        return { alunos: [demoAdultoCarlos, demoAdultaMariana, demoJovemLucas, demoDonaDirce], excluidos: [] };
+        return { alunos: [], excluidos: [] };
       }
     }
 
@@ -5438,7 +5438,7 @@
 
           // Mescla alunos da nuvem para o banco local
           alunosNuvem.forEach(aNuvem => {
-            if (!aNuvem || !aNuvem.id) return;
+            if (!aNuvem || !aNuvem.id || aNuvem.id.startsWith('demo-')) return;
             if (bancoDados.excluidos.includes(aNuvem.id)) return;
 
             const idxLocal = bancoDados.alunos.findIndex(a => 
@@ -5695,7 +5695,7 @@
     window.extrairLinhasColetadasAvaliacao = extrairLinhasColetadasAvaliacao;
 
     async function enviarAlunoParaNuvem(aluno, avaliacaoRecente) {
-      if (!aluno) return;
+      if (!aluno || !aluno.id || aluno.id.startsWith('demo-')) return;
       atualizarStatusSincronizacao('sincronizando', 'Salvando na nuvem...');
       try {
         const avRec = avaliacaoRecente || (aluno.avaliacoes && aluno.avaliacoes.length > 0 ? aluno.avaliacoes[aluno.avaliacoes.length - 1] : null);
@@ -5737,7 +5737,7 @@
         const payload = {
           acao: 'sincronizar_banco',
           banco: {
-            alunos: bancoDados.alunos || [],
+            alunos: (bancoDados.alunos || []).filter(a => a && a.id && !a.id.startsWith('demo-')),
             excluidos: bancoDados.excluidos || []
           }
         };
@@ -6173,6 +6173,146 @@
       excluirAlunoPorId(id);
     }
 
+    function excluirAvaliacaoPorId(alunoId, avaliacaoId) {
+      const todosAlunos = bancoDados.alunos || [];
+      const aluno = todosAlunos.find(a => a.id === alunoId);
+      if (!aluno) {
+        alert('Aluno não encontrado para exclusão da avaliação.');
+        return;
+      }
+
+      const usuarioLogado = obterUsuarioLogado();
+      if (usuarioLogado && usuarioLogado.perfil !== 'admin') {
+        const criador = (aluno.criadoPor || '').toLowerCase();
+        if (criador && criador !== (usuarioLogado.usuario || '').toLowerCase()) {
+          alert('Permissão negada: você só pode excluir avaliações de alunos cadastrados por você.');
+          return;
+        }
+      }
+
+      if (!aluno.avaliacoes || aluno.avaliacoes.length === 0) {
+        alert('Este aluno não possui avaliações cadastradas.');
+        return;
+      }
+
+      const alvo = aluno.avaliacoes.find(av => (av.id && av.id === avaliacaoId) || (av.data && av.data === avaliacaoId))
+        || aluno.avaliacoes.find((_, i) => String(i) === String(avaliacaoId))
+        || aluno.avaliacoes[aluno.avaliacoes.length - 1];
+
+      if (!alvo) {
+        alert('Avaliação não encontrada.');
+        return;
+      }
+
+      const dataStr = alvo.data || 'data não informada';
+      const evCount = aluno.avaliacoes.length;
+      const restam = evCount - 1;
+
+      const confirmacao = confirm(
+        `Tem certeza que deseja EXCLUIR a avaliação do dia ${dataStr} do aluno "${aluno.nome}"?\n\n` +
+        `• O cadastro do aluno e as outras ${restam} ${restam === 1 ? 'avaliação' : 'avaliações'} permanecerão intactos.\n` +
+        `• Esta ação não pode ser desfeita.\n\n` +
+        `Pressione OK para confirmar a exclusão.`
+      );
+
+      if (!confirmacao) return;
+
+      // Remove apenas a avaliação selecionada
+      aluno.avaliacoes = aluno.avaliacoes.filter(av => av !== alvo && (!alvo.id || av.id !== alvo.id));
+
+      salvarBanco(bancoDados);
+      sincronizarBancoCompletoNuvem(true);
+
+      // Se ainda houver avaliações, atualiza dados com a mais recente
+      if (aluno.avaliacoes.length > 0) {
+        aluno.avaliacoes.sort((a, b) => new Date(a.data) - new Date(b.data));
+        if (dadosAluno.id === aluno.id) {
+          const ultAv = aluno.avaliacoes[aluno.avaliacoes.length - 1];
+          dadosAluno.composicao = { ...ultAv.composicao };
+          dadosAluno.testes = { ...ultAv.testes };
+          carregarAlunoNosCampos(aluno);
+        }
+      } else {
+        if (dadosAluno.id === aluno.id) {
+          dadosAluno.composicao = {};
+          dadosAluno.testes = {};
+        }
+      }
+
+      atualizarDropdownPacientes();
+      renderizarListaModalAlunos();
+      renderizarComparativoGeral();
+
+      alert(`A avaliação do dia ${dataStr} foi excluída com sucesso.`);
+    }
+
+    function excluirAvaliacaoAtual() {
+      const selVal = document.getElementById('seletor-paciente')?.value;
+      const nomeInput = document.getElementById('nome')?.value?.trim();
+      const nomeAluno = dadosAluno.identificacao?.nome || nomeInput;
+
+      const alunosVisiveis = obterAlunosVisiveis();
+      let aluno = alunosVisiveis.find(a => 
+        (dadosAluno.id && a.id === dadosAluno.id) ||
+        (selVal && selVal !== 'novo' && a.id === selVal) ||
+        (nomeAluno && a.nome.toLowerCase() === nomeAluno.toLowerCase())
+      );
+
+      if (!aluno && alunosVisiveis && alunosVisiveis.length > 0) {
+        aluno = alunosVisiveis[0];
+      }
+
+      if (!aluno || !aluno.avaliacoes || aluno.avaliacoes.length === 0) {
+        alert('Nenhum aluno ou avaliação ativa para exclusão.');
+        return;
+      }
+
+      const selTarget = document.getElementById('sel-eval-target');
+      const targetEvalId = (aluno.avaliacoes.length > 1 && selTarget && selTarget.value)
+        ? selTarget.value
+        : aluno.avaliacoes[aluno.avaliacoes.length - 1].id;
+
+      excluirAvaliacaoPorId(aluno.id, targetEvalId);
+    }
+
+    function excluirAvaliacaoPorSeletor(seletorId) {
+      const selVal = document.getElementById('seletor-paciente')?.value;
+      const nomeInput = document.getElementById('nome')?.value?.trim();
+      const nomeAluno = dadosAluno.identificacao?.nome || nomeInput;
+
+      const alunosVisiveis = obterAlunosVisiveis();
+      let aluno = alunosVisiveis.find(a => 
+        (dadosAluno.id && a.id === dadosAluno.id) ||
+        (selVal && selVal !== 'novo' && a.id === selVal) ||
+        (nomeAluno && a.nome.toLowerCase() === nomeAluno.toLowerCase())
+      );
+
+      if (!aluno && alunosVisiveis && alunosVisiveis.length > 0) {
+        aluno = alunosVisiveis[0];
+      }
+
+      if (!aluno) {
+        alert('Nenhum aluno selecionado.');
+        return;
+      }
+
+      const sel = document.getElementById(seletorId);
+      const evalId = sel ? sel.value : null;
+      if (!evalId) {
+        alert('Nenhuma avaliação selecionada neste campo.');
+        return;
+      }
+
+      excluirAvaliacaoPorId(aluno.id, evalId);
+    }
+
+    function alternarSublistaAvaliacoes(alunoId) {
+      const row = document.getElementById('sublista-avaliacoes-' + alunoId);
+      if (row) {
+        row.style.display = (row.style.display === 'none' || !row.style.display) ? 'table-row' : 'none';
+      }
+    }
+
     function abrirModalGerenciarAlunos() {
       const modal = document.getElementById('modal-gerenciar-alunos');
       if (!modal) return;
@@ -6288,6 +6428,12 @@
               <span style="display: inline-block; background: #e8f1f8; color: #1F4E78; font-weight: 700; padding: 2px 8px; border-radius: 10px; font-size: 11px;">
                 ${evCount} ${evCount === 1 ? 'avaliação' : 'avaliações'}
               </span>
+              ${evCount > 0 ? `
+              <div style="margin-top: 4px;">
+                <button type="button" onclick="alternarSublistaAvaliacoes('${aluno.id}')" style="background: none; border: none; color: #0284c7; font-size: 10px; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 0;" title="Ver e gerenciar avaliações individuais">
+                  Gerenciar (${evCount})
+                </button>
+              </div>` : ''}
             </td>
             <td style="padding: 10px 12px; border: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 11px;">
               ${ultData}
@@ -6296,12 +6442,52 @@
               <button type="button" onclick="selecionarAlunoViaModal('${aluno.id}')" style="background: #1F4E78; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer; margin-right: 6px;">
                 Abrir
               </button>
-              <button type="button" onclick="excluirAlunoPorId('${aluno.id}')" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              <button type="button" onclick="excluirAlunoPorId('${aluno.id}')" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fca5a5; padding: 6px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; cursor: pointer;" title="Excluir cadastro completo do aluno">
                 Excluir
               </button>
             </td>
           </tr>
         `;
+
+        if (evCount > 0) {
+          const colSpanTotal = ehAdmin ? 6 : 5;
+          const evalsListHtml = aluno.avaliacoes.map((av, avIdx) => {
+            const avData = av.data || 'Sem data';
+            const avResp = av.avaliadorNome || av.avaliador || 'Administrador';
+            const avId = av.id || ('av_' + avIdx);
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 5px; font-size: 11px;">
+                <div>
+                  <strong style="color: #0f172a;">Avaliação #${avIdx + 1}</strong> &bull;
+                  <span style="color: #334155; font-weight: 600;">Data: ${avData}</span> &bull;
+                  <span style="color: #64748b;">Avaliador: ${avResp}</span>
+                </div>
+                <div style="display: flex; gap: 6px; align-items: center;">
+                  <button type="button" onclick="selecionarAlunoViaModal('${aluno.id}'); fecharModalGerenciarAlunos();" style="background: #1F4E78; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;">
+                    Abrir no Laudo
+                  </button>
+                  <button type="button" onclick="excluirAvaliacaoPorId('${aluno.id}', '${avId}')" style="background: #fff1f2; color: #b91c1c; border: 1px solid #fca5a5; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; cursor: pointer;" title="Excluir apenas esta avaliação">
+                    Excluir Avaliação
+                  </button>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          html += `
+            <tr id="sublista-avaliacoes-${aluno.id}" style="display: none; background: #f8fafc;">
+              <td colspan="${colSpanTotal}" style="padding: 10px 14px; border: 1px solid #e2e8f0;">
+                <div style="background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #cbd5e1;">
+                    <strong style="font-size: 12px; color: #0f172a;">Gerenciar Avaliações de ${aluno.nome}</strong>
+                    <span style="font-size: 11px; color: #64748b;">Exclua apenas a avaliação duplicada ou indesejada</span>
+                  </div>
+                  ${evalsListHtml}
+                </div>
+              </td>
+            </tr>
+          `;
+        }
       });
 
       html += `
@@ -6358,6 +6544,7 @@
     }
 
     function carregarAlunoNosCampos(aluno) {
+      limparCamposCadastro();
       dadosAluno.id = aluno.id;
       dadosAluno.grupoEtario = aluno.grupoEtario || (aluno.idade >= 60 ? 'idoso' : (aluno.idade < 18 ? 'adolescente' : 'adulto'));
       dadosAluno.identificacao = {
@@ -8164,6 +8351,8 @@
     var esteiraSegundosTotais = 0;
     var esteiraEmExecucao = false;
     var esteiraPicoSegundos = 0; // Registra o tempo em segundos no instante do pico se a recuperação for iniciada
+    var esteiraFaseRecuperacao = false;
+    var esteiraRecuperacaoSegundos = 0;
 
     function alternarModoEsteira(modo) {
       const btnLive = document.getElementById('btn-mode-treadmill-live');
@@ -8215,7 +8404,7 @@
       }
     }
 
-    function gerarTabelaProtocoloEsteira() {
+    function gerarTabelaProtocoloEsteira(ignorarValoresPrevios = false) {
       const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
       const warmupVel = parseFloat(document.getElementById('ad_proto_warmup_vel')?.value) || 5.0;
       const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
@@ -8228,16 +8417,18 @@
       if (!tbody) return;
 
       const valoresPrevios = {};
-      tbody.querySelectorAll('tr').forEach(tr => {
-        const m = tr.getAttribute('data-minuto');
-        if (m) {
-          valoresPrevios[m] = {
-            fc: tr.querySelector('.treadmill-input-fc')?.value || '',
-            borg: tr.querySelector('.treadmill-select-borg')?.value || '',
-            status: tr.querySelector('.treadmill-select-status')?.value || 'normal'
-          };
-        }
-      });
+      if (!ignorarValoresPrevios) {
+        tbody.querySelectorAll('tr').forEach(tr => {
+          const m = tr.getAttribute('data-minuto');
+          if (m) {
+            valoresPrevios[m] = {
+              fc: tr.querySelector('.treadmill-input-fc')?.value || '',
+              borg: tr.querySelector('.treadmill-select-borg')?.value || '',
+              status: tr.querySelector('.treadmill-select-status')?.value || 'normal'
+            };
+          }
+        });
+      }
 
       const totalMinutos = warmupDur + 12 + recoveryDur;
       let html = '';
@@ -8500,16 +8691,63 @@
       const recoveryDur = parseInt(document.getElementById('ad_proto_recovery_dur')?.value, 10) || 3;
       const recoveryVel = parseFloat(document.getElementById('ad_proto_recovery_vel')?.value) || 4.0;
       const warmupDur = parseInt(document.getElementById('ad_proto_warmup_dur')?.value, 10) || 3;
+      const warmupVel = parseFloat(document.getElementById('ad_proto_warmup_vel')?.value) || 5.0;
+      const testVelIni = parseFloat(document.getElementById('ad_proto_test_vel_ini')?.value) || 8.0;
+      const incTaxa = parseFloat(document.getElementById('ad_proto_inc_taxa')?.value) || 1.0;
       const warmupSegundos = warmupDur * 60;
 
+      // 1. Congela o tempo de pico no instante do acionamento
       const minutoAtual = esteiraSegundosTotais > 0 ? Math.floor((esteiraSegundosTotais - 1) / 60) + 1 : 1;
-
-      // Se ainda não registrou pico, salva o momento exato
-      if (esteiraPicoSegundos === 0 && esteiraSegundosTotais > warmupSegundos) {
+      if (esteiraPicoSegundos === 0) {
         esteiraPicoSegundos = esteiraSegundosTotais;
       }
 
-      // Marcar linha corrente como pico se estava normal
+      // 2. Calcula velocidade completa e segundos incompletos de esforço
+      const segsConsiderados = esteiraPicoSegundos;
+      let velCompleta = 0;
+      let segundosIncompletos = 0;
+
+      if (segsConsiderados <= warmupSegundos) {
+        velCompleta = warmupVel;
+        segundosIncompletos = Math.max(0, segsConsiderados % 60);
+      } else {
+        const segsTeste = segsConsiderados - warmupSegundos;
+        const estagiosCompletos = Math.floor(segsTeste / 60);
+        segundosIncompletos = segsTeste % 60;
+        if (estagiosCompletos >= 1) {
+          velCompleta = testVelIni + ((estagiosCompletos - 1) * incTaxa);
+        } else {
+          velCompleta = testVelIni;
+        }
+      }
+
+      // Procura FC máxima e último Borg registrados até o momento do pico
+      let maxFc = 0;
+      let ultimoBorg = 19;
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const m = parseInt(tr.getAttribute('data-minuto'), 10) || 0;
+        if (m <= minutoAtual) {
+          const fc = parseInt(tr.querySelector('.treadmill-input-fc')?.value, 10);
+          if (!isNaN(fc) && fc > maxFc) maxFc = fc;
+          const bg = parseInt(tr.querySelector('.treadmill-select-borg')?.value, 10);
+          if (!isNaN(bg) && (fc > 0 || tr.classList.contains('treadmill-row-active'))) ultimoBorg = bg;
+        }
+      });
+
+      // Atualiza campos diretos e calcula VO2max estimado automaticamente
+      const inpVelComp = document.getElementById('ad_esteira_vel_completa');
+      const inpSegs = document.getElementById('ad_esteira_segundos');
+      const inpFcPico = document.getElementById('ad_esteira_fc_pico');
+      const inpBorg = document.getElementById('ad_esteira_borg');
+
+      if (inpVelComp) inpVelComp.value = velCompleta.toFixed(1);
+      if (inpSegs) inpSegs.value = segundosIncompletos;
+      if (inpFcPico && maxFc > 0) inpFcPico.value = maxFc;
+      if (inpBorg) inpBorg.value = ultimoBorg;
+
+      calcularEsteiraAdulto(); // Calcula imediatamente Vpico e VO2max estimado
+
+      // 3. Transfere na tabela para Recuperação: marca pico na linha atual
       const linhaAtual = document.getElementById(`treadmill-row-${minutoAtual}`);
       if (linhaAtual) {
         const selStatus = linhaAtual.querySelector('.treadmill-select-status');
@@ -8518,20 +8756,7 @@
         }
       }
 
-      // Coletar valores de linhas já preenchidas
-      const valoresSalvos = {};
-      tbody.querySelectorAll('tr').forEach(tr => {
-        const m = parseInt(tr.getAttribute('data-minuto'), 10);
-        if (m) {
-          valoresSalvos[m] = {
-            fc: tr.querySelector('.treadmill-input-fc')?.value || '',
-            borg: tr.querySelector('.treadmill-select-borg')?.value || '',
-            status: tr.querySelector('.treadmill-select-status')?.value || 'normal'
-          };
-        }
-      });
-
-      // Remover estágios futuros de teste que estavam previstos
+      // Remove estágios futuros de teste além do minuto de pico
       Array.from(tbody.querySelectorAll('tr')).forEach(tr => {
         const m = parseInt(tr.getAttribute('data-minuto'), 10);
         if (m > minutoAtual) {
@@ -8539,24 +8764,33 @@
         }
       });
 
-      // Inserir linhas de recuperação a partir do próximo minuto
+      // Insere linhas de recuperação
       let recHtml = '';
       for (let r = 1; r <= recoveryDur; r++) {
         const mRec = minutoAtual + r;
         const faseNome = `Recuperação - Rec ${r}`;
-        const prev = valoresSalvos[mRec] || { fc: '', borg: '9', status: 'recuperacao' };
-        recHtml += renderizarLinhaProtocoloHtml(mRec, faseNome, 'recuperacao', recoveryVel, 0.0, prev);
+        recHtml += renderizarLinhaProtocoloHtml(mRec, faseNome, 'recuperacao', recoveryVel, 0.0, { fc: '', borg: '9', status: 'recuperacao' });
       }
-
       tbody.insertAdjacentHTML('beforeend', recHtml);
+
+      // 4. Ativa modo de recuperação e reinicia o cronômetro especificamente para a recuperação
+      esteiraFaseRecuperacao = true;
+      esteiraRecuperacaoSegundos = 0;
 
       const stagePill = document.getElementById('treadmill-current-stage');
       if (stagePill) {
-        stagePill.textContent = `Recuperação Iniciada (${recoveryVel.toFixed(1)} km/h)`;
+        stagePill.textContent = `Recuperação - Rec 1 (${recoveryVel.toFixed(1)} km/h)`;
       }
 
-      sincronizarResultadosEsteiraInterativa();
-      atualizarDisplayTimerEsteira();
+      const display = document.getElementById('treadmill-timer-display');
+      if (display) display.textContent = '00:00';
+
+      // Se o cronômetro não estiver rodando, inicia; se já estiver, atualiza
+      if (!esteiraEmExecucao) {
+        iniciarTimerEsteira();
+      } else {
+        atualizarDisplayTimerEsteira();
+      }
     }
 
     function resetarConfigProtocoloEsteira() {
@@ -8596,10 +8830,15 @@
       if (esteiraTimerInterval) clearInterval(esteiraTimerInterval);
 
       esteiraTimerInterval = setInterval(() => {
-        esteiraSegundosTotais++;
+        if (esteiraFaseRecuperacao) {
+          esteiraRecuperacaoSegundos++;
+        } else {
+          esteiraSegundosTotais++;
+        }
         atualizarDisplayTimerEsteira();
 
-        if (esteiraSegundosTotais > 0 && esteiraSegundosTotais % 60 === 0) {
+        const segsParaAlerta = esteiraFaseRecuperacao ? esteiraRecuperacaoSegundos : esteiraSegundosTotais;
+        if (segsParaAlerta > 0 && segsParaAlerta % 60 === 0) {
           tocarAlertaViradaMinuto();
         }
       }, 1000);
@@ -8622,30 +8861,108 @@
       if (btnPause) btnPause.style.display = 'none';
     }
 
-    function resetarTimerEsteira() {
-      pausarTimerEsteira();
+    function limparDadosETabelaEsteira(forcarLimparInputs = true) {
+      if (esteiraTimerInterval) {
+        clearInterval(esteiraTimerInterval);
+        esteiraTimerInterval = null;
+      }
+      esteiraEmExecucao = false;
       esteiraSegundosTotais = 0;
       esteiraPicoSegundos = 0;
+      esteiraFaseRecuperacao = false;
+      esteiraRecuperacaoSegundos = 0;
+
       const btnStart = document.getElementById('treadmill-btn-start');
+      const btnPause = document.getElementById('treadmill-btn-pause');
       if (btnStart) {
         btnStart.textContent = 'Iniciar Cronômetro';
         btnStart.style.display = 'inline-block';
       }
+      if (btnPause) btnPause.style.display = 'none';
+
       const display = document.getElementById('treadmill-timer-display');
       if (display) display.textContent = '00:00';
       const stagePill = document.getElementById('treadmill-current-stage');
       if (stagePill) stagePill.textContent = 'Pronto para iniciar';
+
+      if (forcarLimparInputs) {
+        const inpVelComp = document.getElementById('ad_esteira_vel_completa');
+        const inpSegs = document.getElementById('ad_esteira_segundos');
+        const inpFcPico = document.getElementById('ad_esteira_fc_pico');
+        const inpBorg = document.getElementById('ad_esteira_borg');
+        if (inpVelComp) inpVelComp.value = '';
+        if (inpSegs) inpSegs.value = '';
+        if (inpFcPico) inpFcPico.value = '';
+        if (inpBorg) inpBorg.value = '19';
+
+        const resVel = document.getElementById('ad_res_vel_pico');
+        const resVo2 = document.getElementById('ad_res_vo2');
+        const resVo2Badge = document.getElementById('ad_res_vo2_badge');
+        const resFcAt = document.getElementById('ad_res_fc_atingida');
+        const resFcBadge = document.getElementById('ad_res_fc_criterio_badge');
+        const elRfc = document.getElementById('ad_res_rfc');
+        const badgeRfc = document.getElementById('ad_res_rfc_badge');
+
+        if (resVel) resVel.textContent = '-- km/h';
+        if (resVo2) {
+          resVo2.textContent = '--';
+          resVo2.removeAttribute('data-vo2');
+        }
+        if (resVo2Badge) {
+          resVo2Badge.className = 'status-badge badge-neutral';
+          resVo2Badge.textContent = 'Aguardando dados';
+        }
+        if (resFcAt) resFcAt.textContent = '--%';
+        if (resFcBadge) {
+          resFcBadge.className = 'status-badge badge-neutral';
+          resFcBadge.textContent = 'Aguardando FC';
+        }
+        if (elRfc) elRfc.textContent = '-- bpm';
+        if (badgeRfc) {
+          badgeRfc.className = 'status-badge badge-neutral';
+          badgeRfc.textContent = 'Sem dados de recuperação';
+        }
+      }
+
+      gerarTabelaProtocoloEsteira(true);
       atualizarDestaqueLinhaMinuto(0);
     }
 
-    function atualizarDisplayTimerEsteira() {
-      const mm = String(Math.floor(esteiraSegundosTotais / 60)).padStart(2, '0');
-      const ss = String(esteiraSegundosTotais % 60).padStart(2, '0');
-      const display = document.getElementById('treadmill-timer-display');
-      if (display) display.textContent = `${mm}:${ss}`;
+    function resetarTimerEsteira() {
+      limparDadosETabelaEsteira(true);
+    }
 
-      const minutoAtivo = esteiraSegundosTotais > 0 ? Math.floor((esteiraSegundosTotais - 1) / 60) + 1 : 0;
-      atualizarDestaqueLinhaMinuto(minutoAtivo);
+    function atualizarDisplayTimerEsteira() {
+      const display = document.getElementById('treadmill-timer-display');
+      const stagePill = document.getElementById('treadmill-current-stage');
+
+      if (esteiraFaseRecuperacao) {
+        const mm = String(Math.floor(esteiraRecuperacaoSegundos / 60)).padStart(2, '0');
+        const ss = String(esteiraRecuperacaoSegundos % 60).padStart(2, '0');
+        if (display) display.textContent = `${mm}:${ss}`;
+
+        const recMinutoIndex = Math.floor(esteiraRecuperacaoSegundos / 60) + 1;
+        const recoveryVel = parseFloat(document.getElementById('ad_proto_recovery_vel')?.value) || 4.0;
+        if (stagePill) stagePill.textContent = `Recuperação - Rec ${recMinutoIndex} (${recoveryVel.toFixed(1)} km/h)`;
+
+        const tbody = document.getElementById('treadmill-protocolo-corpo');
+        if (tbody) {
+          tbody.querySelectorAll('tr').forEach(tr => tr.classList.remove('treadmill-row-active'));
+          const recRows = tbody.querySelectorAll('tr[data-tipo="recuperacao"]');
+          if (recRows.length >= recMinutoIndex) {
+            const activeRow = recRows[recMinutoIndex - 1];
+            activeRow.classList.add('treadmill-row-active');
+            try { activeRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } catch (e) {}
+          }
+        }
+      } else {
+        const mm = String(Math.floor(esteiraSegundosTotais / 60)).padStart(2, '0');
+        const ss = String(esteiraSegundosTotais % 60).padStart(2, '0');
+        if (display) display.textContent = `${mm}:${ss}`;
+
+        const minutoAtivo = esteiraSegundosTotais > 0 ? Math.floor((esteiraSegundosTotais - 1) / 60) + 1 : 0;
+        atualizarDestaqueLinhaMinuto(minutoAtivo);
+      }
     }
 
     function atualizarDestaqueLinhaMinuto(minutoAtivo) {
@@ -9113,16 +9430,19 @@
         }
       }
 
+      const temMMSSValido = mmssRes && ((mmssRes.rm1 != null && Number(mmssRes.rm1) > 0) || (mmssRes.reps != null && Number(mmssRes.reps) > 0));
+      const temMMIIValido = mmiiRes && (mmiiRes.rm1 != null && Number(mmiiRes.rm1) > 0);
+
       dadosAluno.testes = {
         // Dados de MMSS
-        forcaMMSS: mmssRes,
-        flexoesReps: (mmssRes.exercicio === 'flexao' ? mmssRes.reps : (dadosAluno.testes?.flexoesReps || null)),
+        forcaMMSS: temMMSSValido ? mmssRes : null,
+        flexoesReps: (temMMSSValido && mmssRes.exercicio === 'flexao') ? mmssRes.reps : null,
         // Dados de MMII
-        forcaMMII: mmiiRes,
-        extensoraCarga: (mmiiRes.exercicio === 'extensora' ? mmiiRes.carga : (dadosAluno.testes?.extensoraCarga || mmiiRes.carga)),
-        extensoraReps: (mmiiRes.exercicio === 'extensora' ? mmiiRes.reps : (dadosAluno.testes?.extensoraReps || mmiiRes.reps)),
-        extensora1RM: mmiiRes.rm1,
-        extensoraRelativo: mmiiRes.relativo,
+        forcaMMII: temMMIIValido ? mmiiRes : null,
+        extensoraCarga: (temMMIIValido && mmiiRes.exercicio === 'extensora') ? mmiiRes.carga : null,
+        extensoraReps: (temMMIIValido && mmiiRes.exercicio === 'extensora') ? mmiiRes.reps : null,
+        extensora1RM: temMMIIValido ? mmiiRes.rm1 : null,
+        extensoraRelativo: temMMIIValido ? mmiiRes.relativo : null,
         ...esteiraDados
       };
 
@@ -9132,6 +9452,7 @@
       }
 
       gravarAvaliacaoNoHistorico();
+      limparDadosETabelaEsteira(true);
       irParaPasso(4);
     }
 
@@ -9769,6 +10090,8 @@
       }
 
       if (!aluno || !aluno.avaliacoes || aluno.avaliacoes.length === 0) {
+        const btnExcluirAv = document.getElementById('btn-excluir-avaliacao');
+        if (btnExcluirAv) btnExcluirAv.style.display = 'none';
         if (document.getElementById('comp-aluno-nome')) document.getElementById('comp-aluno-nome').textContent = aluno ? aluno.nome : '--';
         if (document.getElementById('laudo-nome')) document.getElementById('laudo-nome').textContent = aluno ? aluno.nome : '--';
         if (document.getElementById('laudo-idade-sexo')) document.getElementById('laudo-idade-sexo').textContent = '--';
@@ -9794,6 +10117,12 @@
       }
 
       const evals = aluno.avaliacoes;
+
+      const btnExcluirAv = document.getElementById('btn-excluir-avaliacao');
+      if (btnExcluirAv) {
+        btnExcluirAv.style.display = (evals.length > 0) ? 'inline-block' : 'none';
+        btnExcluirAv.textContent = (evals.length > 1) ? 'Excluir Avaliação Selecionada' : 'Excluir Avaliação';
+      }
 
       document.getElementById('comp-aluno-nome').textContent = aluno.nome;
       document.getElementById('laudo-nome').textContent = aluno.nome;
@@ -9830,6 +10159,13 @@
       }
       document.getElementById('laudo-periodo').textContent = ehReavaliacao ? `${avBase.data} a ${avTarget.data}` : `${avTarget.data}`;
       atualizarDataLocalLaudo(avTarget.data);
+
+      // Sincroniza os seletores de data da pagina de impressao
+      const isoDataTarget = converterParaIsoDate(avTarget.data) || new Date().toISOString().split('T')[0];
+      const inpDataTop = document.getElementById('input-laudo-data');
+      if (inpDataTop) inpDataTop.value = isoDataTarget;
+      const inpDataBot = document.getElementById('input-laudo-data-rodape');
+      if (inpDataBot) inpDataBot.value = isoDataTarget;
 
       // Título dos cards de destaque
       const tituloCards = document.getElementById('titulo-cards-destaques');
@@ -9988,21 +10324,61 @@
     // ==========================================
     let dataAtivaLaudo = '';
 
+    function converterParaIsoDate(dataStr) {
+      if (!dataStr) return '';
+      const s = String(dataStr).split('T')[0].trim();
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      if (s.includes('/')) {
+        const p = s.split('/');
+        if (p.length === 3) {
+          const dia = p[0].padStart(2, '0');
+          const mes = p[1].padStart(2, '0');
+          const ano = p[2];
+          return `${ano}-${mes}-${dia}`;
+        }
+      }
+      return '';
+    }
+
+    function converterParaBrDate(dataStr) {
+      if (!dataStr) return '';
+      const s = String(dataStr).split('T')[0].trim();
+      if (s.includes('/')) return s;
+      if (s.includes('-')) {
+        const p = s.split('-');
+        if (p.length === 3) {
+          return `${p[2].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[0]}`;
+        }
+      }
+      return s;
+    }
+
     function formatarDataExtenso(dataStr) {
       if (!dataStr) {
         dataStr = new Date().toISOString().split('T')[0];
       }
-      const partes = dataStr.split('-');
-      if (partes.length === 3) {
-        const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-        const dia = parseInt(partes[2], 10);
-        const mesIndex = parseInt(partes[1], 10) - 1;
-        const ano = partes[0];
-        if (mesIndex >= 0 && mesIndex < 12) {
-          return `${dia} de ${meses[mesIndex]} de ${ano}`;
+      const s = String(dataStr).split('T')[0].trim();
+      let ano, mesIndex, dia;
+      if (s.includes('-')) {
+        const partes = s.split('-');
+        if (partes.length === 3) {
+          ano = partes[0];
+          mesIndex = parseInt(partes[1], 10) - 1;
+          dia = parseInt(partes[2], 10);
+        }
+      } else if (s.includes('/')) {
+        const partes = s.split('/');
+        if (partes.length === 3) {
+          dia = parseInt(partes[0], 10);
+          mesIndex = parseInt(partes[1], 10) - 1;
+          ano = partes[2];
         }
       }
-      return dataStr;
+      const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+      if (mesIndex >= 0 && mesIndex < 12 && dia && ano) {
+        return `${dia} de ${meses[mesIndex]} de ${ano}`;
+      }
+      return s;
     }
 
     function atualizarDataLocalLaudo(dataParam) {
@@ -10023,6 +10399,46 @@
       }
     }
 
+    function alterarDataLaudo(novaDataIso) {
+      if (!novaDataIso) return;
+      dataAtivaLaudo = novaDataIso;
+      const dataBr = converterParaBrDate(novaDataIso);
+
+      const inpTop = document.getElementById('input-laudo-data');
+      if (inpTop && inpTop.value !== novaDataIso) inpTop.value = novaDataIso;
+      const inpBot = document.getElementById('input-laudo-data-rodape');
+      if (inpBot && inpBot.value !== novaDataIso) inpBot.value = novaDataIso;
+
+      const labelPeriodo = document.getElementById('label-laudo-periodo');
+      const elPeriodo = document.getElementById('laudo-periodo');
+      const ehReav = labelPeriodo && labelPeriodo.textContent.includes('PERÍODO');
+
+      if (elPeriodo) {
+        if (ehReav && elPeriodo.textContent.includes(' a ')) {
+          const partes = elPeriodo.textContent.split(' a ');
+          elPeriodo.textContent = `${partes[0]} a ${dataBr}`;
+        } else {
+          elPeriodo.textContent = dataBr;
+        }
+      }
+
+      atualizarDataLocalLaudo(novaDataIso);
+
+      // Persiste alteração na avaliação correspondente
+      const selVal = document.getElementById('seletor-paciente')?.value;
+      const alunosVisiveis = (typeof obterAlunosVisiveis === 'function') ? obterAlunosVisiveis() : (bancoDados.alunos || []);
+      const aluno = alunosVisiveis.find(a => (dadosAluno.id && a.id === dadosAluno.id) || (selVal && a.id === selVal));
+      if (aluno && aluno.avaliacoes && aluno.avaliacoes.length > 0) {
+        const selTarget = document.getElementById('sel-eval-target');
+        const targetId = selTarget ? selTarget.value : null;
+        const avTarget = (targetId && aluno.avaliacoes.find(a => a.id === targetId)) || aluno.avaliacoes[aluno.avaliacoes.length - 1];
+        if (avTarget) {
+          avTarget.data = dataBr;
+          if (typeof salvarBanco === 'function') salvarBanco(bancoDados);
+        }
+      }
+    }
+
     // ==========================================
     // RENDERIZAÇÃO DINÂMICA DE REFERÊNCIAS DO LAUDO
     // ==========================================
@@ -10036,6 +10452,7 @@
 
     // Deltas de Destaque - Idosos
     function renderizarDeltasDestaque(base, target, ehReavaliacao, sexo) {
+      const cardPA = document.getElementById('card-delta-pa');
       const elPA = document.getElementById('delta-pa');
       const cardFpm = document.getElementById('card-delta-fpm');
       const elFpm = document.getElementById('delta-fpm');
@@ -10050,15 +10467,23 @@
       const elCardio = document.getElementById('delta-cardio-idoso');
       const subCardio = document.getElementById('sub-cardio-idoso');
 
+      const temPA = Boolean(target.composicao && target.composicao.paSistolica && target.composicao.paDiastolica);
+      const temPant = Boolean(target.composicao && target.composicao.panturrilha && !isNaN(parseFloat(target.composicao.panturrilha)) && parseFloat(target.composicao.panturrilha) > 0);
+
       if (!ehReavaliacao) {
-        const paOk = target.composicao.paSistolica && target.composicao.paSistolica <= 129 && target.composicao.paDiastolica <= 84;
-        elPA.textContent = (target.composicao.paSistolica ? `${target.composicao.paSistolica}/${target.composicao.paDiastolica} mmHg` : '--');
-        elPA.style.color = paOk ? '#059669' : '#dc2626';
-        document.getElementById('sub-pa').textContent = target.composicao.paSistolica ? (paOk ? 'Pressão Normal' : 'Alerta Hipertensão') : 'Avaliação Inicial';
+        if (temPA) {
+          if (cardPA) cardPA.style.display = 'block';
+          const paOk = target.composicao.paSistolica <= 129 && target.composicao.paDiastolica <= 84;
+          elPA.textContent = `${target.composicao.paSistolica}/${target.composicao.paDiastolica} mmHg`;
+          elPA.style.color = paOk ? '#059669' : '#dc2626';
+          document.getElementById('sub-pa').textContent = paOk ? 'Pressão Normal' : 'Alerta Hipertensão';
+        } else if (cardPA) {
+          cardPA.style.display = 'none';
+        }
 
         // Preensão Manual
         const fpmVal = parseFloat(target.testes && target.testes.fpmMelhor);
-        if (!isNaN(fpmVal)) {
+        if (!isNaN(fpmVal) && fpmVal > 0) {
           if (cardFpm) cardFpm.style.display = 'block';
           const corte = (sexo === 'M' ? 27.0 : 16.0);
           const fpmOk = fpmVal >= corte;
@@ -10070,15 +10495,20 @@
         }
 
         // Panturrilha
-        const pantOk = target.composicao.panturrilha && target.composicao.panturrilha >= 31;
-        elPant.textContent = `${target.composicao.panturrilha || '--'} cm`;
-        elPant.style.color = pantOk ? '#059669' : '#dc2626';
-        document.getElementById('sub-panturrilha').textContent = target.composicao.panturrilha ? (pantOk ? 'Massa Preservada (≥31cm)' : 'Risco Sarcopenia (<31cm)') : 'Avaliação Inicial';
+        if (temPant) {
+          if (cardPant) cardPant.style.display = 'block';
+          const pantOk = target.composicao.panturrilha >= 31;
+          elPant.textContent = `${target.composicao.panturrilha} cm`;
+          elPant.style.color = pantOk ? '#059669' : '#dc2626';
+          document.getElementById('sub-panturrilha').textContent = pantOk ? 'Massa Preservada (≥31cm)' : 'Risco Sarcopenia (<31cm)';
+        } else if (cardPant) {
+          cardPant.style.display = 'none';
+        }
 
         // 5x Sentar e Levantar
         const fVal = parseFloat(target.testes && target.testes.ftsstTempo);
         const fInc = target.testes && target.testes.ftsstTempo === 'Incapaz';
-        if (!isNaN(fVal) || fInc) {
+        if ((!isNaN(fVal) && fVal > 0) || fInc) {
           if (cardFtsst) cardFtsst.style.display = 'block';
           elFtsst.textContent = fInc ? 'Incapaz' : `${fVal.toFixed(1)} s`;
           elFtsst.style.color = (!isNaN(fVal) && fVal < 15.0) ? '#059669' : '#dc2626';
@@ -10089,7 +10519,7 @@
 
         // TUG
         const tVal = parseFloat(target.testes && target.testes.tugTempo);
-        if (!isNaN(tVal)) {
+        if (!isNaN(tVal) && tVal > 0) {
           if (cardTug) cardTug.style.display = 'block';
           elTug.textContent = `${tVal.toFixed(1)} s`;
           elTug.style.color = (tVal < 10.0) ? '#059669' : (tVal < 20.0 ? '#d97706' : '#dc2626');
@@ -10100,7 +10530,7 @@
 
         // Cardiorrespiratório
         const cVo2 = parseFloat(target.testes && target.testes.cardioVo2);
-        if (!isNaN(cVo2)) {
+        if (!isNaN(cVo2) && cVo2 > 0) {
           if (cardCardio) cardCardio.style.display = 'block';
           elCardio.textContent = `${cVo2.toFixed(1)} ml/kg/min`;
           const limBom = (sexo === 'M' ? 30.0 : 25.0);
@@ -10113,68 +10543,87 @@
       }
 
       // Delta PA
-      if (base.composicao.paSistolica && target.composicao.paSistolica) {
-        const dPAS = target.composicao.paSistolica - base.composicao.paSistolica;
-        const dPAD = target.composicao.paDiastolica - base.composicao.paDiastolica;
-        elPA.textContent = `${dPAS > 0 ? `+${dPAS}` : dPAS}/${dPAD > 0 ? `+${dPAD}` : dPAD}`;
-        
-        // Variação negativa na PA representa melhora clínica -> VERDE
-        const reduziuPA = (dPAS < 0) || (dPAS <= 0 && dPAD < 0);
-        const aumentouPA = (dPAS > 0 && dPAD >= 0) || (dPAS >= 0 && dPAD > 0);
-
-        if (reduziuPA) {
-          elPA.style.color = '#059669'; // Verde para melhora na redução da PA
-        } else if (aumentouPA) {
-          elPA.style.color = '#dc2626'; // Vermelho para aumento da PA
+      if (temPA) {
+        if (cardPA) cardPA.style.display = 'block';
+        if (base.composicao && base.composicao.paSistolica && base.composicao.paDiastolica) {
+          const dPAS = target.composicao.paSistolica - base.composicao.paSistolica;
+          const dPAD = target.composicao.paDiastolica - base.composicao.paDiastolica;
+          elPA.textContent = `${dPAS > 0 ? `+${dPAS}` : dPAS}/${dPAD > 0 ? `+${dPAD}` : dPAD}`;
+          const reduziuPA = (dPAS < 0) || (dPAS <= 0 && dPAD < 0);
+          const aumentouPA = (dPAS > 0 && dPAD >= 0) || (dPAS >= 0 && dPAD > 0);
+          if (reduziuPA) {
+            elPA.style.color = '#059669';
+          } else if (aumentouPA) {
+            elPA.style.color = '#dc2626';
+          } else {
+            elPA.style.color = (target.composicao.paSistolica <= 129 && target.composicao.paDiastolica <= 84) ? '#059669' : '#0f172a';
+          }
+          document.getElementById('sub-pa').textContent = `De ${base.composicao.paSistolica}/${base.composicao.paDiastolica} para ${target.composicao.paSistolica}/${target.composicao.paDiastolica}`;
         } else {
-          elPA.style.color = (target.composicao.paSistolica <= 129 && target.composicao.paDiastolica <= 84) ? '#059669' : '#0f172a';
+          elPA.textContent = `${target.composicao.paSistolica}/${target.composicao.paDiastolica} mmHg`;
+          elPA.style.color = '#0f172a';
+          document.getElementById('sub-pa').textContent = 'Pressão Arterial';
         }
-
-        document.getElementById('sub-pa').textContent = `De ${base.composicao.paSistolica}/${base.composicao.paDiastolica} para ${target.composicao.paSistolica}/${target.composicao.paDiastolica}`;
-      } else {
-        elPA.textContent = '--';
+      } else if (cardPA) {
+        cardPA.style.display = 'none';
       }
 
       // Delta FPM
       const bFpm = parseFloat(base.testes && base.testes.fpmMelhor);
       const tFpm = parseFloat(target.testes && target.testes.fpmMelhor);
-      if (!isNaN(bFpm) && !isNaN(tFpm)) {
+      if (!isNaN(tFpm) && tFpm > 0) {
         if (cardFpm) cardFpm.style.display = 'block';
-        const dFpm = Number((tFpm - bFpm).toFixed(1));
-        elFpm.textContent = (dFpm > 0 ? `+${dFpm}` : `${dFpm}`) + ' kgf';
-        elFpm.style.color = dFpm >= 0 ? '#059669' : '#dc2626';
-        subFpm.textContent = dFpm > 0 ? 'Ganho de força muscular!' : (dFpm === 0 ? 'Força mantida' : 'Atenção: declínio de força');
-      } else if (!isNaN(tFpm)) {
-        if (cardFpm) cardFpm.style.display = 'block';
-        const corte = (sexo === 'M' ? 27.0 : 16.0);
-        const fpmOk = tFpm >= corte;
-        elFpm.textContent = `${tFpm.toFixed(1)} kgf`;
-        elFpm.style.color = fpmOk ? '#059669' : '#dc2626';
-        subFpm.textContent = fpmOk ? `Força Preservada (≥${corte.toFixed(0)} kgf)` : `Alerta Dinapenia (<${corte.toFixed(0)} kgf)`;
+        if (!isNaN(bFpm) && bFpm > 0) {
+          const dFpm = Number((tFpm - bFpm).toFixed(1));
+          elFpm.textContent = (dFpm > 0 ? `+${dFpm}` : `${dFpm}`) + ' kgf';
+          elFpm.style.color = dFpm >= 0 ? '#059669' : '#dc2626';
+          subFpm.textContent = dFpm > 0 ? 'Ganho de força muscular!' : (dFpm === 0 ? 'Força mantida' : 'Atenção: declínio de força');
+        } else {
+          const corte = (sexo === 'M' ? 27.0 : 16.0);
+          const fpmOk = tFpm >= corte;
+          elFpm.textContent = `${tFpm.toFixed(1)} kgf`;
+          elFpm.style.color = fpmOk ? '#059669' : '#dc2626';
+          subFpm.textContent = fpmOk ? `Força Preservada (≥${corte.toFixed(0)} kgf)` : `Alerta Dinapenia (<${corte.toFixed(0)} kgf)`;
+        }
       } else if (cardFpm) {
         cardFpm.style.display = 'none';
       }
 
       // Delta Panturrilha
-      const dPant = Number((target.composicao.panturrilha - base.composicao.panturrilha).toFixed(1));
-      elPant.textContent = (dPant > 0 ? `+${dPant}` : `${dPant}`) + ' cm';
-      elPant.style.color = dPant >= 0 ? '#059669' : '#dc2626';
-      document.getElementById('sub-panturrilha').textContent = dPant > 0 ? 'Ganho de massa muscular!' : (dPant === 0 ? 'Estável' : 'Atenção: redução de massa');
+      if (temPant) {
+        if (cardPant) cardPant.style.display = 'block';
+        const bPant = parseFloat(base.composicao && base.composicao.panturrilha);
+        const tPant = parseFloat(target.composicao.panturrilha);
+        if (!isNaN(bPant) && bPant > 0) {
+          const dPant = Number((tPant - bPant).toFixed(1));
+          elPant.textContent = (dPant > 0 ? `+${dPant}` : `${dPant}`) + ' cm';
+          elPant.style.color = dPant >= 0 ? '#059669' : '#dc2626';
+          document.getElementById('sub-panturrilha').textContent = dPant > 0 ? 'Ganho de massa muscular!' : (dPant === 0 ? 'Estável' : 'Atenção: redução de massa');
+        } else {
+          elPant.textContent = `${tPant} cm`;
+          elPant.style.color = tPant >= 31 ? '#059669' : '#dc2626';
+          document.getElementById('sub-panturrilha').textContent = tPant >= 31 ? 'Massa Preservada (≥31cm)' : 'Risco Sarcopenia (<31cm)';
+        }
+      } else if (cardPant) {
+        cardPant.style.display = 'none';
+      }
 
       // Delta FTSST
       const bF = parseFloat(base.testes && base.testes.ftsstTempo);
       const tF = parseFloat(target.testes && target.testes.ftsstTempo);
-      if (!isNaN(bF) && !isNaN(tF)) {
+      const tFInc = target.testes && target.testes.ftsstTempo === 'Incapaz';
+      if ((!isNaN(tF) && tF > 0) || tFInc) {
         if (cardFtsst) cardFtsst.style.display = 'block';
-        const dFtsst = Number((tF - bF).toFixed(1));
-        elFtsst.textContent = (dFtsst > 0 ? `+${dFtsst}` : `${dFtsst}`) + ' s';
-        elFtsst.style.color = dFtsst < 0 ? '#059669' : '#dc2626';
-        document.getElementById('sub-ftsst').textContent = dFtsst < 0 ? 'Mais rápido e forte nas pernas!' : (dFtsst === 0 ? 'Manutenção' : 'Atenção: perda de velocidade');
-      } else if (!isNaN(tF)) {
-        if (cardFtsst) cardFtsst.style.display = 'block';
-        elFtsst.textContent = `${tF.toFixed(1)} s`;
-        elFtsst.style.color = tF < 15.0 ? '#059669' : '#dc2626';
-        document.getElementById('sub-ftsst').textContent = tF < 15.0 ? 'Adequado' : 'Alerta Quedas';
+        if (!isNaN(bF) && bF > 0 && !isNaN(tF)) {
+          const dFtsst = Number((tF - bF).toFixed(1));
+          elFtsst.textContent = (dFtsst > 0 ? `+${dFtsst}` : `${dFtsst}`) + ' s';
+          elFtsst.style.color = dFtsst < 0 ? '#059669' : '#dc2626';
+          document.getElementById('sub-ftsst').textContent = dFtsst < 0 ? 'Mais rápido e forte nas pernas!' : (dFtsst === 0 ? 'Manutenção' : 'Atenção: perda de velocidade');
+        } else {
+          elFtsst.textContent = tFInc ? 'Incapaz' : `${tF.toFixed(1)} s`;
+          elFtsst.style.color = (!isNaN(tF) && tF < 15.0) ? '#059669' : '#dc2626';
+          document.getElementById('sub-ftsst').textContent = tFInc ? 'Incapaz sem apoio' : (tF < 15.0 ? 'Adequado' : 'Alerta Quedas');
+        }
       } else if (cardFtsst) {
         cardFtsst.style.display = 'none';
       }
@@ -10182,17 +10631,18 @@
       // Delta TUG
       const bT = parseFloat(base.testes && base.testes.tugTempo);
       const tT = parseFloat(target.testes && target.testes.tugTempo);
-      if (!isNaN(bT) && !isNaN(tT)) {
+      if (!isNaN(tT) && tT > 0) {
         if (cardTug) cardTug.style.display = 'block';
-        const dTug = Number((tT - bT).toFixed(1));
-        elTug.textContent = (dTug > 0 ? `+${dTug}` : `${dTug}`) + ' s';
-        elTug.style.color = dTug < 0 ? '#059669' : '#dc2626';
-        document.getElementById('sub-tug').textContent = dTug < 0 ? 'Ganho de agilidade e segurança!' : (dTug === 0 ? 'Manutenção' : 'Atenção: aumento no risco');
-      } else if (!isNaN(tT)) {
-        if (cardTug) cardTug.style.display = 'block';
-        elTug.textContent = `${tT.toFixed(1)} s`;
-        elTug.style.color = tT < 10.0 ? '#059669' : '#d97706';
-        document.getElementById('sub-tug').textContent = tT < 10.0 ? 'Independente' : 'Mobilidade Básica';
+        if (!isNaN(bT) && bT > 0) {
+          const dTug = Number((tT - bT).toFixed(1));
+          elTug.textContent = (dTug > 0 ? `+${dTug}` : `${dTug}`) + ' s';
+          elTug.style.color = dTug < 0 ? '#059669' : '#dc2626';
+          document.getElementById('sub-tug').textContent = dTug < 0 ? 'Ganho de agilidade e segurança!' : (dTug === 0 ? 'Manutenção' : 'Atenção: aumento no risco');
+        } else {
+          elTug.textContent = `${tT.toFixed(1)} s`;
+          elTug.style.color = tT < 10.0 ? '#059669' : '#d97706';
+          document.getElementById('sub-tug').textContent = tT < 10.0 ? 'Independente' : 'Mobilidade Básica';
+        }
       } else if (cardTug) {
         cardTug.style.display = 'none';
       }
@@ -10200,18 +10650,19 @@
       // Delta Cardiorrespiratório
       const bVo2 = parseFloat(base.testes && base.testes.cardioVo2);
       const tVo2 = parseFloat(target.testes && target.testes.cardioVo2);
-      if (!isNaN(tVo2) && !isNaN(bVo2)) {
+      if (!isNaN(tVo2) && tVo2 > 0) {
         if (cardCardio) cardCardio.style.display = 'block';
-        const dVo2 = Number((tVo2 - bVo2).toFixed(1));
-        elCardio.textContent = (dVo2 > 0 ? `+${dVo2}` : `${dVo2}`) + ' ml/kg/min';
-        elCardio.style.color = dVo2 >= 0 ? '#059669' : '#dc2626';
-        subCardio.textContent = dVo2 > 0 ? 'Ganho de capacidade aeróbia!' : (dVo2 === 0 ? 'Capacidade mantida' : 'Atenção: declínio no VO2máx');
-      } else if (!isNaN(tVo2)) {
-        if (cardCardio) cardCardio.style.display = 'block';
-        elCardio.textContent = `${tVo2.toFixed(1)} ml/kg/min`;
-        const limBom = (sexo === 'M' ? 30.0 : 25.0);
-        elCardio.style.color = tVo2 >= limBom ? '#059669' : '#d97706';
-        subCardio.textContent = 'Aptidão Aeróbia';
+        if (!isNaN(bVo2) && bVo2 > 0) {
+          const dVo2 = Number((tVo2 - bVo2).toFixed(1));
+          elCardio.textContent = (dVo2 > 0 ? `+${dVo2}` : `${dVo2}`) + ' ml/kg/min';
+          elCardio.style.color = dVo2 >= 0 ? '#059669' : '#dc2626';
+          subCardio.textContent = dVo2 > 0 ? 'Ganho de capacidade aeróbia!' : (dVo2 === 0 ? 'Capacidade mantida' : 'Atenção: declínio no VO2máx');
+        } else {
+          elCardio.textContent = `${tVo2.toFixed(1)} ml/kg/min`;
+          const limBom = (sexo === 'M' ? 30.0 : 25.0);
+          elCardio.style.color = tVo2 >= limBom ? '#059669' : '#d97706';
+          subCardio.textContent = 'Aptidão Aeróbia';
+        }
       } else if (cardCardio) {
         cardCardio.style.display = 'none';
       }
@@ -10224,57 +10675,121 @@
       const tB = base.testes || {};
       const tT = target.testes || {};
 
+      const cardPeso = document.getElementById('card-delta-peso');
       const elPeso = document.getElementById('ad-delta-peso');
       const subPeso = document.getElementById('ad-sub-peso');
+
+      const cardGord = document.getElementById('card-delta-gordura');
       const elGord = document.getElementById('ad-delta-gordura');
       const subGord = document.getElementById('ad-sub-gordura');
+
+      const cardMagra = document.getElementById('card-delta-magra');
       const elMagra = document.getElementById('ad-delta-magra');
       const subMagra = document.getElementById('ad-sub-magra');
+
+      const cardRcq = document.getElementById('card-delta-rcq');
       const elRcq = document.getElementById('ad-delta-rcq');
       const subRcq = document.getElementById('ad-sub-rcq');
+
       const cardFlex = document.getElementById('card-delta-flexoes');
       const elFlex = document.getElementById('ad-delta-flexoes');
       const subFlex = document.getElementById('ad-sub-flexoes');
+
       const cardExt = document.getElementById('card-delta-extensora');
       const elExt = document.getElementById('ad-delta-extensora');
       const subExt = document.getElementById('ad-sub-extensora');
+
       const cardEst = document.getElementById('card-delta-esteira');
       const elEst = document.getElementById('ad-delta-esteira');
       const subEst = document.getElementById('ad-sub-esteira');
 
+      // Validadores de presenca de dados reais
+      const temPeso = Boolean(cT.peso != null && !isNaN(cT.peso) && Number(cT.peso) > 0);
+      const temGord = Boolean(cT.percentualGordura != null && !isNaN(cT.percentualGordura) && Number(cT.percentualGordura) > 0);
+      const temMagra = Boolean(cT.massaMagra != null && !isNaN(cT.massaMagra) && Number(cT.massaMagra) > 0);
+
+      const rcqT = (cT.rcq != null && !isNaN(cT.rcq) && Number(cT.rcq) > 0)
+        ? Number(cT.rcq)
+        : (cT.cintura && cT.quadril && Number(cT.cintura) > 0 && Number(cT.quadril) > 0 ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
+      const temRcq = Boolean(rcqT != null && !isNaN(rcqT) && rcqT > 0);
+
+      // MMSS
+      const exMMSS = tT.forcaMMSS || {};
+      let temMMSS = false;
+      let ehFlexao = false;
+      if (exMMSS.exercicio && exMMSS.exercicio !== 'flexao') {
+        temMMSS = Boolean(exMMSS.rm1 != null && !isNaN(exMMSS.rm1) && Number(exMMSS.rm1) > 0);
+      } else {
+        const reps = exMMSS.reps != null ? exMMSS.reps : tT.flexoesReps;
+        temMMSS = Boolean(reps != null && !isNaN(reps) && Number(reps) > 0);
+        ehFlexao = true;
+      }
+
+      // MMII
+      const exMMII = tT.forcaMMII || {};
+      const rm1MMII = exMMII.rm1 != null ? exMMII.rm1 : tT.extensora1RM;
+      const temMMII = Boolean(rm1MMII != null && !isNaN(rm1MMII) && Number(rm1MMII) > 0);
+
+      // Esteira
+      const vo2Est = tT.esteiraVo2 != null ? tT.esteiraVo2 : tT.cardioVo2;
+      const temEsteira = Boolean(tT.fezEsteira && vo2Est != null && !isNaN(vo2Est) && Number(vo2Est) > 0);
+
       if (!ehReavaliacao) {
-        elPeso.textContent = `${cT.peso || '--'} kg`;
-        elPeso.style.color = '#0f172a';
-        subPeso.textContent = cT.imc ? `IMC: ${cT.imc} kg/m²` : 'Avaliação Inicial';
+        // Peso
+        if (temPeso) {
+          if (cardPeso) cardPeso.style.display = 'block';
+          elPeso.textContent = `${cT.peso} kg`;
+          elPeso.style.color = '#0f172a';
+          subPeso.textContent = cT.imc ? `IMC: ${cT.imc} kg/m²` : 'Avaliação Inicial';
+        } else if (cardPeso) {
+          cardPeso.style.display = 'none';
+        }
 
-        elGord.textContent = `${cT.percentualGordura || '--'}%`;
-        const limiteGord = (sexo === 'M' ? 17.9 : 24.9);
-        const ehGordBoa = cT.percentualGordura && cT.percentualGordura <= limiteGord;
-        elGord.style.color = ehGordBoa ? '#059669' : '#d97706';
-        subGord.textContent = cT.percentualGordura ? (ehGordBoa ? 'Média Saudável' : 'Acima da Média') : 'Gordura Inicial';
+        // % Gordura
+        if (temGord) {
+          if (cardGord) cardGord.style.display = 'block';
+          elGord.textContent = `${cT.percentualGordura}%`;
+          const limiteGord = (sexo === 'M' ? 17.9 : 24.9);
+          const ehGordBoa = Number(cT.percentualGordura) <= limiteGord;
+          elGord.style.color = ehGordBoa ? '#059669' : '#d97706';
+          subGord.textContent = ehGordBoa ? 'Média Saudável' : 'Acima da Média';
+        } else if (cardGord) {
+          cardGord.style.display = 'none';
+        }
 
-        elMagra.textContent = `${cT.massaMagra || '--'} kg`;
-        elMagra.style.color = '#059669';
-        subMagra.textContent = 'Massa Muscular Ativa';
+        // Massa Magra
+        if (temMagra) {
+          if (cardMagra) cardMagra.style.display = 'block';
+          elMagra.textContent = `${cT.massaMagra} kg`;
+          elMagra.style.color = '#059669';
+          subMagra.textContent = 'Massa Muscular Ativa';
+        } else if (cardMagra) {
+          cardMagra.style.display = 'none';
+        }
 
-        const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
-        elRcq.textContent = rcqT != null ? rcqT.toFixed(2) : '--';
-        const limiteRcq = (sexo === 'M' ? 0.90 : 0.80);
-        const ehRcqBom = rcqT != null && rcqT <= limiteRcq;
-        elRcq.style.color = ehRcqBom ? '#059669' : '#dc2626';
-        subRcq.textContent = rcqT != null ? (ehRcqBom ? 'Baixo Risco Metabólico' : 'Risco Aumentado') : 'Risco Cintura-Quadril';
+        // RCQ
+        if (temRcq) {
+          if (cardRcq) cardRcq.style.display = 'block';
+          elRcq.textContent = rcqT.toFixed(2);
+          const limiteRcq = (sexo === 'M' ? 0.90 : 0.80);
+          const ehRcqBom = rcqT <= limiteRcq;
+          elRcq.style.color = ehRcqBom ? '#059669' : '#dc2626';
+          subRcq.textContent = ehRcqBom ? 'Baixo Risco Metabólico' : 'Risco Aumentado';
+        } else if (cardRcq) {
+          cardRcq.style.display = 'none';
+        }
 
-        if (tT.forcaMMSS || (tT.flexoesReps !== undefined && tT.flexoesReps !== null)) {
+        // MMSS
+        if (temMMSS) {
           if (cardFlex) cardFlex.style.display = 'block';
-          const exMMSS = tT.forcaMMSS || {};
-          const nomeMMSS = exMMSS.exercicioNome || 'Flexões de Braço';
+          const nomeMMSS = exMMSS.exercicioNome || (ehFlexao ? 'Flexões de Braço' : 'Força MMSS');
           const lblFlex = cardFlex.querySelector('.title');
           if (lblFlex) lblFlex.textContent = nomeMMSS;
 
-          if (exMMSS.exercicio && exMMSS.exercicio !== 'flexao') {
+          if (!ehFlexao) {
             elFlex.textContent = `${exMMSS.rm1} kg`;
             elFlex.style.color = '#059669';
-            subFlex.textContent = exMMSS.relativo ? `1RM (${exMMSS.formulaNome}): ${exMMSS.relativo}x PC (${exMMSS.carga}kg x ${exMMSS.reps} reps)` : '1RM Estimado';
+            subFlex.textContent = exMMSS.relativo ? `1RM (${exMMSS.formulaNome || 'Fórmula'}): ${exMMSS.relativo}x PC (${exMMSS.carga}kg x ${exMMSS.reps} reps)` : '1RM Estimado';
           } else {
             const reps = exMMSS.reps != null ? exMMSS.reps : tT.flexoesReps;
             elFlex.textContent = `${reps} reps`;
@@ -10285,100 +10800,150 @@
           cardFlex.style.display = 'none';
         }
 
-        if (tT.forcaMMII || (tT.extensora1RM !== undefined && tT.extensora1RM !== null)) {
+        // MMII
+        if (temMMII) {
           if (cardExt) cardExt.style.display = 'block';
-          const exMMII = tT.forcaMMII || {};
           const nomeMMII = exMMII.exercicioNome || 'Cadeira Extensora';
           const lblExt = cardExt.querySelector('.title');
           if (lblExt) lblExt.textContent = nomeMMII;
 
-          const rm1 = exMMII.rm1 != null ? exMMII.rm1 : tT.extensora1RM;
           const rel = exMMII.relativo != null ? exMMII.relativo : tT.extensoraRelativo;
           const carga = exMMII.carga != null ? exMMII.carga : tT.extensoraCarga;
           const reps = exMMII.reps != null ? exMMII.reps : tT.extensoraReps;
-          elExt.textContent = `${rm1} kg`;
+          elExt.textContent = `${rm1MMII} kg`;
           elExt.style.color = '#059669';
           subExt.textContent = rel ? `Força Rel: ${rel}x PC (${carga}kg x ${reps} reps)` : 'Extensora Inicial';
         } else if (cardExt) {
           cardExt.style.display = 'none';
         }
 
-        if (tT.fezEsteira) {
-          cardEst.style.display = 'block';
-          elEst.textContent = `${tT.esteiraVo2 || '--'} ml/kg/min`;
+        // Esteira
+        if (temEsteira) {
+          if (cardEst) cardEst.style.display = 'block';
+          elEst.textContent = `${vo2Est} ml/kg/min`;
           elEst.style.color = '#059669';
-          subEst.textContent = `Vpico: ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h (${tT.esteiraFcPico || '--'} bpm)`;
-        } else {
+          const velPico = tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : (tT.cardioVelKm ? Number(tT.cardioVelKm).toFixed(2) : '--');
+          const fcPico = tT.esteiraFcPico || tT.cardioFcFinal || '--';
+          subEst.textContent = `Vpico: ${velPico} km/h (${fcPico} bpm)`;
+        } else if (cardEst) {
           cardEst.style.display = 'none';
         }
         return;
       }
 
+      // Reavaliação:
       // Delta Peso
-      if (cB.peso && cT.peso) {
-        const dP = Number((cT.peso - cB.peso).toFixed(1));
-        elPeso.textContent = `${dP > 0 ? `+${dP}` : dP} kg`;
-        elPeso.style.color = '#0f172a';
-        subPeso.textContent = `De ${cB.peso} kg para ${cT.peso} kg`;
-      } else {
-        elPeso.textContent = '--';
+      if (temPeso) {
+        if (cardPeso) cardPeso.style.display = 'block';
+        if (cB.peso && !isNaN(cB.peso) && Number(cB.peso) > 0) {
+          const dP = Number((cT.peso - cB.peso).toFixed(1));
+          elPeso.textContent = `${dP > 0 ? `+${dP}` : dP} kg`;
+          elPeso.style.color = '#0f172a';
+          subPeso.textContent = `De ${cB.peso} kg para ${cT.peso} kg`;
+        } else {
+          elPeso.textContent = `${cT.peso} kg`;
+          elPeso.style.color = '#0f172a';
+          subPeso.textContent = cT.imc ? `IMC: ${cT.imc} kg/m²` : 'Peso Atual';
+        }
+      } else if (cardPeso) {
+        cardPeso.style.display = 'none';
       }
 
       // Delta % Gordura
-      if (cB.percentualGordura !== undefined && cT.percentualGordura !== undefined) {
-        const dG = Number((cT.percentualGordura - cB.percentualGordura).toFixed(1));
-        elGord.textContent = `${dG > 0 ? `+${dG}` : dG}%`;
-        elGord.style.color = dG <= 0 ? '#059669' : '#dc2626';
-        subGord.textContent = dG < 0 ? 'Redução da adiposidade corporal!' : (dG === 0 ? 'Estável' : 'Aumento de percentual gordo');
-      } else {
-        elGord.textContent = '--';
+      if (temGord) {
+        if (cardGord) cardGord.style.display = 'block';
+        if (cB.percentualGordura != null && !isNaN(cB.percentualGordura) && Number(cB.percentualGordura) > 0) {
+          const dG = Number((cT.percentualGordura - cB.percentualGordura).toFixed(1));
+          elGord.textContent = `${dG > 0 ? `+${dG}` : dG}%`;
+          elGord.style.color = dG <= 0 ? '#059669' : '#dc2626';
+          subGord.textContent = dG < 0 ? 'Redução da adiposidade corporal!' : (dG === 0 ? 'Estável' : 'Aumento de percentual gordo');
+        } else {
+          elGord.textContent = `${cT.percentualGordura}%`;
+          const limiteGord = (sexo === 'M' ? 17.9 : 24.9);
+          elGord.style.color = Number(cT.percentualGordura) <= limiteGord ? '#059669' : '#d97706';
+          subGord.textContent = 'Gordura Atual';
+        }
+      } else if (cardGord) {
+        cardGord.style.display = 'none';
       }
 
       // Delta Massa Magra
-      if (cB.massaMagra !== undefined && cT.massaMagra !== undefined) {
-        const dM = Number((cT.massaMagra - cB.massaMagra).toFixed(1));
-        elMagra.textContent = `${dM > 0 ? `+${dM}` : dM} kg`;
-        elMagra.style.color = dM >= 0 ? '#059669' : '#dc2626';
-        subMagra.textContent = dM > 0 ? 'Ganho de massa muscular!' : (dM === 0 ? 'Massa muscular mantida' : 'Atenção: redução de massa magra');
-      } else {
-        elMagra.textContent = '--';
+      if (temMagra) {
+        if (cardMagra) cardMagra.style.display = 'block';
+        if (cB.massaMagra != null && !isNaN(cB.massaMagra) && Number(cB.massaMagra) > 0) {
+          const dM = Number((cT.massaMagra - cB.massaMagra).toFixed(1));
+          elMagra.textContent = `${dM > 0 ? `+${dM}` : dM} kg`;
+          elMagra.style.color = dM >= 0 ? '#059669' : '#dc2626';
+          subMagra.textContent = dM > 0 ? 'Ganho de massa muscular!' : (dM === 0 ? 'Massa muscular mantida' : 'Atenção: redução de massa magra');
+        } else {
+          elMagra.textContent = `${cT.massaMagra} kg`;
+          elMagra.style.color = '#059669';
+          subMagra.textContent = 'Massa Muscular Ativa';
+        }
+      } else if (cardMagra) {
+        cardMagra.style.display = 'none';
       }
 
       // Delta RCQ
-      const rcqB = (cB.rcq != null) ? Number(cB.rcq) : (cB.cintura && cB.quadril ? Number((cB.cintura / cB.quadril).toFixed(2)) : null);
-      const rcqT = (cT.rcq != null) ? Number(cT.rcq) : (cT.cintura && cT.quadril ? Number((cT.cintura / cT.quadril).toFixed(2)) : null);
-      if (rcqB != null && rcqT != null) {
-        const dR = Number((rcqT - rcqB).toFixed(2));
-        elRcq.textContent = `${dR > 0 ? `+${dR.toFixed(2)}` : dR.toFixed(2)}`;
-        elRcq.style.color = dR <= 0 ? '#059669' : '#dc2626';
-        subRcq.textContent = `De ${rcqB.toFixed(2)} para ${rcqT.toFixed(2)}`;
-      } else {
-        elRcq.textContent = '--';
+      if (temRcq) {
+        if (cardRcq) cardRcq.style.display = 'block';
+        const rcqB = (cB.rcq != null && !isNaN(cB.rcq) && Number(cB.rcq) > 0)
+          ? Number(cB.rcq)
+          : (cB.cintura && cB.quadril && Number(cB.cintura) > 0 && Number(cB.quadril) > 0 ? Number((cB.cintura / cB.quadril).toFixed(2)) : null);
+        if (rcqB != null && rcqB > 0) {
+          const dR = Number((rcqT - rcqB).toFixed(2));
+          elRcq.textContent = `${dR > 0 ? `+${dR.toFixed(2)}` : dR.toFixed(2)}`;
+          elRcq.style.color = dR <= 0 ? '#059669' : '#dc2626';
+          subRcq.textContent = `De ${rcqB.toFixed(2)} para ${rcqT.toFixed(2)}`;
+        } else {
+          elRcq.textContent = rcqT.toFixed(2);
+          const limiteRcq = (sexo === 'M' ? 0.90 : 0.80);
+          elRcq.style.color = rcqT <= limiteRcq ? '#059669' : '#dc2626';
+          subRcq.textContent = 'Risco Cintura-Quadril';
+        }
+      } else if (cardRcq) {
+        cardRcq.style.display = 'none';
       }
 
       // Delta MMSS
-      const fMB = tB.forcaMMSS || (tB.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tB.flexoesReps } : null);
-      const fMT = tT.forcaMMSS || (tT.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tT.flexoesReps } : null);
-      if (fMT) {
+      if (temMMSS) {
         if (cardFlex) cardFlex.style.display = 'block';
-        const lblFlex = cardFlex.querySelector('.title');
-        if (lblFlex) lblFlex.textContent = fMT.exercicioNome || (fMT.exercicio === 'flexao' ? 'Flexões de Braço' : 'Força MMSS');
+        const fMB = tB.forcaMMSS || (tB.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tB.flexoesReps } : null);
+        const fMT = tT.forcaMMSS || (tT.flexoesReps != null ? { exercicio: 'flexao', exercicioNome: 'Flexões de Braço', reps: tT.flexoesReps } : null);
 
-        if (fMB && fMB.exercicio === fMT.exercicio) {
-          if (fMT.exercicio === 'flexao') {
-            const dFlex = fMT.reps - fMB.reps;
-            elFlex.textContent = `${dFlex > 0 ? `+${dFlex}` : dFlex} reps`;
-            elFlex.style.color = dFlex >= 0 ? '#059669' : '#dc2626';
-            subFlex.textContent = dFlex > 0 ? 'Ganho de resistência muscular!' : (dFlex === 0 ? 'Resistência mantida' : 'Atenção: queda de repetições');
+        const lblFlex = cardFlex.querySelector('.title');
+        if (lblFlex) lblFlex.textContent = (fMT && fMT.exercicioNome) || (ehFlexao ? 'Flexões de Braço' : 'Força MMSS');
+
+        if (fMB && fMT && fMB.exercicio === fMT.exercicio) {
+          if (ehFlexao) {
+            const repsT = fMT.reps != null ? fMT.reps : tT.flexoesReps;
+            const repsB = fMB.reps != null ? fMB.reps : tB.flexoesReps;
+            if (repsT != null && repsB != null) {
+              const dFlex = repsT - repsB;
+              elFlex.textContent = `${dFlex > 0 ? `+${dFlex}` : dFlex} reps`;
+              elFlex.style.color = dFlex >= 0 ? '#059669' : '#dc2626';
+              subFlex.textContent = dFlex > 0 ? 'Ganho de resistência muscular!' : (dFlex === 0 ? 'Resistência mantida' : 'Atenção: queda de repetições');
+            } else {
+              elFlex.textContent = `${repsT} reps`;
+              elFlex.style.color = '#059669';
+              subFlex.textContent = 'Resistência Muscular';
+            }
           } else {
-            const d1rm = Number((fMT.rm1 - fMB.rm1).toFixed(1));
-            elFlex.textContent = `${d1rm > 0 ? `+${d1rm}` : d1rm} kg`;
-            elFlex.style.color = d1rm >= 0 ? '#059669' : '#dc2626';
-            subFlex.textContent = d1rm > 0 ? `Ganho de 1RM! (${fMB.rm1}kg para ${fMT.rm1}kg)` : (d1rm === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
+            if (fMT.rm1 != null && fMB.rm1 != null) {
+              const d1rm = Number((fMT.rm1 - fMB.rm1).toFixed(1));
+              elFlex.textContent = `${d1rm > 0 ? `+${d1rm}` : d1rm} kg`;
+              elFlex.style.color = d1rm >= 0 ? '#059669' : '#dc2626';
+              subFlex.textContent = d1rm > 0 ? `Ganho de 1RM! (${fMB.rm1}kg para ${fMT.rm1}kg)` : (d1rm === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
+            } else {
+              elFlex.textContent = `${fMT.rm1} kg`;
+              elFlex.style.color = '#059669';
+              subFlex.textContent = `1RM: ${fMT.relativo || '--'}x PC`;
+            }
           }
         } else {
-          if (fMT.exercicio === 'flexao') {
-            elFlex.textContent = `${fMT.reps} reps`;
+          if (ehFlexao) {
+            const reps = (fMT && fMT.reps != null) ? fMT.reps : tT.flexoesReps;
+            elFlex.textContent = `${reps} reps`;
             elFlex.style.color = '#059669';
             subFlex.textContent = 'Novo teste de flexões';
           } else {
@@ -10392,42 +10957,46 @@
       }
 
       // Delta MMII
-      const fIB = tB.forcaMMII || (tB.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tB.extensora1RM, relativo: tB.extensoraRelativo } : null);
-      const fIT = tT.forcaMMII || (tT.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tT.extensora1RM, relativo: tT.extensoraRelativo } : null);
-      if (fIT) {
+      if (temMMII) {
         if (cardExt) cardExt.style.display = 'block';
-        const lblExt = cardExt.querySelector('.title');
-        if (lblExt) lblExt.textContent = fIT.exercicioNome || 'Cadeira Extensora';
+        const fIB = tB.forcaMMII || (tB.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tB.extensora1RM, relativo: tB.extensoraRelativo } : null);
+        const fIT = tT.forcaMMII || (tT.extensora1RM != null ? { exercicio: 'extensora', exercicioNome: 'Cadeira Extensora', rm1: tT.extensora1RM, relativo: tT.extensoraRelativo } : null);
 
-        if (fIB && fIB.rm1 && fIT.rm1) {
+        const lblExt = cardExt.querySelector('.title');
+        if (lblExt) lblExt.textContent = (fIT && fIT.exercicioNome) || 'Cadeira Extensora';
+
+        if (fIB && fIB.rm1 && fIT && fIT.rm1) {
           const dExt = Number((fIT.rm1 - fIB.rm1).toFixed(1));
           elExt.textContent = `${dExt > 0 ? `+${dExt}` : dExt} kg`;
           elExt.style.color = dExt >= 0 ? '#059669' : '#dc2626';
           subExt.textContent = dExt > 0 ? `Ganho em membros inf.! (${fIB.rm1}kg para ${fIT.rm1}kg)` : (dExt === 0 ? 'Carga mantida' : 'Atenção: queda de 1RM');
         } else {
-          elExt.textContent = `${fIT.rm1} kg`;
+          elExt.textContent = `${rm1MMII} kg`;
           elExt.style.color = '#059669';
-          subExt.textContent = `Novo teste (Força: ${fIT.relativo || '--'}x PC)`;
+          subExt.textContent = `Novo teste (Força: ${exMMII.relativo || tT.extensoraRelativo || '--'}x PC)`;
         }
       } else if (cardExt) {
         cardExt.style.display = 'none';
       }
 
       // Delta Esteira
-      if ((tT && tT.fezEsteira) || (tB && tB.fezEsteira)) {
-        cardEst.style.display = 'block';
-        if (tT.esteiraVo2 && tB.esteiraVo2) {
-          const dVo2 = Number((tT.esteiraVo2 - tB.esteiraVo2).toFixed(1));
+      if (temEsteira) {
+        if (cardEst) cardEst.style.display = 'block';
+        const vo2B = tB.esteiraVo2 != null ? tB.esteiraVo2 : tB.cardioVo2;
+        if (vo2B != null && !isNaN(vo2B) && Number(vo2B) > 0) {
+          const dVo2 = Number((vo2Est - vo2B).toFixed(1));
           elEst.textContent = `${dVo2 > 0 ? `+${dVo2}` : dVo2} ml/kg/min`;
           elEst.style.color = dVo2 >= 0 ? '#059669' : '#dc2626';
-          subEst.textContent = `Vpico: de ${tB.esteiraVelPico ? Number(tB.esteiraVelPico).toFixed(2) : '--'} para ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h`;
-        } else if (tT.esteiraVo2) {
-          elEst.textContent = `${tT.esteiraVo2} ml/kg/min`;
-          subEst.textContent = `Vpico: ${tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : '--'} km/h (Novo teste)`;
+          const velB = tB.esteiraVelPico ? Number(tB.esteiraVelPico).toFixed(2) : (tB.cardioVelKm ? Number(tB.cardioVelKm).toFixed(2) : '--');
+          const velT = tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : (tT.cardioVelKm ? Number(tT.cardioVelKm).toFixed(2) : '--');
+          subEst.textContent = `Vpico: de ${velB} para ${velT} km/h`;
         } else {
-          cardEst.style.display = 'none';
+          elEst.textContent = `${vo2Est} ml/kg/min`;
+          elEst.style.color = '#059669';
+          const velT = tT.esteiraVelPico ? Number(tT.esteiraVelPico).toFixed(2) : (tT.cardioVelKm ? Number(tT.cardioVelKm).toFixed(2) : '--');
+          subEst.textContent = `Vpico: ${velT} km/h (Novo teste)`;
         }
-      } else {
+      } else if (cardEst) {
         cardEst.style.display = 'none';
       }
     }
@@ -10439,134 +11008,178 @@
       const tB = base.testes || {};
       const tT = target.testes || {};
 
+      const cardAlt = document.getElementById('card-delta-ped-altura');
       const elAlt = document.getElementById('ped-delta-altura');
       const subAlt = document.getElementById('ped-sub-altura');
+
+      const cardImc = document.getElementById('card-delta-ped-imc');
       const elImc = document.getElementById('ped-delta-imc');
       const subImc = document.getElementById('ped-sub-imc');
+
+      const cardGord = document.getElementById('card-delta-ped-gordura');
       const elGord = document.getElementById('ped-delta-gordura');
       const subGord = document.getElementById('ped-sub-gordura');
+
+      const cardFlex = document.getElementById('card-delta-ped-flex');
       const elFlex = document.getElementById('ped-delta-flex');
       const subFlex = document.getElementById('ped-sub-flex');
+
+      const cardSalto = document.getElementById('card-delta-ped-salto');
       const elSalto = document.getElementById('ped-delta-salto');
       const subSalto = document.getElementById('ped-sub-salto');
+
+      const cardAbd = document.getElementById('card-delta-ped-abd');
       const elAbd = document.getElementById('ped-delta-abd');
       const subAbd = document.getElementById('ped-sub-abd');
+
+      const cardAgil = document.getElementById('card-delta-ped-agilidade');
       const elAgil = document.getElementById('ped-delta-agilidade');
       const subAgil = document.getElementById('ped-sub-agilidade');
+
       const cardAerobio = document.getElementById('card-delta-ped-aerobio');
       const elAerobio = document.getElementById('ped-delta-aerobio');
       const subAerobio = document.getElementById('ped-sub-aerobio');
 
+      const temAlt = Boolean(cT.altura != null && !isNaN(cT.altura) && Number(cT.altura) > 0);
+      const temImc = Boolean(cT.imc != null && !isNaN(cT.imc) && Number(cT.imc) > 0);
+      const temGord = Boolean(cT.percentualGordura != null && !isNaN(cT.percentualGordura) && Number(cT.percentualGordura) > 0);
+      const temFlex = Boolean(tT.flexCm != null && !isNaN(tT.flexCm) && Number(tT.flexCm) > 0);
+      const temSalto = Boolean(tT.saltoCm != null && !isNaN(tT.saltoCm) && Number(tT.saltoCm) > 0);
+      const temAbd = Boolean(tT.abdReps != null && !isNaN(tT.abdReps) && Number(tT.abdReps) > 0);
+      const temAgil = Boolean(tT.agilidadeTempo != null && !isNaN(tT.agilidadeTempo) && Number(tT.agilidadeTempo) > 0);
+      const temAerobio = Boolean(tT.fezAerobio && tT.aerobioMetros != null && !isNaN(tT.aerobioMetros) && Number(tT.aerobioMetros) > 0);
+
       if (ehReavaliacao) {
         // Altura (Crescimento)
-        if (elAlt) {
-          if (cB.altura && cT.altura) {
+        if (temAlt) {
+          if (cardAlt) cardAlt.style.display = 'block';
+          if (cB.altura && !isNaN(cB.altura) && Number(cB.altura) > 0) {
             const d = Number((cT.altura - cB.altura).toFixed(1));
             elAlt.textContent = `${d >= 0 ? `+${d}` : d} cm`;
             elAlt.style.color = d >= 0 ? '#059669' : '#0f172a';
             subAlt.textContent = `${cB.altura}cm para ${cT.altura}cm (Crescimento)`;
-          } else if (cT.altura) {
+          } else {
             elAlt.textContent = `${cT.altura} cm`;
             elAlt.style.color = '#0f172a';
             subAlt.textContent = 'Estatura atual';
           }
+        } else if (cardAlt) {
+          cardAlt.style.display = 'none';
         }
 
         // IMC
-        if (elImc) {
-          if (cB.imc && cT.imc) {
+        if (temImc) {
+          if (cardImc) cardImc.style.display = 'block';
+          if (cB.imc && !isNaN(cB.imc) && Number(cB.imc) > 0) {
             const d = Number((cT.imc - cB.imc).toFixed(1));
             elImc.textContent = `${d >= 0 ? `+${d}` : d}`;
             elImc.style.color = (cT.imc >= 16.0 && cT.imc <= 24.0) ? '#059669' : '#d97706';
             subImc.textContent = `${cB.imc} para ${cT.imc} kg/m²`;
-          } else if (cT.imc) {
+          } else {
             elImc.textContent = `${cT.imc} kg/m²`;
             elImc.style.color = '#0f172a';
             subImc.textContent = 'IMC Atual';
           }
+        } else if (cardImc) {
+          cardImc.style.display = 'none';
         }
 
         // % Gordura
-        if (elGord) {
-          if (cB.percentualGordura !== undefined && cT.percentualGordura !== undefined) {
+        if (temGord) {
+          if (cardGord) cardGord.style.display = 'block';
+          if (cB.percentualGordura != null && !isNaN(cB.percentualGordura) && Number(cB.percentualGordura) > 0) {
             const d = Number((cT.percentualGordura - cB.percentualGordura).toFixed(1));
             elGord.textContent = `${d > 0 ? `+${d}` : d}%`;
             elGord.style.color = d <= 0 ? '#059669' : '#d97706';
             subGord.textContent = d < 0 ? `Redução saudável (${cB.percentualGordura}% para ${cT.percentualGordura}%)` : `${cB.percentualGordura}% para ${cT.percentualGordura}%`;
-          } else if (cT.percentualGordura !== undefined) {
+          } else {
             elGord.textContent = `${cT.percentualGordura}%`;
             elGord.style.color = '#0f172a';
             subGord.textContent = cT.massaMagra ? `Massa Magra: ${cT.massaMagra} kg` : 'Dobras Cutâneas';
           }
+        } else if (cardGord) {
+          cardGord.style.display = 'none';
         }
 
         // Flexibilidade
-        if (elFlex) {
-          if (tB.flexCm !== undefined && tT.flexCm !== undefined) {
+        if (temFlex) {
+          if (cardFlex) cardFlex.style.display = 'block';
+          if (tB.flexCm != null && !isNaN(tB.flexCm) && Number(tB.flexCm) > 0) {
             const d = Number((tT.flexCm - tB.flexCm).toFixed(1));
             elFlex.textContent = `${d > 0 ? `+${d}` : d} cm`;
             elFlex.style.color = d >= 0 ? '#059669' : '#dc2626';
             subFlex.textContent = d > 0 ? `Ganho de amplitude (${tB.flexCm}cm para ${tT.flexCm}cm)` : `${tB.flexCm}cm para ${tT.flexCm}cm`;
-          } else if (tT.flexCm !== undefined) {
+          } else {
             elFlex.textContent = `${tT.flexCm} cm`;
             elFlex.style.color = '#0f172a';
             subFlex.textContent = 'Sentar e Alcançar';
           }
+        } else if (cardFlex) {
+          cardFlex.style.display = 'none';
         }
 
         // Salto Horizontal MMII
-        if (elSalto) {
-          if (tB.saltoCm !== undefined && tT.saltoCm !== undefined) {
+        if (temSalto) {
+          if (cardSalto) cardSalto.style.display = 'block';
+          if (tB.saltoCm != null && !isNaN(tB.saltoCm) && Number(tB.saltoCm) > 0) {
             const d = Number((tT.saltoCm - tB.saltoCm).toFixed(1));
             elSalto.textContent = `${d > 0 ? `+${d}` : d} cm`;
             elSalto.style.color = d >= 0 ? '#059669' : '#dc2626';
             subSalto.textContent = d > 0 ? `Potência de MMII! (${tB.saltoCm}cm para ${tT.saltoCm}cm)` : `${tB.saltoCm}cm para ${tT.saltoCm}cm`;
-          } else if (tT.saltoCm !== undefined) {
+          } else {
             elSalto.textContent = `${tT.saltoCm} cm`;
             elSalto.style.color = '#0f172a';
             subSalto.textContent = 'Impulsão MMII';
           }
+        } else if (cardSalto) {
+          cardSalto.style.display = 'none';
         }
 
         // Abdominal 1 Minuto
-        if (elAbd) {
-          if (tB.abdReps !== undefined && tT.abdReps !== undefined) {
+        if (temAbd) {
+          if (cardAbd) cardAbd.style.display = 'block';
+          if (tB.abdReps != null && !isNaN(tB.abdReps) && Number(tB.abdReps) > 0) {
             const d = tT.abdReps - tB.abdReps;
             elAbd.textContent = `${d > 0 ? `+${d}` : d} reps`;
             elAbd.style.color = d >= 0 ? '#059669' : '#dc2626';
             subAbd.textContent = d > 0 ? `Força do Core! (${tB.abdReps} para ${tT.abdReps} reps/min)` : `${tB.abdReps} para ${tT.abdReps} reps/min`;
-          } else if (tT.abdReps !== undefined) {
+          } else {
             elAbd.textContent = `${tT.abdReps} reps`;
             elAbd.style.color = '#0f172a';
             subAbd.textContent = 'Abdominal 1 min';
           }
+        } else if (cardAbd) {
+          cardAbd.style.display = 'none';
         }
 
-        // Agilidade Quadrado 4x4m (menor tempo é melhor!)
-        if (elAgil) {
-          if (tB.agilidadeTempo !== undefined && tT.agilidadeTempo !== undefined) {
+        // Agilidade Quadrado 4x4m
+        if (temAgil) {
+          if (cardAgil) cardAgil.style.display = 'block';
+          if (tB.agilidadeTempo != null && !isNaN(tB.agilidadeTempo) && Number(tB.agilidadeTempo) > 0) {
             const d = Number((tT.agilidadeTempo - tB.agilidadeTempo).toFixed(1));
             elAgil.textContent = `${d > 0 ? `+${d}` : d} s`;
             elAgil.style.color = d <= 0 ? '#059669' : '#dc2626';
             subAgil.textContent = d < 0 ? `Mais rápido! (${tB.agilidadeTempo}s para ${tT.agilidadeTempo}s)` : `${tB.agilidadeTempo}s para ${tT.agilidadeTempo}s`;
-          } else if (tT.agilidadeTempo !== undefined) {
+          } else {
             elAgil.textContent = `${tT.agilidadeTempo} s`;
             elAgil.style.color = '#0f172a';
             subAgil.textContent = 'Quadrado 4x4m';
           }
+        } else if (cardAgil) {
+          cardAgil.style.display = 'none';
         }
 
-        // Aeróbio 6 Minutos (Opcional)
-        if ((tT && tT.fezAerobio) || (tB && tB.fezAerobio)) {
+        // Aeróbio 6 Minutos
+        if (temAerobio) {
           if (cardAerobio) cardAerobio.style.display = 'block';
-          if (tT.aerobioMetros && tB.aerobioMetros) {
+          if (tB.aerobioMetros && !isNaN(tB.aerobioMetros) && Number(tB.aerobioMetros) > 0) {
             const d = tT.aerobioMetros - tB.aerobioMetros;
             if (elAerobio) {
               elAerobio.textContent = `${d > 0 ? `+${d}` : d} m`;
               elAerobio.style.color = d >= 0 ? '#059669' : '#dc2626';
             }
             if (subAerobio) subAerobio.textContent = `Corrida 6min: de ${tB.aerobioMetros}m para ${tT.aerobioMetros}m`;
-          } else if (tT.aerobioMetros) {
+          } else {
             if (elAerobio) {
               elAerobio.textContent = `${tT.aerobioMetros} m`;
               elAerobio.style.color = '#059669';
@@ -10579,42 +11192,70 @@
 
       } else {
         // Avaliação Individual / Inicial
-        if (elAlt) {
-          elAlt.textContent = cT.altura ? `${cT.altura} cm` : '--';
+        if (temAlt) {
+          if (cardAlt) cardAlt.style.display = 'block';
+          elAlt.textContent = `${cT.altura} cm`;
           elAlt.style.color = '#0f172a';
           subAlt.textContent = 'Estatura Aferida';
+        } else if (cardAlt) {
+          cardAlt.style.display = 'none';
         }
-        if (elImc) {
-          elImc.textContent = cT.imc ? `${cT.imc} kg/m²` : '--';
+
+        if (temImc) {
+          if (cardImc) cardImc.style.display = 'block';
+          elImc.textContent = `${cT.imc} kg/m²`;
           elImc.style.color = '#0f172a';
           subImc.textContent = 'IMC Pediátrico';
+        } else if (cardImc) {
+          cardImc.style.display = 'none';
         }
-        if (elGord) {
-          elGord.textContent = cT.percentualGordura !== undefined ? `${cT.percentualGordura}%` : '--';
+
+        if (temGord) {
+          if (cardGord) cardGord.style.display = 'block';
+          elGord.textContent = `${cT.percentualGordura}%`;
           elGord.style.color = '#0f172a';
           subGord.textContent = cT.massaMagra ? `Massa Magra: ${cT.massaMagra} kg` : 'Dobras Cutâneas';
+        } else if (cardGord) {
+          cardGord.style.display = 'none';
         }
-        if (elFlex) {
-          elFlex.textContent = tT.flexCm !== undefined ? `${tT.flexCm} cm` : '--';
+
+        if (temFlex) {
+          if (cardFlex) cardFlex.style.display = 'block';
+          elFlex.textContent = `${tT.flexCm} cm`;
           elFlex.style.color = '#0f172a';
           subFlex.textContent = 'Sentar e Alcançar';
+        } else if (cardFlex) {
+          cardFlex.style.display = 'none';
         }
-        if (elSalto) {
-          elSalto.textContent = tT.saltoCm !== undefined ? `${tT.saltoCm} cm` : '--';
+
+        if (temSalto) {
+          if (cardSalto) cardSalto.style.display = 'block';
+          elSalto.textContent = `${tT.saltoCm} cm`;
           elSalto.style.color = '#0f172a';
           subSalto.textContent = 'Salto Horizontal';
+        } else if (cardSalto) {
+          cardSalto.style.display = 'none';
         }
-        if (elAbd) {
-          elAbd.textContent = tT.abdReps !== undefined ? `${tT.abdReps} reps` : '--';
+
+        if (temAbd) {
+          if (cardAbd) cardAbd.style.display = 'block';
+          elAbd.textContent = `${tT.abdReps} reps`;
           elAbd.style.color = '#0f172a';
           subAbd.textContent = 'Abdominal em 1 min';
+        } else if (cardAbd) {
+          cardAbd.style.display = 'none';
         }
-        if (elAgil) {
-          elAgil.textContent = tT.agilidadeTempo !== undefined ? `${tT.agilidadeTempo} s` : '--';
+
+        if (temAgil) {
+          if (cardAgil) cardAgil.style.display = 'block';
+          elAgil.textContent = `${tT.agilidadeTempo} s`;
           elAgil.style.color = '#0f172a';
           subAgil.textContent = 'Quadrado 4x4m';
+        } else if (cardAgil) {
+          cardAgil.style.display = 'none';
         }
-        if (tT && tT.fezAerobio && tT.aerobioMetros) {
+
+        if (temAerobio) {
           if (cardAerobio) cardAerobio.style.display = 'block';
           if (elAerobio) {
             elAerobio.textContent = `${tT.aerobioMetros} m`;
@@ -11228,7 +11869,7 @@
       return metricas.filter(m => {
         return evalsSlice.some(ev => {
           const v = m.extrair(ev);
-          return v !== null && v !== undefined && !isNaN(v);
+          return v !== null && v !== undefined && !isNaN(v) && (typeof v === 'number' ? v > 0 : true);
         });
       });
     }
@@ -11307,13 +11948,21 @@
                 }
               } else {
                 // Cardio Dual ou Forca Dual: Bar no eixo Y (esquerda), Linha no eixo Y1 (direita)
-                if (isBar) {
-                  x = element.x - 26; // Desloca para a esquerda (lado do eixo Y)
-                  y = element.y - 7;
+                const barHeight = (element.base != null && element.y != null) ? Math.abs(element.base - element.y) : 0;
+                if (isBar && barHeight >= 30) {
+                  // Rótulo da barra dentro do topo da barra em branco destacado
+                  x = element.x;
+                  y = element.y + 13;
+                  baseline = 'middle';
+                  color = '#ffffff';
+                  isInsideBar = true;
+                } else if (isBar) {
+                  x = element.x - 24;
+                  y = element.y - 8;
                   baseline = 'bottom';
                 } else {
-                  x = element.x + 26; // Desloca para a direita (lado do eixo Y1)
-                  y = element.y - 7;
+                  x = element.x;
+                  y = element.y - 9;
                   baseline = 'bottom';
                 }
               }
@@ -11358,7 +12007,7 @@
           return { x1, y1, x2, y2, w, h };
         }
 
-        function boxesOverlap(b1, b2, pad = 3) {
+        function boxesOverlap(b1, b2, pad = 4) {
           return !(b1.x2 + pad < b2.x1 || b1.x1 - pad > b2.x2 || b1.y2 + pad < b2.y1 || b1.y1 - pad > b2.y2);
         }
 
@@ -11372,23 +12021,15 @@
             let bA = getBox(itA);
             let bB = getBox(itB);
 
-            if (boxesOverlap(bA, bB, 3)) {
-              // Se estao colidindo verticalmente
-              if (Math.abs(itA.x - itB.x) < 25) {
-                if (itA.y <= itB.y) {
-                  itA.y = bB.y1 - 4;
-                } else {
-                  itB.y = bA.y1 - 4;
-                }
+            if (boxesOverlap(bA, bB, 4)) {
+              if (itA.isInsideBar && !itB.isInsideBar) {
+                itB.y = bA.y1 - 6;
+              } else if (!itA.isInsideBar && itB.isInsideBar) {
+                itA.y = bB.y1 - 6;
+              } else if (itA.y <= itB.y) {
+                itA.y = bB.y1 - 6;
               } else {
-                // Colisao horizontal: afasta em X
-                if (itA.x <= itB.x) {
-                  itA.x -= 8;
-                  itB.x += 8;
-                } else {
-                  itA.x += 8;
-                  itB.x -= 8;
-                }
+                itB.y = bA.y1 - 6;
               }
             }
           }
@@ -12026,7 +12667,7 @@
             y: {
               position: 'left',
               beginAtZero: true,
-              grace: '15%',
+              grace: '22%',
               grid: { color: 'rgba(226, 232, 240, 0.8)' },
               ticks: {
                 font: { size: 10 },
@@ -12043,7 +12684,7 @@
             y1: {
               position: 'right',
               beginAtZero: true,
-              grace: '15%',
+              grace: '22%',
               grid: { drawOnChartArea: false },
               ticks: {
                 font: { size: 10 },
@@ -12163,7 +12804,7 @@
             y: {
               position: 'left',
               beginAtZero: true,
-              grace: '15%',
+              grace: '22%',
               grid: { color: 'rgba(226, 232, 240, 0.8)' },
               ticks: {
                 font: { size: 10 },
@@ -12180,7 +12821,7 @@
             y1: {
               position: 'right',
               beginAtZero: true,
-              grace: '15%',
+              grace: '22%',
               grid: { drawOnChartArea: false },
               ticks: {
                 font: { size: 10 },
@@ -12219,7 +12860,7 @@
       const sexo = aluno.sexo || 'M';
       const cards = [];
 
-      const temDados = arr => arr && arr.some(v => v !== null && v !== undefined && !isNaN(v));
+      const temDados = arr => arr && arr.some(v => v !== null && v !== undefined && !isNaN(v) && Number(v) > 0);
 
       if (!ehIdoso && !ehAdolescente) {
         // ==========================================
@@ -12338,11 +12979,12 @@
         }
 
         // 5. Força Muscular MMII (Eixo Duplo)
+        const fezMMII = evalsSlice.some(ev => (ev.testes?.forcaMMII && Number(ev.testes.forcaMMII.rm1) > 0) || (ev.testes?.extensora1RM != null && Number(ev.testes.extensora1RM) > 0));
         const nomeMMIIMetrica = (evalsSlice.find(ev => ev.testes?.forcaMMII?.exercicioNome)?.testes.forcaMMII.exercicioNome) || 'Cadeira Extensora';
         const vals1RM = evalsSlice.map(ev => (ev.testes?.forcaMMII?.rm1 != null ? parseFloat(ev.testes.forcaMMII.rm1) : ((ev.testes?.extensora1RM != null && ev.testes?.extensora1RM !== '') ? parseFloat(ev.testes.extensora1RM) : null)));
         const valsRel = evalsSlice.map(ev => (ev.testes?.forcaMMII?.relativo != null ? parseFloat(Number(ev.testes.forcaMMII.relativo).toFixed(2)) : ((ev.testes?.extensoraRelativo != null && ev.testes?.extensoraRelativo !== '') ? parseFloat(Number(ev.testes.extensoraRelativo).toFixed(2)) : null)));
 
-        if (temDados(vals1RM) || temDados(valsRel)) {
+        if (fezMMII && (temDados(vals1RM) || temDados(valsRel))) {
           const ultimoEv = evalsSlice[evalsSlice.length - 1];
           const u1RMVal = (ultimoEv.testes?.forcaMMII?.rm1 != null ? parseFloat(ultimoEv.testes.forcaMMII.rm1) : ((ultimoEv.testes?.extensora1RM != null && ultimoEv.testes?.extensora1RM !== '') ? parseFloat(ultimoEv.testes.extensora1RM) : null));
           const uRelVal = (ultimoEv.testes?.forcaMMII?.relativo != null ? parseFloat(ultimoEv.testes.forcaMMII.relativo) : ((ultimoEv.testes?.extensoraRelativo != null && ultimoEv.testes?.extensoraRelativo !== '') ? parseFloat(ultimoEv.testes.extensoraRelativo) : null));
@@ -12370,7 +13012,7 @@
         }
 
         // 6. Força Muscular MMSS (Supino/Puxada ou Flexões)
-        const temSupinoOuPuxada = evalsSlice.some(ev => ev.testes?.forcaMMSS && ev.testes.forcaMMSS.exercicio !== 'flexao');
+        const temSupinoOuPuxada = evalsSlice.some(ev => ev.testes?.forcaMMSS && ev.testes.forcaMMSS.exercicio !== 'flexao' && (Number(ev.testes.forcaMMSS.rm1) > 0 || Number(ev.testes.forcaMMSS.reps) > 0));
         const nomeMMSSMetrica = temSupinoOuPuxada ? (((evalsSlice.find(ev => ev.testes?.forcaMMSS?.exercicioNome)?.testes.forcaMMSS.exercicioNome) || 'Membros Superiores')) : 'Flexões de Braço';
 
         if (temSupinoOuPuxada) {
@@ -12396,11 +13038,12 @@
             });
           }
         } else {
+          const temFlexoes = evalsSlice.some(ev => (ev.testes?.forcaMMSS?.exercicio === 'flexao' ? Number(ev.testes.forcaMMSS.reps) > 0 : (ev.testes?.flexoesReps != null && Number(ev.testes.flexoesReps) > 0)));
           const valsFlex = evalsSlice.map(ev => {
             if (ev.testes?.forcaMMSS?.exercicio === 'flexao') return parseInt(ev.testes.forcaMMSS.reps, 10);
             return (ev.testes?.flexoesReps != null && ev.testes?.flexoesReps !== '') ? parseInt(ev.testes.flexoesReps, 10) : null;
           });
-          if (temDados(valsFlex)) {
+          if (temFlexoes && temDados(valsFlex)) {
             const ultimoEv = evalsSlice[evalsSlice.length - 1];
             const uFlex = (ultimoEv.testes?.forcaMMSS?.exercicio === 'flexao' ? ultimoEv.testes.forcaMMSS.reps : ultimoEv.testes?.flexoesReps) || null;
             const uFlexNum = uFlex != null ? parseInt(uFlex, 10) : null;
@@ -12419,10 +13062,11 @@
         }
 
         // 7. Capacidade Cardiorrespiratória (Esteira) (Eixo Duplo)
+        const fezEsteiraAlgumaVez = evalsSlice.some(ev => ev.testes?.fezEsteira && (Number(ev.testes?.esteiraVo2) > 0 || Number(ev.testes?.cardioVo2) > 0 || Number(ev.testes?.esteiraVelPico) > 0));
         const valsVpico = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVelPico != null) ? parseFloat(Number(ev.testes.esteiraVelPico).toFixed(2)) : null);
         const valsVO2 = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraVo2 != null) ? parseFloat(Number(ev.testes.esteiraVo2).toFixed(1)) : null);
 
-        if (temDados(valsVpico) || temDados(valsVO2)) {
+        if (fezEsteiraAlgumaVez && (temDados(valsVpico) || temDados(valsVO2))) {
           const ultimoEv = evalsSlice[evalsSlice.length - 1];
           const uVpico = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraVelPico != null) ? Number(ultimoEv.testes.esteiraVelPico).toFixed(2) + ' km/h' : '--';
           const uVO2Val = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraVo2 != null) ? parseFloat(ultimoEv.testes.esteiraVo2) : null;
@@ -12449,8 +13093,9 @@
         }
 
         // 8. Esteira: Recuperação da FC (RFC 1º min)
+        const fezRFCAlgumaVez = evalsSlice.some(ev => ev.testes?.fezEsteira && ev.testes?.esteiraRfc1Min != null && Number(ev.testes.esteiraRfc1Min) > 0);
         const valsRFC = evalsSlice.map(ev => (ev.testes?.fezEsteira && ev.testes?.esteiraRfc1Min != null) ? parseInt(ev.testes.esteiraRfc1Min, 10) : null);
-        if (temDados(valsRFC)) {
+        if (fezRFCAlgumaVez && temDados(valsRFC)) {
           const ultimoEv = evalsSlice[evalsSlice.length - 1];
           const uRFC = (ultimoEv.testes?.fezEsteira && ultimoEv.testes?.esteiraRfc1Min != null) ? parseInt(ultimoEv.testes.esteiraRfc1Min, 10) : null;
           const statusRFC = uRFC != null ? (uRFC >= 12 ? 'Recuperação Normal (≥ 12 bpm)' : 'Recuperação Lenta (< 12 bpm)') : '--';
@@ -12561,8 +13206,9 @@
         }
 
         // VO2 George
+        const fezCardioIdoso = evalsSlice.some(ev => ev.testes?.fezCardio && ev.testes?.cardioVo2 != null && Number(ev.testes.cardioVo2) > 0);
         const valsCardio = evalsSlice.map(ev => (ev.testes?.fezCardio && ev.testes?.cardioVo2 != null) ? parseFloat(ev.testes.cardioVo2) : null);
-        if (temDados(valsCardio)) {
+        if (fezCardioIdoso && temDados(valsCardio)) {
           const ultimoEv = evalsSlice[evalsSlice.length - 1];
           const uVO2 = ultimoEv.testes?.cardioVo2 != null ? parseFloat(ultimoEv.testes.cardioVo2).toFixed(1) + ' ml/kg/min' : '--';
           cards.push({
