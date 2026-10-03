@@ -12687,15 +12687,17 @@
             }
           }
 
-          // Se a nuvem estava vazia mas temos alunos locais
-          if (alunosNuvem.length === 0 && bancoDados.alunos.length > 0) {
+          const alunosReaisLocais = (bancoDados.alunos || []).filter(a => a && a.id && !a.id.startsWith('demo-'));
+
+          // Se a nuvem estava vazia mas temos alunos reais locais
+          if (alunosNuvem.length === 0 && alunosReaisLocais.length > 0) {
             sincronizacaoEmAndamento = false;
             await sincronizarBancoCompletoNuvem(true);
             return;
           }
 
-          // Se há alunos locais que não constam na nuvem, envia para a nuvem
-          const temAlunosLocaisNaoNuvem = bancoDados.alunos.some(aLoc => 
+          // Se há alunos reais locais que não constam na nuvem, envia para a nuvem
+          const temAlunosLocaisNaoNuvem = alunosReaisLocais.some(aLoc => 
             !alunosNuvem.some(aNuv => aNuv.id === aLoc.id || (aNuv.nome && aLoc.nome && aNuv.nome.trim().toLowerCase() === aLoc.nome.trim().toLowerCase()))
           );
 
@@ -12713,7 +12715,7 @@
             }
           }
 
-          if (temAlunosLocaisNaoNuvem) {
+          if (temAlunosLocaisNaoNuvem && alunosReaisLocais.length > 0) {
             sincronizacaoEmAndamento = false;
             await sincronizarBancoCompletoNuvem(true);
             return;
@@ -13366,13 +13368,18 @@
 
     async function sincronizarBancoCompletoNuvem(silencioso = false) {
       if (sincronizacaoEmAndamento) return;
+      const alunosParaEnviar = (bancoDados.alunos || []).filter(a => a && a.id && !a.id.startsWith('demo-'));
+      if (alunosParaEnviar.length === 0) {
+        console.warn('Proteção de segurança: sincronização total bloqueada pois não há alunos cadastrados localmente.');
+        return;
+      }
       sincronizacaoEmAndamento = true;
       atualizarStatusSincronizacao('sincronizando', 'Sincronizando com a nuvem...');
       try {
         const payload = {
           acao: 'sincronizar_banco',
           banco: {
-            alunos: (bancoDados.alunos || []).filter(a => a && a.id && !a.id.startsWith('demo-')),
+            alunos: alunosParaEnviar,
             excluidos: bancoDados.excluidos || []
           }
         };
