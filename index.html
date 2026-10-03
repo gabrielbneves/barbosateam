@@ -9964,18 +9964,32 @@
         return;
       }
 
-      const usuarios = obterUsuariosArmazenados();
+      let usuarios = obterUsuariosArmazenados();
       const hashDigitado = await gerarHashSenha(senhaDigitada);
 
-      const usuarioEncontrado = usuarios.find(u => 
+      let usuarioEncontrado = usuarios.find(u => 
         (u.usuario || '').toLowerCase() === usuarioDigitado.toLowerCase()
       );
+
+      // Se não encontrou ou a senha não bateu com o cache local, tenta consultar a nuvem (caso tenha sido alterada em outro dispositivo)
+      if (!usuarioEncontrado || usuarioEncontrado.senhaHash !== hashDigitado) {
+        if (typeof puxarUsuariosNuvem === 'function') {
+          await puxarUsuariosNuvem();
+          usuarios = obterUsuariosArmazenados();
+          usuarioEncontrado = usuarios.find(u => 
+            (u.usuario || '').toLowerCase() === usuarioDigitado.toLowerCase()
+          );
+        }
+      }
 
       if (usuarioEncontrado && usuarioEncontrado.senhaHash === hashDigitado) {
         definirSessaoAutenticada(lembrar, usuarioEncontrado);
         aplicarEstadoAutenticacao(true);
         if (erroEl) erroEl.style.display = 'none';
         puxarDadosNuvem(true);
+        if (usuarioEncontrado.perfil === 'admin' && typeof sincronizarUsuariosNuvem === 'function') {
+          sincronizarUsuariosNuvem(obterUsuariosArmazenados());
+        }
       } else {
         if (erroMsg) erroMsg.textContent = 'Usuário ou senha incorretos.';
         if (erroEl) erroEl.style.display = 'block';
@@ -11131,6 +11145,12 @@
       if (typeof salvarBanco === 'function' && bancoDados) {
         salvarBanco(bancoDados);
       }
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        const alunoSync = (typeof bancoDados !== 'undefined' && bancoDados.alunos) 
+          ? (bancoDados.alunos.find(a => a.id === alunoPortalAtivo.id) || alunoPortalAtivo) 
+          : alunoPortalAtivo;
+        enviarAlunoParaNuvem(alunoSync);
+      }
 
       const volMsg = volumeTreino > 0 ? ` Você movimentou ${formatarQuilagem(volumeTreino)} de volume total!` : '';
       alert(`Treino concluído e registrado com sucesso!${volMsg} Seu treinador poderá acompanhar sua frequência e progressão.`);
@@ -11602,6 +11622,9 @@
 
       usuarios.push(novoUsuario);
       salvarUsuariosArmazenados(usuarios);
+      if (typeof sincronizarUsuariosNuvem === 'function') {
+        sincronizarUsuariosNuvem(usuarios);
+      }
 
       document.getElementById('novo-avaliador-nome').value = '';
       document.getElementById('novo-avaliador-usuario').value = '';
@@ -11650,6 +11673,9 @@
 
       const novaLista = usuarios.filter(u => u.id !== id);
       salvarUsuariosArmazenados(novaLista);
+      if (typeof sincronizarUsuariosNuvem === 'function') {
+        sincronizarUsuariosNuvem(novaLista);
+      }
       renderizarListaAvaliadores();
       alert(`Avaliador "${alvo.nome}" excluído com sucesso.`);
     }
@@ -11899,6 +11925,9 @@
       const novoHash = await gerarHashSenha(novaSenha);
       usuarios[usrIdx].senhaHash = novoHash;
       salvarUsuariosArmazenados(usuarios);
+      if (typeof sincronizarUsuariosNuvem === 'function') {
+        sincronizarUsuariosNuvem(usuarios);
+      }
 
       if (sucMsg) sucMsg.textContent = 'Credenciais atualizadas com sucesso! Utilize a nova senha no próximo acesso.';
       if (sucEl) sucEl.style.display = 'block';
@@ -12398,10 +12427,13 @@
     window.compararNomesAlunos = compararNomesAlunos;
 
     function salvarBanco(db) {
-      if (db && Array.isArray(db.alunos)) {
-        db.alunos.sort(compararNomesAlunos);
+      const data = db || (typeof bancoDados !== 'undefined' ? bancoDados : null);
+      if (data && Array.isArray(data.alunos)) {
+        data.alunos.sort(compararNomesAlunos);
       }
-      localStorage.setItem(DB_KEY, JSON.stringify(db));
+      if (data) {
+        localStorage.setItem(DB_KEY, JSON.stringify(data));
+      }
     }
 
     // Compartimentalizacao de Alunos por Perfil de Usuario e ordenacao alfabetica (A-Z)
@@ -12565,8 +12597,66 @@
                 aLocal.anamnese = aNuvem.anamnese;
                 houveAlteracao = true;
               }
+
+              // Mescla Fichas de Treino da nuvem para o aluno local
+              if (Array.isArray(aNuvem.fichasTreino) && aNuvem.fichasTreino.length > 0) {
+                if (!Array.isArray(aLocal.fichasTreino)) aLocal.fichasTreino = [];
+                aNuvem.fichasTreino.forEach(fNuv => {
+                  if (!fNuv || !fNuv.id) return;
+                  const fIdx = aLocal.fichasTreino.findIndex(fLoc => fLoc.id === fNuv.id);
+                  if (fIdx === -1) {
+                    aLocal.fichasTreino.push(fNuv);
+                    houveAlteracao = true;
+                  } else {
+                    const dtNuv = fNuv.atualizadoEm ? new Date(fNuv.atualizadoEm).getTime() : 0;
+                    const dtLoc = aLocal.fichasTreino[fIdx].atualizadoEm ? new Date(aLocal.fichasTreino[fIdx].atualizadoEm).getTime() : 0;
+                    if (dtNuv >= dtLoc) {
+                      aLocal.fichasTreino[fIdx] = fNuv;
+                      houveAlteracao = true;
+                    }
+                  }
+                });
+              }
+
+              // Mescla Histórico de Sessões de Treino da nuvem
+              if (Array.isArray(aNuvem.historicoTreinos) && aNuvem.historicoTreinos.length > 0) {
+                if (!Array.isArray(aLocal.historicoTreinos)) aLocal.historicoTreinos = [];
+                aNuvem.historicoTreinos.forEach(hNuv => {
+                  if (!hNuv) return;
+                  const hExiste = aLocal.historicoTreinos.some(hLoc =>
+                    (hNuv.id && hLoc.id === hNuv.id) ||
+                    (hNuv.data && hNuv.dataInicio && hLoc.data === hNuv.data && hLoc.dataInicio === hNuv.dataInicio)
+                  );
+                  if (!hExiste) {
+                    aLocal.historicoTreinos.push(hNuv);
+                    houveAlteracao = true;
+                  }
+                });
+              }
             }
           });
+
+          // Sincroniza Usuários / Senhas se a nuvem retornar a lista
+          if (Array.isArray(data.usuarios) && data.usuarios.length > 0) {
+            const usuariosLocais = obterUsuariosArmazenados();
+            let attUsuarios = false;
+            data.usuarios.forEach(uNuv => {
+              if (!uNuv || !uNuv.usuario || !uNuv.senhaHash) return;
+              const uIdx = usuariosLocais.findIndex(uLoc => (uLoc.usuario || '').toLowerCase() === uNuv.usuario.toLowerCase());
+              if (uIdx === -1) {
+                usuariosLocais.push(uNuv);
+                attUsuarios = true;
+              } else {
+                if (usuariosLocais[uIdx].senhaHash !== uNuv.senhaHash) {
+                  usuariosLocais[uIdx] = { ...usuariosLocais[uIdx], ...uNuv };
+                  attUsuarios = true;
+                }
+              }
+            });
+            if (attUsuarios) {
+              salvarUsuariosArmazenados(usuariosLocais);
+            }
+          }
 
           // Mescla exercícios da nuvem (aba Exercicios) para o banco local
           if (exerciciosNuvem.length > 0) {
@@ -12718,6 +12808,67 @@
         console.warn('Erro ao excluir exercicio na nuvem:', err);
       }
     }
+
+    // ==========================================
+    // SINCRONIZAÇÃO EM NUVEM DOS USUÁRIOS E CREDENCIAIS
+    // ==========================================
+    async function sincronizarUsuariosNuvem(usuariosLista) {
+      if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes('COLE_AQUI')) return;
+      try {
+        const payload = {
+          acao: 'sincronizar_usuarios',
+          usuarios: usuariosLista || (typeof obterUsuariosArmazenados === 'function' ? obterUsuariosArmazenados() : [])
+        };
+        await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+      } catch (err) {
+        console.warn('Erro ao sincronizar usuarios na nuvem:', err);
+      }
+    }
+    window.sincronizarUsuariosNuvem = sincronizarUsuariosNuvem;
+
+    async function puxarUsuariosNuvem() {
+      if (!GOOGLE_SHEETS_API_URL || GOOGLE_SHEETS_API_URL.includes('COLE_AQUI')) return;
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const response = await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (!response.ok) return;
+        const data = await response.json();
+        if (data && data.status === 'sucesso' && Array.isArray(data.usuarios) && data.usuarios.length > 0) {
+          const usuariosLocais = obterUsuariosArmazenados();
+          let houveAtualizacao = false;
+          data.usuarios.forEach(uNuv => {
+            if (!uNuv || !uNuv.usuario || !uNuv.senhaHash) return;
+            const uIdx = usuariosLocais.findIndex(uLoc => (uLoc.usuario || '').toLowerCase() === uNuv.usuario.toLowerCase());
+            if (uIdx === -1) {
+              usuariosLocais.push(uNuv);
+              houveAtualizacao = true;
+            } else {
+              if (usuariosLocais[uIdx].senhaHash !== uNuv.senhaHash) {
+                usuariosLocais[uIdx] = { ...usuariosLocais[uIdx], ...uNuv };
+                houveAtualizacao = true;
+              }
+            }
+          });
+          if (houveAtualizacao) {
+            salvarUsuariosArmazenados(usuariosLocais);
+            console.log('Credenciais de usuarios atualizadas da nuvem com sucesso.');
+          }
+        }
+      } catch (err) {
+        console.warn('Nao foi possivel consultar usuarios na nuvem:', err);
+      }
+    }
+    window.puxarUsuariosNuvem = puxarUsuariosNuvem;
 
     // ==========================================
     // DIRETRIZES DE PRESSAO ARTERIAL (DBHA / SBC) & RISCO CARDIOVASCULAR
@@ -13599,6 +13750,15 @@
 
       // Sincronização automática em segundo plano com a nuvem (Google Sheets)
       puxarDadosNuvem(true);
+      if (typeof puxarUsuariosNuvem === 'function') {
+        puxarUsuariosNuvem();
+      }
+      if (typeof estaAutenticado === 'function' && estaAutenticado()) {
+        const uLogado = typeof obterUsuarioLogado === 'function' ? obterUsuarioLogado() : null;
+        if (uLogado && uLogado.perfil === 'admin' && typeof sincronizarUsuariosNuvem === 'function') {
+          sincronizarUsuariosNuvem(obterUsuariosArmazenados());
+        }
+      }
 
       // Otimização de teclados e formulários para iOS
       otimizarInputsParaIOS();
@@ -29924,6 +30084,9 @@ function doPost(e) {
       }
 
       salvarBanco();
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        enviarAlunoParaNuvem(aluno);
+      }
       renderizarListaFichasDropdown(aluno.fichasTreino);
       
       const selFicha = document.getElementById('seletor-ficha-treino');
@@ -29945,6 +30108,9 @@ function doPost(e) {
 
       aluno.fichasTreino = aluno.fichasTreino.filter(f => f.id !== fichaTreinoAtiva.id);
       salvarBanco();
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        enviarAlunoParaNuvem(aluno);
+      }
 
       renderizarListaFichasDropdown(aluno.fichasTreino);
       if (aluno.fichasTreino.length > 0) {
@@ -30313,6 +30479,9 @@ function doPost(e) {
 
       aluno.historicoTreinos.unshift(novaSessao);
       salvarBanco();
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        enviarAlunoParaNuvem(aluno);
+      }
 
       document.getElementById('sessao-duracao').value = '';
       document.getElementById('sessao-notas').value = '';
@@ -30631,6 +30800,9 @@ function doPost(e) {
       ];
 
       salvarBanco();
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        enviarAlunoParaNuvem(aluno);
+      }
       renderizarHistoricoSessoes(aluno.historicoTreinos);
       renderizarGraficosEvolucaoTreino();
       alert('8 sessões simuladas carregadas com sucesso! Observe a curva de evolução.');
@@ -30645,6 +30817,9 @@ function doPost(e) {
 
       aluno.historicoTreinos = aluno.historicoTreinos.filter(s => s.id !== sessaoId);
       salvarBanco();
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        enviarAlunoParaNuvem(aluno);
+      }
       renderizarHistoricoSessoes(aluno.historicoTreinos);
       renderizarGraficosEvolucaoTreino();
     }
