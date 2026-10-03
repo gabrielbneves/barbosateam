@@ -4362,6 +4362,9 @@
           <button type="button" id="btn-cloud-sync" onclick="acionarSincronizacaoManual()" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4); color: #ffffff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;" title="Sincronizar dados com o Google Planilhas">
             Sincronizar
           </button>
+          <button type="button" id="btn-cloud-restore" onclick="restaurarDadosPlanilhaNuvem(false)" style="background: rgba(56, 189, 248, 0.25); border: 1px solid rgba(56, 189, 248, 0.5); color: #ffffff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; cursor: pointer; transition: all 0.2s;" title="Restaurar alunos históricos da planilha Google (Banco_App e Avaliações)">
+            Restaurar da Planilha
+          </button>
         </div>
         <button type="button" onclick="abrirModalReferencias()" style="background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.35); color: #ffffff; font-size: 12px; font-weight: 600; padding: 7px 16px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); transition: all 0.2s;">
           Base Científica &amp; Diretrizes Normativas
@@ -12447,7 +12450,7 @@
       const u = (usuarioLogado.usuario || '').toLowerCase();
       return bancoDados.alunos.filter(aluno => {
         const criador = (aluno.criadoPor || '').toLowerCase();
-        return criador === u;
+        return !criador || criador === u || criador === 'admin';
       });
     }
     window.obterAlunosVisiveis = obterAlunosVisiveis;
@@ -12704,6 +12707,15 @@
           if (houveAlteracao) {
             salvarBanco(bancoDados);
             atualizarDropdownPacientes();
+            if (typeof atualizarDropdownAlunosTreino === 'function') {
+              atualizarDropdownAlunosTreino();
+            }
+            if (typeof renderizarListaAlunos === 'function') {
+              renderizarListaAlunos();
+            }
+            if (typeof renderizarCardAlunoAtivo === 'function') {
+              renderizarCardAlunoAtivo();
+            }
             const selEl = document.getElementById('seletor-paciente');
             const alunoAtual = bancoDados.alunos.find(a => a.id === selEl?.value);
             if (alunoAtual) {
@@ -13420,10 +13432,35 @@
       await sincronizarBancoCompletoNuvem(false);
     }
 
+    async function restaurarDadosPlanilhaNuvem(silencioso = false) {
+      if (!GOOGLE_SHEETS_API_URL) return;
+      try {
+        atualizarStatusSincronizacao('sincronizando', 'Restaurando alunos...');
+        const res = await fetch(GOOGLE_SHEETS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ acao: 'restaurar_alunos' })
+        });
+        const data = await res.json();
+        if (data && data.status === 'sucesso' && Array.isArray(data.alunos)) {
+          await puxarDadosNuvem(silencioso);
+          if (!silencioso) {
+            alert(`Sucesso! ${data.alunos.length} alunos recuperados com sucesso da planilha!`);
+          }
+        } else {
+          await puxarDadosNuvem(silencioso);
+        }
+      } catch (e) {
+        console.warn('Erro ao restaurar da planilha:', e);
+        await puxarDadosNuvem(silencioso);
+      }
+    }
+
     window.puxarDadosNuvem = puxarDadosNuvem;
     window.enviarAlunoParaNuvem = enviarAlunoParaNuvem;
     window.sincronizarBancoCompletoNuvem = sincronizarBancoCompletoNuvem;
     window.acionarSincronizacaoManual = acionarSincronizacaoManual;
+    window.restaurarDadosPlanilhaNuvem = restaurarDadosPlanilhaNuvem;
     window.demoAdultoCarlos = demoAdultoCarlos;
     window.demoAdultaMariana = demoAdultaMariana;
     window.demoJovemLucas = demoJovemLucas;
@@ -25385,9 +25422,14 @@
             <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 8px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <p style="font-size: 15px; font-weight: 700; color: #1e293b; margin: 4px 0;">Nenhum aluno encontrado</p>
             <p style="font-size: 13px; color: #64748b; margin: 0 0 16px 0;">Tente outro termo de busca ou cadastre um novo aluno no sistema.</p>
-            <button type="button" onclick="iniciarNovoAluno()" class="btn-novo-aluno-destaque" style="display: inline-flex;">
-              + Cadastrar Novo Aluno
-            </button>
+            <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+              <button type="button" onclick="iniciarNovoAluno()" class="btn-novo-aluno-destaque" style="display: inline-flex;">
+                + Cadastrar Novo Aluno
+              </button>
+              <button type="button" onclick="restaurarDadosPlanilhaNuvem(false)" class="btn-novo-aluno-destaque" style="display: inline-flex; background: #0284c7;" title="Recuperar alunos e avaliações salvos na planilha Google">
+                Restaurar da Planilha Google
+              </button>
+            </div>
           </div>
         `;
         return;
