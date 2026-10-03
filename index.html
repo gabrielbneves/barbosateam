@@ -13416,15 +13416,19 @@
       if (!aluno || !aluno.id || aluno.id.startsWith('demo-')) return;
       atualizarStatusSincronizacao('sincronizando', 'Salvando na nuvem...');
       try {
-        const avRec = avaliacaoRecente || (aluno.avaliacoes && aluno.avaliacoes.length > 0 ? aluno.avaliacoes[aluno.avaliacoes.length - 1] : null);
-        const linhas = extrairLinhasColetadasAvaliacao(aluno, avRec);
-        if (avRec && !avRec.linhasColetadas) {
-          avRec.linhasColetadas = linhas;
+        const avRec = avaliacaoRecente || null;
+        let linhas = [];
+        if (avRec) {
+          linhas = extrairLinhasColetadasAvaliacao(aluno, avRec);
+          if (!avRec.linhasColetadas) {
+            avRec.linhasColetadas = linhas;
+          }
         }
         const payload = {
           acao: 'salvar_aluno',
           aluno: aluno,
           avaliacaoRecente: avRec,
+          salvarAbaAvaliacoes: !!avRec,
           linhasColetadas: linhas
         };
         const response = await fetch(GOOGLE_SHEETS_API_URL, {
@@ -29813,9 +29817,12 @@ function doPost(e) {
         aluno.historicoTreinos.unshift(novaSessao);
         if (!aluno.sessoesTreino) aluno.sessoesTreino = [];
         aluno.sessoesTreino.unshift(novaSessao);
-        if (typeof salvarBanco === 'function') salvarBanco();
+        if (typeof salvarBanco === 'function') salvarBanco(bancoDados);
         if (typeof renderizarHistoricoSessoes === 'function') {
           renderizarHistoricoSessoes(aluno.historicoTreinos);
+        }
+        if (typeof enviarAlunoParaNuvem === 'function') {
+          enviarAlunoParaNuvem(aluno);
         }
       }
 
@@ -30565,8 +30572,8 @@ function doPost(e) {
       }
     }
 
-    function registrarSessaoTreino(e) {
-      e.preventDefault();
+    async function registrarSessaoTreino(e) {
+      if (e && typeof e.preventDefault === 'function') e.preventDefault();
       if (!alunoTreinoAtualId) {
         alert('Selecione um aluno antes de registrar a sessão.');
         return;
@@ -30602,16 +30609,29 @@ function doPost(e) {
       aluno.historicoTreinos.unshift(novaSessao);
       if (!aluno.sessoesTreino) aluno.sessoesTreino = [];
       aluno.sessoesTreino.unshift(novaSessao);
-      salvarBanco();
-      if (typeof enviarAlunoParaNuvem === 'function') {
-        enviarAlunoParaNuvem(aluno);
-      }
+      salvarBanco(bancoDados);
 
       document.getElementById('sessao-duracao').value = '';
       document.getElementById('sessao-notas').value = '';
 
       renderizarHistoricoSessoes(aluno.historicoTreinos);
-      alert(`Sessão do dia ${data} registrada com sucesso! Carga computada: ${formatarQuilagem(novaSessao.quilagemTotal)}.`);
+      const elFreq = document.getElementById('treino-resumo-frequencia');
+      if (elFreq) {
+        elFreq.textContent = `Sessões Realizadas: ${aluno.historicoTreinos.length}`;
+      }
+
+      let nuvemSalva = false;
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        try {
+          await enviarAlunoParaNuvem(aluno);
+          nuvemSalva = true;
+        } catch (errSync) {
+          console.warn('Aviso: sessão gravada localmente, pendente de envio para nuvem:', errSync);
+        }
+      }
+
+      const msgNuv = nuvemSalva ? ' e sincronizada na nuvem com sucesso!' : ' (salva localmente no dispositivo).';
+      alert(`Sessão do dia ${data} registrada com sucesso! Carga computada: ${formatarQuilagem(novaSessao.quilagemTotal)}${msgNuv}`);
     }
 
     function renderizarHistoricoSessoes(sessoes) {
@@ -30932,7 +30952,7 @@ function doPost(e) {
       alert('8 sessões simuladas carregadas com sucesso! Observe a curva de evolução.');
     }
 
-    function excluirSessaoTreino(sessaoId) {
+    async function excluirSessaoTreino(sessaoId) {
       if (!alunoTreinoAtualId) return;
       const aluno = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
       if (!aluno || !aluno.historicoTreinos) return;
@@ -30940,12 +30960,19 @@ function doPost(e) {
       if (!confirm('Deseja excluir este registro de sessão?')) return;
 
       aluno.historicoTreinos = aluno.historicoTreinos.filter(s => s.id !== sessaoId);
-      salvarBanco();
-      if (typeof enviarAlunoParaNuvem === 'function') {
-        enviarAlunoParaNuvem(aluno);
+      if (aluno.sessoesTreino) {
+        aluno.sessoesTreino = aluno.sessoesTreino.filter(s => s.id !== sessaoId);
       }
+      salvarBanco(bancoDados);
       renderizarHistoricoSessoes(aluno.historicoTreinos);
       renderizarGraficosEvolucaoTreino();
+      const elFreq = document.getElementById('treino-resumo-frequencia');
+      if (elFreq) {
+        elFreq.textContent = `Sessões Realizadas: ${aluno.historicoTreinos.length}`;
+      }
+      if (typeof enviarAlunoParaNuvem === 'function') {
+        await enviarAlunoParaNuvem(aluno);
+      }
     }
 
     window.addEventListener('click', function(e) {
