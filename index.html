@@ -11077,19 +11077,20 @@
       if (bar) bar.style.display = 'none';
     }
 
-    function concluirTreinoPortalAluno() {
+    async function concluirTreinoPortalAluno() {
       if (!alunoPortalAtivo) return;
 
       const confirmou = confirm('Parabéns pela dedicação! Deseja registrar a conclusão deste treino no seu histórico?');
       if (!confirmou) return;
 
       if (!alunoPortalAtivo.historicoTreinos) alunoPortalAtivo.historicoTreinos = [];
+      if (!alunoPortalAtivo.sessoesTreino) alunoPortalAtivo.sessoesTreino = [];
 
       const hoje = new Date().toISOString().split('T')[0];
       const fichas = alunoPortalAtivo.fichasTreino || [];
       const divisoes = (fichas[0] && fichas[0].divisoes) ? fichas[0].divisoes : [];
       const divAtiva = divisoes.find(d => d.id === divisaoPortalAtivaId) || divisoes[0];
-      const nomeDivisao = divAtiva ? divAtiva.nome : 'Treino Concluído';
+      const nomeDivisao = divAtiva ? (divAtiva.nome || `Treino ${divAtiva.letra || 'A'}`) : 'Treino Concluído';
 
       let volumeTreino = 0;
       let totalSeriesFeitas = 0;
@@ -11108,31 +11109,33 @@
         });
       }
 
-      alunoPortalAtivo.historicoTreinos.unshift({
+      const duracaoPadraoMin = 50;
+      const sessaoFinalizada = {
         id: 'hist_' + Date.now(),
         data: hoje,
         divisao: nomeDivisao,
-        duracaoMinutos: 50,
+        duracao: duracaoPadraoMin,
+        duracaoMinutos: duracaoPadraoMin,
+        pse: 8,
         exerciciosConcluidos: divAtiva ? (divAtiva.exercicios || []).length : 5,
         seriesConcluidas: totalSeriesFeitas > 0 ? totalSeriesFeitas : totalSeriesPlanejadas,
-        quilagemTotal: Math.round(volumeTreino)
-      });
+        quilagemTotal: Math.round(volumeTreino),
+        notas: `Treino concluído no Portal do Aluno (Hevy Style). Volume: ${formatarQuilagem(volumeTreino)}.`,
+        registradoPor: alunoPortalAtivo.nome || 'Aluno',
+        registradoEm: new Date().toISOString()
+      };
 
-      // Também adiciona no histórico de sessões do Barbosa Team (diário do treinador) se existir
+      alunoPortalAtivo.historicoTreinos.unshift(sessaoFinalizada);
+      alunoPortalAtivo.sessoesTreino.unshift(sessaoFinalizada);
+
+      // Também atualiza na lista mestre de alunos do banco de dados local
       if (typeof bancoDados !== 'undefined' && bancoDados.alunos) {
         const alunoNoBanco = bancoDados.alunos.find(a => a.id === alunoPortalAtivo.id);
         if (alunoNoBanco) {
+          if (!alunoNoBanco.historicoTreinos) alunoNoBanco.historicoTreinos = [];
           if (!alunoNoBanco.sessoesTreino) alunoNoBanco.sessoesTreino = [];
-          alunoNoBanco.sessoesTreino.unshift({
-            id: 'sess_' + Date.now(),
-            data: hoje,
-            divisao: nomeDivisao,
-            duracaoMinutos: 50,
-            pse: 8,
-            quilagemTotal: Math.round(volumeTreino),
-            observacoes: 'Sessão concluída pelo aluno no Portal Web (Hevy Style).'
-          });
           alunoNoBanco.historicoTreinos = alunoPortalAtivo.historicoTreinos;
+          alunoNoBanco.sessoesTreino = alunoPortalAtivo.sessoesTreino;
         }
       }
 
@@ -11148,15 +11151,24 @@
       if (typeof salvarBanco === 'function' && bancoDados) {
         salvarBanco(bancoDados);
       }
+
+      const alunoSync = (typeof bancoDados !== 'undefined' && bancoDados.alunos) 
+        ? (bancoDados.alunos.find(a => a.id === alunoPortalAtivo.id) || alunoPortalAtivo) 
+        : alunoPortalAtivo;
+
+      let nuvemSalva = false;
       if (typeof enviarAlunoParaNuvem === 'function') {
-        const alunoSync = (typeof bancoDados !== 'undefined' && bancoDados.alunos) 
-          ? (bancoDados.alunos.find(a => a.id === alunoPortalAtivo.id) || alunoPortalAtivo) 
-          : alunoPortalAtivo;
-        enviarAlunoParaNuvem(alunoSync);
+        try {
+          await enviarAlunoParaNuvem(alunoSync);
+          nuvemSalva = true;
+        } catch (errSync) {
+          console.warn('Erro ao salvar sessão na nuvem:', errSync);
+        }
       }
 
       const volMsg = volumeTreino > 0 ? ` Você movimentou ${formatarQuilagem(volumeTreino)} de volume total!` : '';
-      alert(`Treino concluído e registrado com sucesso!${volMsg} Seu treinador poderá acompanhar sua frequência e progressão.`);
+      const statusMsg = nuvemSalva ? ' e sincronizado na nuvem com seu treinador!' : ' (salvo localmente no aparelho).';
+      alert(`Treino concluído e registrado com sucesso!${volMsg}${statusMsg}`);
       renderizarPortalDash(alunoPortalAtivo);
       renderizarPortalTreinos(alunoPortalAtivo);
     }
@@ -12628,10 +12640,27 @@
                   if (!hNuv) return;
                   const hExiste = aLocal.historicoTreinos.some(hLoc =>
                     (hNuv.id && hLoc.id === hNuv.id) ||
-                    (hNuv.data && hNuv.dataInicio && hLoc.data === hNuv.data && hLoc.dataInicio === hNuv.dataInicio)
+                    (hNuv.data && hLoc.data === hNuv.data && hLoc.divisao === hNuv.divisao && Math.abs((Number(hLoc.quilagemTotal) || 0) - (Number(hNuv.quilagemTotal) || 0)) < 1)
                   );
                   if (!hExiste) {
                     aLocal.historicoTreinos.push(hNuv);
+                    houveAlteracao = true;
+                  }
+                });
+                aLocal.historicoTreinos.sort((x, y) => new Date(y.data || y.registradoEm || 0) - new Date(x.data || x.registradoEm || 0));
+              }
+
+              // Mescla sessoesTreino da nuvem
+              if (Array.isArray(aNuvem.sessoesTreino) && aNuvem.sessoesTreino.length > 0) {
+                if (!Array.isArray(aLocal.sessoesTreino)) aLocal.sessoesTreino = [];
+                aNuvem.sessoesTreino.forEach(sNuv => {
+                  if (!sNuv) return;
+                  const sExiste = aLocal.sessoesTreino.some(sLoc =>
+                    (sNuv.id && sLoc.id === sNuv.id) ||
+                    (sNuv.data && sLoc.data === sNuv.data && sLoc.divisao === sNuv.divisao)
+                  );
+                  if (!sExiste) {
+                    aLocal.sessoesTreino.push(sNuv);
                     houveAlteracao = true;
                   }
                 });
@@ -12721,9 +12750,49 @@
             if (alunoAtual) {
               atualizarVisualSeletor(alunoAtual);
             }
+            // Atualiza histórico e métricas de treino do aluno ativo no módulo de treino
+            if (typeof alunoTreinoAtualId !== 'undefined' && alunoTreinoAtualId) {
+              const alTr = bancoDados.alunos.find(a => a.id === alunoTreinoAtualId);
+              if (alTr) {
+                if (typeof renderizarHistoricoSessoes === 'function') {
+                  renderizarHistoricoSessoes(alTr.historicoTreinos || []);
+                }
+                if (typeof renderizarGraficosEvolucaoTreino === 'function') {
+                  renderizarGraficosEvolucaoTreino();
+                }
+                const elFreq = document.getElementById('treino-resumo-frequencia');
+                if (elFreq) {
+                  elFreq.textContent = `Sessões Realizadas: ${(alTr.historicoTreinos || []).length}`;
+                }
+              }
+            }
+            // Atualiza o portal do aluno se estiver aberto
+            if (typeof alunoPortalAtivo !== 'undefined' && alunoPortalAtivo) {
+              const alPort = bancoDados.alunos.find(a => a.id === alunoPortalAtivo.id);
+              if (alPort) {
+                alunoPortalAtivo = alPort;
+                if (typeof renderizarPortalDash === 'function') renderizarPortalDash(alPort);
+              }
+            }
             const passo4Ativo = document.getElementById('passo-4')?.classList.contains('active');
             if (passo4Ativo) {
               renderizarComparativoGeral();
+            }
+          }
+
+          // Detecta se algum aluno local tem sessões de treino pendentes que não constam na nuvem
+          const alunosComSessoesLocaisNovas = alunosReaisLocais.filter(aLoc => {
+            const aNuv = alunosNuvem.find(n => n.id === aLoc.id || (n.nome && aLoc.nome && n.nome.trim().toLowerCase() === aLoc.nome.trim().toLowerCase()));
+            if (!aNuv) return false;
+            const sLoc = Array.isArray(aLoc.historicoTreinos) ? aLoc.historicoTreinos : [];
+            const sNuv = Array.isArray(aNuv.historicoTreinos) ? aNuv.historicoTreinos : [];
+            if (sLoc.length === 0) return false;
+            return sLoc.some(sl => !sNuv.some(sn => sn.id === sl.id || (sn.data === sl.data && sn.divisao === sl.divisao)));
+          });
+
+          if (alunosComSessoesLocaisNovas.length > 0) {
+            for (const aComSessao of alunosComSessoesLocaisNovas) {
+              await enviarAlunoParaNuvem(aComSessao);
             }
           }
 
@@ -29733,6 +29802,7 @@ function doPost(e) {
           data: hoje,
           divisao: nomeDiv,
           duracao: duracaoMin,
+          duracaoMinutos: duracaoMin,
           pse: 8,
           quilagemTotal: quilagemSessao,
           notas: `Treino concluído via Prescrição. Volume total: ${formatarQuilagem(quilagemSessao)}.`,
@@ -29741,6 +29811,8 @@ function doPost(e) {
         };
 
         aluno.historicoTreinos.unshift(novaSessao);
+        if (!aluno.sessoesTreino) aluno.sessoesTreino = [];
+        aluno.sessoesTreino.unshift(novaSessao);
         if (typeof salvarBanco === 'function') salvarBanco();
         if (typeof renderizarHistoricoSessoes === 'function') {
           renderizarHistoricoSessoes(aluno.historicoTreinos);
@@ -30519,6 +30591,7 @@ function doPost(e) {
         data: data,
         divisao: divisao,
         duracao: duracao ? parseInt(duracao) : null,
+        duracaoMinutos: duracao ? parseInt(duracao) : null,
         pse: parseInt(pse),
         quilagemTotal: quilagemVal ? parseFloat(quilagemVal) : 0,
         notas: notas,
@@ -30527,6 +30600,8 @@ function doPost(e) {
       };
 
       aluno.historicoTreinos.unshift(novaSessao);
+      if (!aluno.sessoesTreino) aluno.sessoesTreino = [];
+      aluno.sessoesTreino.unshift(novaSessao);
       salvarBanco();
       if (typeof enviarAlunoParaNuvem === 'function') {
         enviarAlunoParaNuvem(aluno);
@@ -30574,11 +30649,11 @@ function doPost(e) {
                 <span style="font-weight: 800; font-size: 13px; color: #1F4E78;">${s.data}</span>
                 <span style="font-size: 12px; font-weight: 700; background: #f1f5f9; color: #334155; padding: 2px 8px; border-radius: 4px;">${s.divisao}</span>
                 ${badgeQuilagem}
-                ${s.duracao ? `<span style="font-size: 11px; color: #64748b;">${s.duracao} min</span>` : ''}
+                ${(s.duracao || s.duracaoMinutos) ? `<span style="font-size: 11px; color: #64748b;">${s.duracao || s.duracaoMinutos} min</span>` : ''}
               </div>
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: ${pseColor}; color: #ffffff;">
-                  PSE: ${s.pse}/10
+                  ${s.pse ? `PSE: ${s.pse}/10` : 'Concluído'}
                 </span>
                 <button type="button" onclick="excluirSessaoTreino('${s.id}')" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; padding: 2px 6px;" title="Excluir sessão">&times;</button>
               </div>
